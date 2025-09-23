@@ -8,17 +8,17 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Shield, 
-  ArrowRight,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
-  ArrowLeft
-} from "lucide-react"
+  EnvelopeClosedIcon, 
+  LockClosedIcon, 
+  EyeOpenIcon, 
+  EyeNoneIcon, 
+  ShieldIcon, 
+  ArrowRightIcon,
+  CheckCircledIcon,
+  ExclamationTriangleIcon,
+  UpdateIcon,
+  ArrowLeftIcon
+} from "@radix-ui/react-icons"
 import Link from "next/link"
 
 export default function SignInSimplePage() {
@@ -66,7 +66,7 @@ export default function SignInSimplePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]" />
       
@@ -75,7 +75,7 @@ export default function SignInSimplePage() {
         <div className="mb-6">
           <Link href="/">
             <Button variant="ghost" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeftIcon className="mr-2 h-4 w-4" />
               Back to Home
             </Button>
           </Link>
@@ -83,8 +83,8 @@ export default function SignInSimplePage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl mb-4 shadow-lg">
-            <Shield className="h-8 w-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl mb-4 shadow-lg">
+            <ShieldIcon className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
             Welcome Back
@@ -105,9 +105,9 @@ export default function SignInSimplePage() {
           
           <CardContent className="space-y-6">
             {/* Demo Credentials */}
-            <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
-              <AlertCircle className="h-4 w-4 text-blue-600" />
-              <AlertDescription className="text-blue-800 dark:text-blue-200">
+            <Alert className="border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/20">
+              <ExclamationTriangleIcon className="h-4 w-4 text-gray-600" />
+              <AlertDescription className="text-gray-800 dark:text-gray-200">
                 <strong>Demo Credentials:</strong><br />
                 Email: demo@cadetai.com<br />
                 Password: demo123
@@ -117,15 +117,15 @@ export default function SignInSimplePage() {
             {/* Error/Success Messages */}
             {error && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
+                <ExclamationTriangleIcon className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             
             {success && (
-              <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800 dark:text-green-200">
+              <Alert className="border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/20">
+                <CheckCircledIcon className="h-4 w-4 text-gray-600" />
+                <AlertDescription className="text-gray-800 dark:text-gray-200">
                   {success}
                 </AlertDescription>
               </Alert>
@@ -136,7 +136,7 @@ export default function SignInSimplePage() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <EnvelopeClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
                     id="email"
                     name="email"
@@ -153,7 +153,7 @@ export default function SignInSimplePage() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <LockClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
                     id="password"
                     name="password"
@@ -172,9 +172,9 @@ export default function SignInSimplePage() {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-slate-400" />
+                      <EyeNoneIcon className="h-4 w-4 text-slate-400" />
                     ) : (
-                      <Eye className="h-4 w-4 text-slate-400" />
+                      <EyeOpenIcon className="h-4 w-4 text-slate-400" />
                     )}
                   </Button>
                 </div>
@@ -198,18 +198,18 @@ export default function SignInSimplePage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-lg"
+                className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <UpdateIcon className="mr-2 h-4 w-4 animate-spin" />
                     Signing In...
                   </>
                 ) : (
                   <>
                     Sign In
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
                   </>
                 )}
               </Button>
