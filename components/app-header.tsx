@@ -1,10 +1,11 @@
 "use client"
 
-import { Search, Bell, HelpCircle } from "lucide-react"
+import { MagnifyingGlassIcon, BellIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Logo } from "@/components/Logo"
 import { useUser } from "@clerk/nextjs"
 
 export function AppHeader() {
@@ -12,10 +13,16 @@ export function AppHeader() {
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-background">
+      {/* Logo */}
+      <div className="flex items-center space-x-3">
+        <Logo variant="icon" size={32} />
+        <span className="font-semibold text-lg">CadetAI</span>
+      </div>
+      
       {/* Search Bar */}
       <div className="flex-1 max-w-md">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             type="text"
             placeholder="Explore"
@@ -28,10 +35,10 @@ export function AppHeader() {
       <div className="flex items-center space-x-2">
         <ThemeToggle />
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <Bell className="w-4 h-4" />
+          <BellIcon className="w-4 h-4" />
         </Button>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <HelpCircle className="w-4 h-4" />
+          <QuestionMarkCircledIcon className="w-4 h-4" />
         </Button>
         <Avatar className="h-8 w-8">
           <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />

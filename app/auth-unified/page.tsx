@@ -8,23 +8,23 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Shield, 
-  Building, 
-  User,
-  ArrowRight,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
-  ArrowLeft,
-  Check,
-  Key,
-  Clock,
-  RefreshCw
-} from "lucide-react"
+  EnvelopeClosedIcon, 
+  LockClosedIcon, 
+  EyeOpenIcon, 
+  EyeNoneIcon, 
+  ShieldIcon, 
+  BuildingIcon, 
+  PersonIcon,
+  ArrowRightIcon,
+  CheckCircledIcon,
+  ExclamationTriangleIcon,
+  UpdateIcon,
+  ArrowLeftIcon,
+  CheckIcon,
+  KeyIcon,
+  ClockIcon,
+  ReloadIcon
+} from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 
 type AuthMode = "signin" | "signup" | "forgot" | "otp" | "reset"
@@ -223,7 +223,7 @@ export default function UnifiedAuthPage() {
   const config = getModeConfig()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]" />
       
@@ -241,7 +241,7 @@ export default function UnifiedAuthPage() {
                 setOtpCode("")
               }}
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeftIcon className="mr-2 h-4 w-4" />
               Back to Sign In
             </Button>
           </div>
@@ -249,8 +249,8 @@ export default function UnifiedAuthPage() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl mb-4 shadow-lg">
-            <Shield className="h-8 w-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl mb-4 shadow-lg">
+            <ShieldIcon className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
             {config.title}
@@ -270,9 +270,9 @@ export default function UnifiedAuthPage() {
           <CardContent className="space-y-6">
             {/* Demo Credentials for Sign In */}
             {mode === "signin" && (
-              <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
-                <AlertCircle className="h-4 w-4 text-blue-600" />
-                <AlertDescription className="text-blue-800 dark:text-blue-200">
+              <Alert className="border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/20">
+                <ExclamationTriangleIcon className="h-4 w-4 text-gray-600" />
+                <AlertDescription className="text-gray-800 dark:text-gray-200">
                   <strong>Demo Credentials:</strong><br />
                   Email: demo@cadetai.com<br />
                   Password: demo123
@@ -289,9 +289,9 @@ export default function UnifiedAuthPage() {
             )}
             
             {success && (
-              <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800 dark:text-green-200">
+              <Alert className="border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/20">
+                <CheckCircledIcon className="h-4 w-4 text-gray-600" />
+                <AlertDescription className="text-gray-800 dark:text-gray-200">
                   {success}
                 </AlertDescription>
               </Alert>
@@ -305,7 +305,7 @@ export default function UnifiedAuthPage() {
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <PersonIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="firstName"
                         name="firstName"
@@ -321,7 +321,7 @@ export default function UnifiedAuthPage() {
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last Name</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <PersonIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="lastName"
                         name="lastName"
@@ -342,7 +342,7 @@ export default function UnifiedAuthPage() {
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <EnvelopeClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       id="email"
                       name="email"
@@ -362,7 +362,7 @@ export default function UnifiedAuthPage() {
                 <div className="space-y-2">
                   <Label htmlFor="organization">Organization (Optional)</Label>
                   <div className="relative">
-                    <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <BuildingIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       id="organization"
                       name="organization"
@@ -381,7 +381,7 @@ export default function UnifiedAuthPage() {
                 <div className="space-y-2">
                   <Label htmlFor="otp">Verification Code</Label>
                   <div className="relative">
-                    <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <KeyIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       id="otp"
                       type="text"
@@ -397,17 +397,17 @@ export default function UnifiedAuthPage() {
                     <span className="text-muted-foreground">Demo code: 123456</span>
                     {otpTimer > 0 ? (
                       <span className="text-muted-foreground flex items-center">
-                        <Clock className="h-3 w-3 mr-1" />
+                        <ClockIcon className="h-3 w-3 mr-1" />
                         Resend in {otpTimer}s
                       </span>
                     ) : (
                       <Button
                         type="button"
                         variant="link"
-                        className="p-0 h-auto text-sm text-blue-600 hover:text-blue-700"
+                        className="p-0 h-auto text-sm text-gray-600 hover:text-gray-700"
                         onClick={resendOtp}
                       >
-                        <RefreshCw className="h-3 w-3 mr-1" />
+                        <ReloadIcon className="h-3 w-3 mr-1" />
                         Resend Code
                       </Button>
                     )}
@@ -421,7 +421,7 @@ export default function UnifiedAuthPage() {
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <LockClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="password"
                         name="password"
@@ -440,9 +440,9 @@ export default function UnifiedAuthPage() {
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-slate-400" />
+                          <EyeNoneIcon className="h-4 w-4 text-slate-400" />
                         ) : (
-                          <Eye className="h-4 w-4 text-slate-400" />
+                          <EyeOpenIcon className="h-4 w-4 text-slate-400" />
                         )}
                       </Button>
                     </div>
@@ -450,20 +450,20 @@ export default function UnifiedAuthPage() {
                     {/* Password Requirements */}
                     {(mode === "signup" || mode === "reset") && formData.password && (
                       <div className="space-y-1 text-xs">
-                        <div className={cn("flex items-center space-x-2", passwordChecks.length ? 'text-green-600' : 'text-slate-500')}>
-                          <Check className="h-3 w-3" />
+                        <div className={cn("flex items-center space-x-2", passwordChecks.length ? 'text-gray-600' : 'text-slate-500')}>
+                          <CheckIcon className="h-3 w-3" />
                           <span>At least 8 characters</span>
                         </div>
-                        <div className={cn("flex items-center space-x-2", passwordChecks.uppercase ? 'text-green-600' : 'text-slate-500')}>
-                          <Check className="h-3 w-3" />
+                        <div className={cn("flex items-center space-x-2", passwordChecks.uppercase ? 'text-gray-600' : 'text-slate-500')}>
+                          <CheckIcon className="h-3 w-3" />
                           <span>One uppercase letter</span>
                         </div>
-                        <div className={cn("flex items-center space-x-2", passwordChecks.lowercase ? 'text-green-600' : 'text-slate-500')}>
-                          <Check className="h-3 w-3" />
+                        <div className={cn("flex items-center space-x-2", passwordChecks.lowercase ? 'text-gray-600' : 'text-slate-500')}>
+                          <CheckIcon className="h-3 w-3" />
                           <span>One lowercase letter</span>
                         </div>
-                        <div className={cn("flex items-center space-x-2", passwordChecks.number ? 'text-green-600' : 'text-slate-500')}>
-                          <Check className="h-3 w-3" />
+                        <div className={cn("flex items-center space-x-2", passwordChecks.number ? 'text-gray-600' : 'text-slate-500')}>
+                          <CheckIcon className="h-3 w-3" />
                           <span>One number</span>
                         </div>
                       </div>
@@ -475,7 +475,7 @@ export default function UnifiedAuthPage() {
                     <div className="space-y-2">
                       <Label htmlFor="confirmPassword">Confirm Password</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <LockClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
                           id="confirmPassword"
                           name="confirmPassword"
@@ -499,7 +499,7 @@ export default function UnifiedAuthPage() {
                     <input
                       id="remember"
                       type="checkbox"
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
                     />
                     <Label htmlFor="remember" className="text-sm text-slate-600 dark:text-slate-400">
                       Remember me
@@ -508,7 +508,7 @@ export default function UnifiedAuthPage() {
                   <Button 
                     type="button"
                     variant="link" 
-                    className="p-0 h-auto text-sm text-blue-600 hover:text-blue-700"
+                      className="p-0 h-auto text-sm text-gray-600 hover:text-gray-700"
                     onClick={() => setMode("forgot")}
                   >
                     Forgot password?
@@ -522,16 +522,16 @@ export default function UnifiedAuthPage() {
                   <input
                     id="terms"
                     type="checkbox"
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
                     required
                   />
                   <Label htmlFor="terms" className="text-sm text-slate-600 dark:text-slate-400">
                     I agree to the{" "}
-                    <Button variant="link" className="p-0 h-auto text-blue-600 hover:text-blue-700">
+                    <Button variant="link" className="p-0 h-auto text-gray-600 hover:text-gray-700">
                       Terms of Service
                     </Button>{" "}
                     and{" "}
-                    <Button variant="link" className="p-0 h-auto text-blue-600 hover:text-blue-700">
+                    <Button variant="link" className="p-0 h-auto text-gray-600 hover:text-gray-700">
                       Privacy Policy
                     </Button>
                   </Label>
@@ -540,12 +540,12 @@ export default function UnifiedAuthPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-lg disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg disabled:opacity-50"
                 disabled={isLoading || (mode === "signup" && !Object.values(passwordChecks).every(Boolean))}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <UpdateIcon className="mr-2 h-4 w-4 animate-spin" />
                     {mode === "signin" && "Signing In..."}
                     {mode === "signup" && "Creating Account..."}
                     {mode === "forgot" && "Sending Code..."}
@@ -559,7 +559,7 @@ export default function UnifiedAuthPage() {
                     {mode === "forgot" && "Send Reset Code"}
                     {mode === "otp" && "Verify Code"}
                     {mode === "reset" && "Reset Password"}
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
                   </>
                 )}
               </Button>
@@ -607,7 +607,7 @@ export default function UnifiedAuthPage() {
                   {mode === "signin" ? "Don't have an account?" : "Already have an account?"}
                   <Button
                     variant="link"
-                    className="p-0 h-auto ml-1 text-blue-600 hover:text-blue-700"
+                    className="p-0 h-auto ml-1 text-gray-600 hover:text-gray-700"
                     onClick={() => {
                       setMode(mode === "signin" ? "signup" : "signin")
                       setError("")

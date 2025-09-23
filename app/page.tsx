@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Logo } from "@/components/Logo";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -49,9 +50,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
+          <div className="flex justify-center mb-6">
+            <Logo variant="full" size={120} />
+          </div>
           <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
             CadetAI Platform
           </h1>

@@ -8,17 +8,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { 
-  FileText, 
-  Save, 
-  Download, 
-  Share, 
-  Clock, 
-  User, 
-  Fingerprint,
-  File,
-  RotateCcw,
-  Plus
-} from "lucide-react"
+  FileTextIcon, 
+  CheckIcon, 
+  DownloadIcon, 
+  Share1Icon, 
+  ClockIcon, 
+  PersonIcon, 
+  IdCardIcon,
+  FileIcon,
+  UpdateIcon,
+  PlusIcon
+} from "@radix-ui/react-icons"
 
 export default function APDEnginePage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -100,18 +100,18 @@ export default function APDEnginePage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-primary" />
+              <FileTextIcon className="h-5 w-5 text-primary" />
               <span className="font-semibold">Advanced Planning Document</span>
             </div>
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm">
-                <Fingerprint className="h-4 w-4" />
+                <IdCardIcon className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm">
-                <Clock className="h-4 w-4" />
+                <ClockIcon className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm">
-                <File className="h-4 w-4" />
+                <FileIcon className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm">
                 <span className="text-xs font-medium">CA</span>
@@ -142,7 +142,7 @@ export default function APDEnginePage() {
               </div>
               <div className="flex space-x-2">
                 <Button onClick={() => setIsEditing(false)}>
-                  <Save className="h-4 w-4 mr-2" />
+                  <CheckIcon className="h-4 w-4 mr-2" />
                   Save Changes
                 </Button>
                 <Button variant="outline" onClick={() => setIsEditing(false)}>
@@ -192,11 +192,11 @@ export default function APDEnginePage() {
                   Edit Document
                 </Button>
                 <Button variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
+                  <DownloadIcon className="h-4 w-4 mr-2" />
                   Export PDF
                 </Button>
                 <Button variant="outline">
-                  <Share className="h-4 w-4 mr-2" />
+                  <Share1Icon className="h-4 w-4 mr-2" />
                   Share
                 </Button>
               </div>
@@ -234,13 +234,13 @@ export default function APDEnginePage() {
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-            <RotateCcw className="w-3 h-3" />
+            <UpdateIcon className="w-3 h-3" />
           </Button>
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-            <User className="w-3 h-3" />
+            <PersonIcon className="w-3 h-3" />
           </Button>
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-            <Plus className="w-3 h-3" />
+            <PlusIcon className="w-3 h-3" />
           </Button>
         </div>
       </div>
