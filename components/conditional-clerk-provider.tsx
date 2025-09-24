@@ -18,8 +18,8 @@ export function ConditionalClerkProvider({ children }: ConditionalClerkProviderP
   return (
     <ClerkProvider 
       publishableKey={publishableKey}
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
+      signInUrl="/auth-unified"
+      signUpUrl="/auth-unified"
       signInFallbackRedirectUrl="/app"
       signUpFallbackRedirectUrl="/app"
       appearance={{
