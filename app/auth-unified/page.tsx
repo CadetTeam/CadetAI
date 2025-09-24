@@ -112,13 +112,13 @@ export default function UnifiedAuthPage() {
           if (!signIn) return
           
           // Try to sign in with email and password first
-          const result = await signIn.create({
+          const signInResult = await signIn.create({
             identifier: formData.email,
             password: formData.password,
           })
 
-          if (result.status === 'complete') {
-            setActive({ session: result.createdSessionId })
+          if (signInResult.status === 'complete') {
+            setActive({ session: signInResult.createdSessionId })
             setSuccess("Signed in successfully!")
             setTimeout(() => {
               window.location.href = "/app"
@@ -131,31 +131,43 @@ export default function UnifiedAuthPage() {
         case "signup":
           if (!signUp) return
           
+          // Validate required fields
+          if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+            setError("Please fill in all required fields")
+            return
+          }
+          
           if (formData.password !== formData.confirmPassword) {
             setError("Passwords do not match")
-          } else if (!Object.values(passwordChecks).every(Boolean)) {
+            return
+          }
+          
+          if (!Object.values(passwordChecks).every(Boolean)) {
             setError("Password does not meet requirements")
-          } else {
-            const result = await signUp.create({
-              emailAddress: formData.email,
-              password: formData.password,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-            })
+            return
+          }
 
-            if (result.status === 'missing_requirements') {
-              setSuccess("Verification code sent to your email!")
-              setTimeout(() => {
-                setMode("otp")
-                startOtpTimer()
-              }, 1500)
-            } else if (result.status === 'complete') {
-              setActiveSignUp({ session: result.createdSessionId })
-              setSuccess("Account created successfully!")
-              setTimeout(() => {
-                window.location.href = "/app"
-              }, 1500)
-            }
+          const signUpResult = await signUp.create({
+            emailAddress: formData.email,
+            password: formData.password,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+          })
+
+          if (signUpResult.status === 'missing_requirements') {
+            setSuccess("Verification code sent to your email!")
+            setTimeout(() => {
+              setMode("otp")
+              startOtpTimer()
+            }, 1500)
+          } else if (signUpResult.status === 'complete') {
+            setActiveSignUp({ session: signUpResult.createdSessionId })
+            setSuccess("Account created successfully!")
+            setTimeout(() => {
+              window.location.href = "/app"
+            }, 1500)
+          } else {
+            setError("Account creation failed. Please try again.")
           }
           break
 
@@ -181,12 +193,12 @@ export default function UnifiedAuthPage() {
           try {
             if (previousMode === "forgot" && signIn) {
               // Handle password reset OTP
-              const result = await signIn.attemptFirstFactor({
+              const resetResult = await signIn.attemptFirstFactor({
                 strategy: 'reset_password_email_code',
                 code: otpCode,
               })
               
-              if (result.status === 'needs_new_password') {
+              if (resetResult.status === 'needs_new_password') {
                 setSuccess("Code verified! Please set your new password.")
                 setTimeout(() => {
                   setMode("reset")
@@ -194,12 +206,12 @@ export default function UnifiedAuthPage() {
               }
             } else if (signUp && signUp.status === 'missing_requirements') {
               // Handle signup verification
-              const result = await signUp.attemptEmailAddressVerification({
+              const verifyResult = await signUp.attemptEmailAddressVerification({
                 code: otpCode,
               })
               
-              if (result.status === 'complete') {
-                setActiveSignUp({ session: result.createdSessionId })
+              if (verifyResult.status === 'complete') {
+                setActiveSignUp({ session: verifyResult.createdSessionId })
                 setSuccess("Email verified successfully!")
                 setTimeout(() => {
                   window.location.href = "/app"
@@ -605,7 +617,7 @@ export default function UnifiedAuthPage() {
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg disabled:opacity-50"
-                disabled={isLoading || (mode === "signup" && !Object.values(passwordChecks).every(Boolean))}
+                disabled={isLoading || (mode === "signup" && (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !Object.values(passwordChecks).every(Boolean)))}
               >
                 {isLoading ? (
                   <>
