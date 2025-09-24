@@ -179,34 +179,24 @@ export default function UnifiedAuthPage() {
             lastName: formData.lastName,
           })
 
-          if (signUpResult.status === 'missing_requirements') {
-            // COMPLETE BYPASS: Skip OTP entirely and go directly to app
-            console.log('Sign-up status:', signUpResult.status)
-            console.log('COMPLETE BYPASS: Skipping OTP verification entirely')
-            
-            try {
-              // Complete bypass - no email verification needed
-              console.log('Bypassing email verification completely')
-              
-              // Force immediate redirect without waiting for session
-              console.log('FORCING IMMEDIATE REDIRECT TO PREVENT CLERK NATIVE REDIRECTS')
-              setSuccess("Account created successfully! Redirecting to app...")
-              
-              // Immediate redirect without setTimeout to prevent Clerk from interfering
-              console.log('Immediate redirect to /app')
-              window.location.href = "/app"
-              
-            } catch (emailError: unknown) {
-              console.error('Sign-up completion error:', emailError)
-              const error = emailError as { errors?: Array<{ message: string }> }
-              setError(error.errors?.[0]?.message || "Failed to create account. Please try again.")
-            }
-          } else if (signUpResult.status === 'complete') {
+          if (signUpResult.status === 'complete') {
             setActiveSignUp({ session: signUpResult.createdSessionId })
             setSuccess("Account created successfully!")
             setTimeout(() => {
               window.location.href = "/app"
             }, 1500)
+          } else if (signUpResult.status === 'missing_requirements') {
+            // Proper OTP flow: prepare and move to OTP step
+            try {
+              await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+              setSuccess("Verification code sent to your email!")
+              setPreviousMode("signup")
+              setMode("otp")
+              startOtpTimer()
+            } catch (emailError: unknown) {
+              const error = emailError as { errors?: Array<{ message: string }> }
+              setError(error.errors?.[0]?.message || "Failed to send verification email. Please try again.")
+            }
           } else {
             setError(`Account creation failed. Status: ${signUpResult.status}. Please try again.`)
           }
@@ -597,23 +587,7 @@ export default function UnifiedAuthPage() {
                     )}
                   </div>
                   
-                  {/* Skip OTP Button (Temporary) */}
-                  <div className="pt-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full text-sm text-gray-600 hover:text-gray-700"
-                      onClick={() => {
-                        console.log('Skipping OTP verification - temporary bypass')
-                        setSuccess("Skipping verification... Redirecting to app...")
-                        setTimeout(() => {
-                          window.location.href = "/app"
-                        }, 1000)
-                      }}
-                    >
-                      Skip Verification (Temporary)
-                    </Button>
-                  </div>
+                  
                 </div>
               )}
 
