@@ -12,7 +12,7 @@ import {
   LockClosedIcon, 
   EyeOpenIcon, 
   EyeNoneIcon, 
-  ShieldIcon, 
+  LockClosedIcon as ShieldIcon, 
   ArrowRightIcon,
   CheckCircledIcon,
   ExclamationTriangleIcon,

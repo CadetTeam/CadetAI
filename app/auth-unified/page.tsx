@@ -12,8 +12,8 @@ import {
   LockClosedIcon, 
   EyeOpenIcon, 
   EyeNoneIcon, 
-  ShieldIcon, 
-  BuildingIcon, 
+  LockClosedIcon as ShieldIcon, 
+  HomeIcon as BuildingIcon, 
   PersonIcon,
   ArrowRightIcon,
   CheckCircledIcon,
@@ -21,7 +21,7 @@ import {
   UpdateIcon,
   ArrowLeftIcon,
   CheckIcon,
-  KeyIcon,
+  LockClosedIcon as KeyIcon,
   ClockIcon,
   ReloadIcon
 } from "@radix-ui/react-icons"
@@ -283,7 +283,7 @@ export default function UnifiedAuthPage() {
             {/* Error/Success Messages */}
             {error && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
+                <ExclamationTriangleIcon className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
