@@ -20,7 +20,8 @@ export function ConditionalClerkProvider({ children }: ConditionalClerkProviderP
       publishableKey={publishableKey}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
-      fallbackRedirectUrl="/app"
+      signInFallbackRedirectUrl="/app"
+      signUpFallbackRedirectUrl="/app"
       appearance={{
         baseTheme: undefined,
         elements: {
