@@ -102,6 +102,7 @@ export default function UnifiedAuthPage() {
     e.preventDefault()
     if (!isLoaded) return
     
+    console.log('Form submitted, mode:', mode)
     setIsLoading(true)
     setError("")
     setSuccess("")
@@ -129,7 +130,18 @@ export default function UnifiedAuthPage() {
           break
 
         case "signup":
-          if (!signUp) return
+          console.log('Sign-up case triggered')
+          if (!signUp) {
+            console.log('No signUp object available')
+            return
+          }
+          
+          console.log('Sign-up form data:', { 
+            firstName: formData.firstName, 
+            lastName: formData.lastName, 
+            email: formData.email,
+            hasPassword: !!formData.password 
+          })
           
           // Validate required fields
           if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
@@ -205,7 +217,15 @@ export default function UnifiedAuthPage() {
           break
 
         case "otp":
-          if (!signIn && !signUp) return
+          console.log('OTP case triggered')
+          console.log('Available objects:', { hasSignIn: !!signIn, hasSignUp: !!signUp })
+          console.log('Previous mode:', previousMode)
+          console.log('OTP code:', otpCode)
+          
+          if (!signIn && !signUp) {
+            console.log('No signIn or signUp objects available')
+            return
+          }
           
           try {
             if (previousMode === "forgot" && signIn) {
