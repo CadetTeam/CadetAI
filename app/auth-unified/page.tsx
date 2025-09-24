@@ -304,6 +304,18 @@ export default function UnifiedAuthPage() {
                       setTimeout(() => { window.location.href = "/app" }, 800)
                       return
                     }
+                    // Fallback: if server says verified but we don't have a session, sign the user in
+                    if (signIn) {
+                      try {
+                        const signin = await signIn.create({ identifier: formData.email, password: formData.password })
+                        if (signin.status === 'complete') {
+                          await setActive({ session: signin.createdSessionId })
+                          setSuccess("Email verified! Redirecting to app...")
+                          setTimeout(() => { window.location.href = "/app" }, 800)
+                          return
+                        }
+                      } catch {}
+                    }
                   }
                   throw attemptErr
                 }
