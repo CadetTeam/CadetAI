@@ -15,6 +15,11 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Prevent redirects to Clerk hosted pages
+  if (req.url.includes('accounts.cadetai.com')) {
+    return Response.redirect(new URL('/auth-unified', req.url));
+  }
+  
   if (isProtectedRoute(req) && !isPublicRoute(req)) {
     await auth.protect();
   }

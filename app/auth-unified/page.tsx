@@ -175,19 +175,13 @@ export default function UnifiedAuthPage() {
               // Complete bypass - no email verification needed
               console.log('Bypassing email verification completely')
               
-              // Try to set the active session immediately to prevent Clerk redirects
-              if (signUpResult.createdSessionId) {
-                console.log('Setting active session immediately:', signUpResult.createdSessionId)
-                await setActiveSignUp({ session: signUpResult.createdSessionId })
-              }
-              
+              // Force immediate redirect without waiting for session
+              console.log('FORCING IMMEDIATE REDIRECT TO PREVENT CLERK NATIVE REDIRECTS')
               setSuccess("Account created successfully! Redirecting to app...")
               
-              // Use window.location.replace to prevent back button issues
-              setTimeout(() => {
-                console.log('Redirecting to /app')
-                window.location.replace("/app")
-              }, 1000)
+              // Immediate redirect without setTimeout to prevent Clerk from interfering
+              console.log('Immediate redirect to /app')
+              window.location.href = "/app"
               
             } catch (emailError: unknown) {
               console.error('Sign-up completion error:', emailError)
