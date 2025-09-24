@@ -30,17 +30,17 @@ export function ConditionalClerkProvider({ children }: ConditionalClerkProviderP
           logoImage: "hidden",
           headerTitle: "hidden",
           headerSubtitle: "hidden",
+          footer: "hidden",
+          footerAction: "hidden",
+          footerActionText: "hidden",
+          footerActionLink: "hidden",
+          // Style remaining elements
           socialButtonsBlockButton: "border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800",
           formButtonPrimary: "bg-gray-700 hover:bg-gray-800 text-white",
           card: "bg-transparent shadow-none border-none",
           formFieldInput: "border-gray-300 focus:border-gray-500 dark:border-gray-600 dark:focus:border-gray-400",
-          footerActionLink: "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
           identityPreviewText: "text-gray-600 dark:text-gray-300",
-          formFieldLabel: "text-gray-700 dark:text-gray-300",
-          footer: "hidden",
-          footerAction: "hidden",
-          footerActionText: "hidden",
-          footerActionLink: "hidden"
+          formFieldLabel: "text-gray-700 dark:text-gray-300"
         },
         variables: {
           colorPrimary: "#374151", // gray-700
