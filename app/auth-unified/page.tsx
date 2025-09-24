@@ -167,40 +167,19 @@ export default function UnifiedAuthPage() {
           })
 
           if (signUpResult.status === 'missing_requirements') {
-            // TEMPORARY BYPASS: Skip OTP and go directly to app
+            // COMPLETE BYPASS: Skip OTP entirely and go directly to app
             console.log('Sign-up status:', signUpResult.status)
-            console.log('TEMPORARY BYPASS: Skipping OTP verification')
+            console.log('COMPLETE BYPASS: Skipping OTP verification entirely')
             
             try {
-              // Try to complete the sign-up without email verification
-              console.log('Attempting to complete sign-up without email verification')
+              // Complete bypass - no email verification needed
+              console.log('Bypassing email verification completely')
               
-              // For now, just redirect to app - this is a temporary bypass
-              setSuccess("Account created! Redirecting to app...")
+              setSuccess("Account created successfully! Redirecting to app...")
               setTimeout(() => {
                 window.location.href = "/app"
               }, 1500)
               
-              // Original OTP flow (commented out for now)
-              /*
-              console.log('Missing requirements:', signUpResult.unverifiedFields)
-              console.log('Preparing email verification...')
-              
-              // Prepare email verification to trigger OTP email
-              const prepareResult = await signUp.prepareEmailAddressVerification({
-                strategy: 'email_code',
-              })
-              
-              console.log('Email verification prepared:', prepareResult)
-              console.log('Sign-up after preparation:', signUp.status)
-              
-              setSuccess("Verification code sent to your email!")
-              setPreviousMode("signup")
-              setTimeout(() => {
-                setMode("otp")
-                startOtpTimer()
-              }, 1500)
-              */
             } catch (emailError: unknown) {
               console.error('Sign-up completion error:', emailError)
               const error = emailError as { errors?: Array<{ message: string }> }
