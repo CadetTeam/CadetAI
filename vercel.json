@@ -1,19 +1,7 @@
 {
   "version": 2,
-  "name": "cadetai-platform",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "env": {
     "NEXT_PUBLIC_APP_ENV": "production"
-  },
-  "functions": {
-    "app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
   },
   "headers": [
     {
@@ -32,13 +20,6 @@
           "value": "1; mode=block"
         }
       ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/app",
-      "permanent": false
     }
   ]
 }

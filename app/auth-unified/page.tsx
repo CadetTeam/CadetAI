@@ -343,17 +343,6 @@ export default function UnifiedAuthPage() {
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* Demo Credentials for Sign In */}
-            {mode === "signin" && (
-              <Alert className="border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/20">
-                <ExclamationTriangleIcon className="h-4 w-4 text-gray-600" />
-                <AlertDescription className="text-gray-800 dark:text-gray-200">
-                  <strong>Demo Credentials:</strong><br />
-                  Email: demo@cadetai.com<br />
-                  Password: demo123
-                </AlertDescription>
-              </Alert>
-            )}
 
             {/* Error/Success Messages */}
             {error && (
@@ -422,7 +411,7 @@ export default function UnifiedAuthPage() {
                       id="email"
                       name="email"
                       type="email"
-                      placeholder={mode === "signin" ? "demo@cadetai.com" : "john.doe@agency.gov"}
+                      placeholder="john.doe@agency.gov"
                       value={formData.email}
                       onChange={handleInputChange}
                       className="pl-10"
