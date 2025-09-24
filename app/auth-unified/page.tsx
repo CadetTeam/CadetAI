@@ -280,9 +280,15 @@ export default function UnifiedAuthPage() {
               if (previousMode === "signup" || mode === "otp") {
                 console.log('Attempting email verification with code:', otpCode)
                 console.log('Current signUp status:', signUp.status)
-                
+
+                // Always refresh the server state before attempting verification
+                try { await signUp.reload?.() } catch {}
+
+                // Include captcha token on attempt
+                const attemptCaptcha = await getCaptchaTokenSafe('email_address_verification_attempt')
                 const verifyResult = await signUp.attemptEmailAddressVerification({
                   code: otpCode,
+                  ...(attemptCaptcha ? { captchaToken: attemptCaptcha } : {}),
                 })
                 
                 console.log('OTP Verification Result:', verifyResult.status)
@@ -324,9 +330,24 @@ export default function UnifiedAuthPage() {
                   } else {
                     // Try to complete the sign-up anyway
                     try {
-                      console.log('Attempting to complete sign-up despite missing requirements')
+                      console.log('Reloading signUp to see if verification already applied')
+                      try { await signUp.reload?.() } catch {}
+
+                      // If server already marked verified, status may now be complete
+                      if ((signUp as unknown as { status?: string }).status === 'complete') {
+                        const maybeSessionId = (signUp as unknown as { createdSessionId?: string }).createdSessionId
+                        if (maybeSessionId) {
+                          await setActiveSignUp({ session: maybeSessionId })
+                          setSuccess("Email verified successfully! Redirecting to app...")
+                          setTimeout(() => { window.location.href = "/app" }, 800)
+                          return
+                        }
+                      }
+
+                      const attemptCaptcha2 = await getCaptchaTokenSafe('email_address_verification_attempt')
                       const completeResult = await signUp.attemptEmailAddressVerification({
                         code: otpCode,
+                        ...(attemptCaptcha2 ? { captchaToken: attemptCaptcha2 } : {}),
                       })
                       
                       if (completeResult.status === 'complete') {
