@@ -33,7 +33,7 @@ type AuthMode = "signin" | "signup" | "forgot" | "otp" | "reset"
 export default function UnifiedAuthPage() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const { signUp, setActive: setActiveSignUp } = useSignUp()
-  const { clerk } = useClerk()
+  const { client } = useClerk()
   
   const [mode, setMode] = useState<AuthMode>("signin")
   const [previousMode, setPreviousMode] = useState<AuthMode>("signin")
@@ -176,7 +176,7 @@ export default function UnifiedAuthPage() {
           // Create CAPTCHA token if bot protection is enabled
           let captchaToken: string | undefined
           try {
-            captchaToken = await clerk?.captcha?.createToken()
+            captchaToken = await client?.captcha?.createToken()
           } catch {
             captchaToken = undefined
           }
@@ -202,7 +202,7 @@ export default function UnifiedAuthPage() {
               // Refresh CAPTCHA token for the verification step as well
               let verificationCaptchaToken: string | undefined
               try {
-                verificationCaptchaToken = await clerk?.captcha?.createToken()
+                verificationCaptchaToken = await client?.captcha?.createToken()
               } catch {
                 verificationCaptchaToken = undefined
               }
