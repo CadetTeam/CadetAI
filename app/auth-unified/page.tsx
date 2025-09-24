@@ -155,11 +155,21 @@ export default function UnifiedAuthPage() {
           })
 
           if (signUpResult.status === 'missing_requirements') {
-            setSuccess("Verification code sent to your email!")
-            setTimeout(() => {
-              setMode("otp")
-              startOtpTimer()
-            }, 1500)
+            try {
+              // Prepare email verification to trigger OTP email
+              await signUp.prepareEmailAddressVerification({
+                strategy: 'email_code',
+              })
+              
+              setSuccess("Verification code sent to your email!")
+              setTimeout(() => {
+                setMode("otp")
+                startOtpTimer()
+              }, 1500)
+            } catch (emailError: unknown) {
+              const error = emailError as { errors?: Array<{ message: string }> }
+              setError(error.errors?.[0]?.message || "Failed to send verification email. Please try again.")
+            }
           } else if (signUpResult.status === 'complete') {
             setActiveSignUp({ session: signUpResult.createdSessionId })
             setSuccess("Account created successfully!")
@@ -167,7 +177,7 @@ export default function UnifiedAuthPage() {
               window.location.href = "/app"
             }, 1500)
           } else {
-            setError("Account creation failed. Please try again.")
+            setError(`Account creation failed. Status: ${signUpResult.status}. Please try again.`)
           }
           break
 
