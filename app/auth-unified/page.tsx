@@ -38,16 +38,20 @@ export default function UnifiedAuthPage() {
   // Best-effort helper to get a bot-protection token without breaking types
   const getCaptchaTokenSafe = async (action: string): Promise<string | undefined> => {
     try {
-      const anyClient = client as unknown as { captcha?: { createToken: (opts?: { action?: string }) => Promise<string> } }
+      type CaptchaClient = { captcha?: { createToken: (opts?: { action?: string }) => Promise<string> } }
+      const anyClient = client as unknown as CaptchaClient
       if (anyClient?.captcha?.createToken) {
         return await anyClient.captcha.createToken({ action })
       }
       // Try window.Clerk for older runtimes
-      const w = typeof window !== 'undefined' ? (window as any) : undefined
-      if (w?.Clerk?.client?.captcha?.createToken) {
-        return await w.Clerk.client.captcha.createToken({ action })
+      if (typeof window !== 'undefined') {
+        const wClerk = (window as unknown as { Clerk?: CaptchaClient & { client?: CaptchaClient } }).Clerk
+        const fallbackClient = wClerk?.client ?? (wClerk as CaptchaClient | undefined)
+        if (fallbackClient?.captcha?.createToken) {
+          return await fallbackClient.captcha.createToken({ action })
+        }
       }
-    } catch (_) {
+    } catch {
       // ignore and fall through
     }
     return undefined
