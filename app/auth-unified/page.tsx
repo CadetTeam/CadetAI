@@ -446,6 +446,19 @@ export default function UnifiedAuthPage() {
         setSuccess("New verification code sent!")
       } catch (err: unknown) {
         const error = err as { errors?: Array<{ message: string }> }
+        const msg = error.errors?.[0]?.message?.toLowerCase() || ""
+        // If backend says already verified, proceed by signing the user in
+        if (msg.includes('already been verified') && signIn) {
+          try {
+            const signin = await signIn.create({ identifier: formData.email, password: formData.password })
+            if (signin.status === 'complete') {
+              await setActive({ session: signin.createdSessionId })
+              setSuccess("Email already verified. Redirecting to app...")
+              setTimeout(() => { window.location.href = "/app" }, 800)
+              return
+            }
+          } catch {}
+        }
         setError(error.errors?.[0]?.message || "Failed to resend code")
       }
     }
