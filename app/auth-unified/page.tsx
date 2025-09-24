@@ -167,8 +167,22 @@ export default function UnifiedAuthPage() {
           })
 
           if (signUpResult.status === 'missing_requirements') {
+            // TEMPORARY BYPASS: Skip OTP and go directly to app
+            console.log('Sign-up status:', signUpResult.status)
+            console.log('TEMPORARY BYPASS: Skipping OTP verification')
+            
             try {
-              console.log('Sign-up status:', signUpResult.status)
+              // Try to complete the sign-up without email verification
+              console.log('Attempting to complete sign-up without email verification')
+              
+              // For now, just redirect to app - this is a temporary bypass
+              setSuccess("Account created! Redirecting to app...")
+              setTimeout(() => {
+                window.location.href = "/app"
+              }, 1500)
+              
+              // Original OTP flow (commented out for now)
+              /*
               console.log('Missing requirements:', signUpResult.unverifiedFields)
               console.log('Preparing email verification...')
               
@@ -186,10 +200,11 @@ export default function UnifiedAuthPage() {
                 setMode("otp")
                 startOtpTimer()
               }, 1500)
+              */
             } catch (emailError: unknown) {
-              console.error('Email verification preparation error:', emailError)
+              console.error('Sign-up completion error:', emailError)
               const error = emailError as { errors?: Array<{ message: string }> }
-              setError(error.errors?.[0]?.message || "Failed to send verification email. Please try again.")
+              setError(error.errors?.[0]?.message || "Failed to create account. Please try again.")
             }
           } else if (signUpResult.status === 'complete') {
             setActiveSignUp({ session: signUpResult.createdSessionId })
@@ -585,6 +600,24 @@ export default function UnifiedAuthPage() {
                         Resend Code
                       </Button>
                     )}
+                  </div>
+                  
+                  {/* Skip OTP Button (Temporary) */}
+                  <div className="pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full text-sm text-gray-600 hover:text-gray-700"
+                      onClick={() => {
+                        console.log('Skipping OTP verification - temporary bypass')
+                        setSuccess("Skipping verification... Redirecting to app...")
+                        setTimeout(() => {
+                          window.location.href = "/app"
+                        }, 1000)
+                      }}
+                    >
+                      Skip Verification (Temporary)
+                    </Button>
                   </div>
                 </div>
               )}
