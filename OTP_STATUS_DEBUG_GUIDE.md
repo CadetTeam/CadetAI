@@ -47,9 +47,16 @@ if (verifyResult.status === 'complete') {
 
 #### **2. Expected Console Output:**
 ```
+Form submitted, mode: signup
+Sign-up case triggered
+Sign-up form data: { firstName: "John", lastName: "Doe", email: "john@example.com", hasPassword: true }
 Sign-up status: missing_requirements
 Preparing email verification...
 Email verification prepared: [object]
+OTP case triggered
+Available objects: { hasSignIn: false, hasSignUp: true }
+Previous mode: signup
+OTP code: 123456
 OTP Verification Result: missing_requirements
 ```
 
@@ -106,9 +113,9 @@ const verificationResult = await signUp.attemptEmailAddressVerification({
 
 | Environment | Status | URL |
 |-------------|--------|-----|
-| **Local** | ✅ **DEBUGGING** | http://localhost:3000/auth-unified |
-| **Development** | ✅ **DEBUGGING** | https://demo.cadetai.com |
-| **Production** | ✅ **DEBUGGING** | https://cadetai-platform-fac0igtmc-cadetais-projects-3161a154.vercel.app |
+| **Local** | ✅ **ENHANCED DEBUGGING** | http://localhost:3000/auth-unified |
+| **Development** | ✅ **ENHANCED DEBUGGING** | https://demo.cadetai.com |
+| **Production** | ✅ **ENHANCED DEBUGGING** | https://cadetai-platform-8tjutvo6j-cadetais-projects-3161a154.vercel.app |
 
 ### 🎯 **Next Steps:**
 

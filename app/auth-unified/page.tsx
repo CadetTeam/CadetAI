@@ -169,6 +169,7 @@ export default function UnifiedAuthPage() {
           if (signUpResult.status === 'missing_requirements') {
             try {
               console.log('Sign-up status:', signUpResult.status)
+              console.log('Missing requirements:', signUpResult.unverifiedFields)
               console.log('Preparing email verification...')
               
               // Prepare email verification to trigger OTP email
@@ -177,6 +178,7 @@ export default function UnifiedAuthPage() {
               })
               
               console.log('Email verification prepared:', prepareResult)
+              console.log('Sign-up after preparation:', signUp.status)
               
               setSuccess("Verification code sent to your email!")
               setPreviousMode("signup")
@@ -244,37 +246,71 @@ export default function UnifiedAuthPage() {
             } else if (signUp) {
               // Handle signup verification - check if we're in OTP mode from signup
               if (previousMode === "signup" || mode === "otp") {
+                console.log('Attempting email verification with code:', otpCode)
+                console.log('Current signUp status:', signUp.status)
+                
                 const verifyResult = await signUp.attemptEmailAddressVerification({
                   code: otpCode,
                 })
                 
                 console.log('OTP Verification Result:', verifyResult.status)
+                console.log('Full verification result:', verifyResult)
                 
                 if (verifyResult.status === 'complete') {
                   try {
+                    console.log('Setting active sign-up with session:', verifyResult.createdSessionId)
                     await setActiveSignUp({ session: verifyResult.createdSessionId })
                     setSuccess("Email verified successfully! Redirecting to app...")
                     
                     // Try multiple redirect methods to ensure it works
                     setTimeout(() => {
-                      // Method 1: Direct window.location
+                      console.log('Redirecting to /app')
                       window.location.href = "/app"
                     }, 1000)
                     
                     // Method 2: Fallback with router if available
                     setTimeout(() => {
                       if (typeof window !== 'undefined') {
+                        console.log('Fallback redirect to /app')
                         window.location.replace("/app")
                       }
                     }, 2000)
                     
                   } catch (activeError: unknown) {
+                    console.error('Error setting active sign-up:', activeError)
                     const error = activeError as { errors?: Array<{ message: string }> }
                     setError(error.errors?.[0]?.message || "Failed to activate session. Please try again.")
                   }
                 } else if (verifyResult.status === 'missing_requirements') {
-                  // If still missing requirements, the sign-up might need additional steps
-                  setError("Verification incomplete. Please try again or contact support.")
+                  // If still missing requirements, try to complete the sign-up
+                  console.log('Still missing requirements, checking what\'s needed')
+                  console.log('Sign-up missing requirements:', verifyResult.unverifiedFields)
+                  
+                  // Check if we need to complete the sign-up
+                  if (verifyResult.unverifiedFields && verifyResult.unverifiedFields.length > 0) {
+                    setError(`Additional verification required: ${verifyResult.unverifiedFields.join(', ')}`)
+                  } else {
+                    // Try to complete the sign-up anyway
+                    try {
+                      console.log('Attempting to complete sign-up despite missing requirements')
+                      const completeResult = await signUp.attemptEmailAddressVerification({
+                        code: otpCode,
+                      })
+                      
+                      if (completeResult.status === 'complete') {
+                        await setActiveSignUp({ session: completeResult.createdSessionId })
+                        setSuccess("Email verified successfully! Redirecting to app...")
+                        setTimeout(() => {
+                          window.location.href = "/app"
+                        }, 1000)
+                      } else {
+                        setError("Verification incomplete. Please try again or contact support.")
+                      }
+                    } catch (completeError: unknown) {
+                      console.error('Error completing sign-up:', completeError)
+                      setError("Verification failed. Please try again.")
+                    }
+                  }
                 } else {
                   setError(`Verification failed. Status: ${verifyResult.status}. Please check your code and try again.`)
                 }
