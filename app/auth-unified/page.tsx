@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useSignIn, useSignUp, useCaptcha } from "@clerk/nextjs"
+import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,7 +33,25 @@ type AuthMode = "signin" | "signup" | "forgot" | "otp" | "reset"
 export default function UnifiedAuthPage() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const { signUp, setActive: setActiveSignUp } = useSignUp()
-  const { isLoaded: isCaptchaReady, getToken } = useCaptcha()
+  const { client } = useClerk()
+
+  // Best-effort helper to get a bot-protection token without breaking types
+  const getCaptchaTokenSafe = async (action: string): Promise<string | undefined> => {
+    try {
+      const anyClient = client as unknown as { captcha?: { createToken: (opts?: { action?: string }) => Promise<string> } }
+      if (anyClient?.captcha?.createToken) {
+        return await anyClient.captcha.createToken({ action })
+      }
+      // Try window.Clerk for older runtimes
+      const w = typeof window !== 'undefined' ? (window as any) : undefined
+      if (w?.Clerk?.client?.captcha?.createToken) {
+        return await w.Clerk.client.captcha.createToken({ action })
+      }
+    } catch (_) {
+      // ignore and fall through
+    }
+    return undefined
+  }
   
   const [mode, setMode] = useState<AuthMode>("signin")
   const [previousMode, setPreviousMode] = useState<AuthMode>("signin")
@@ -174,12 +192,7 @@ export default function UnifiedAuthPage() {
           }
 
           // Create CAPTCHA token if bot protection is enabled
-          let captchaToken: string | undefined
-          try {
-            captchaToken = isCaptchaReady ? await getToken({ action: 'sign_up' }) : undefined
-          } catch {
-            captchaToken = undefined
-          }
+          const captchaToken = await getCaptchaTokenSafe('sign_up')
 
           const signUpResult = await signUp.create({
             emailAddress: formData.email,
@@ -199,14 +212,7 @@ export default function UnifiedAuthPage() {
           } else if (signUpResult.status === 'missing_requirements') {
             // Proper OTP flow: prepare and move to OTP step
             try {
-              // Create a captcha token specifically for the verification preparation
-              let verificationCaptchaToken: string | undefined
-              try {
-                verificationCaptchaToken = isCaptchaReady ? await getToken({ action: 'email_address_verification' }) : undefined
-              } catch {
-                verificationCaptchaToken = undefined
-              }
-
+              const verificationCaptchaToken = await getCaptchaTokenSafe('email_address_verification')
               await signUp.prepareEmailAddressVerification({
                 strategy: 'email_code',
                 ...(verificationCaptchaToken ? { captchaToken: verificationCaptchaToken } : {}),
@@ -375,12 +381,7 @@ export default function UnifiedAuthPage() {
           })
         } else if (signUp && signUp.status === 'missing_requirements') {
           // Include captcha token on resend as well
-          let resendCaptchaToken: string | undefined
-          try {
-            resendCaptchaToken = isCaptchaReady ? await getToken({ action: 'email_address_verification_resend' }) : undefined
-          } catch {
-            resendCaptchaToken = undefined
-          }
+          const resendCaptchaToken = await getCaptchaTokenSafe('email_address_verification_resend')
 
           await signUp.prepareEmailAddressVerification({
             strategy: 'email_code',
