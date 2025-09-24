@@ -17,7 +17,7 @@ CREATE TYPE audit_action AS ENUM ('create', 'read', 'update', 'delete', 'share',
 
 -- User profiles (extends Clerk auth)
 CREATE TABLE public.user_profiles (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     clerk_user_id TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     first_name TEXT NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE public.user_profiles (
 
 -- User sessions for audit trail
 CREATE TABLE public.user_sessions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     session_token TEXT NOT NULL,
     ip_address INET,
@@ -51,7 +51,7 @@ CREATE TABLE public.user_sessions (
 
 -- Organizations
 CREATE TABLE public.organizations (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     code TEXT UNIQUE NOT NULL,
     description TEXT,
@@ -66,7 +66,7 @@ CREATE TABLE public.organizations (
 
 -- Teams within organizations
 CREATE TABLE public.teams (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     description TEXT,
@@ -78,7 +78,7 @@ CREATE TABLE public.teams (
 
 -- Team memberships
 CREATE TABLE public.team_members (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     team_id UUID REFERENCES public.teams(id) ON DELETE CASCADE,
     user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     role user_role DEFAULT 'viewer',
@@ -92,7 +92,7 @@ CREATE TABLE public.team_members (
 
 -- APD Templates
 CREATE TABLE public.apd_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     description TEXT,
     template_type TEXT NOT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE public.apd_templates (
 
 -- APD Documents
 CREATE TABLE public.apd_documents (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     description TEXT,
     template_id UUID REFERENCES public.apd_templates(id),
@@ -131,7 +131,7 @@ CREATE TABLE public.apd_documents (
 
 -- APD Document versions (for version control)
 CREATE TABLE public.apd_versions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     version_number TEXT NOT NULL,
     content JSONB NOT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE public.apd_versions (
 
 -- Document sharing
 CREATE TABLE public.document_shares (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     shared_with_user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     shared_with_team_id UUID REFERENCES public.teams(id) ON DELETE CASCADE,
@@ -160,7 +160,7 @@ CREATE TABLE public.document_shares (
 
 -- Comments on documents
 CREATE TABLE public.document_comments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     parent_comment_id UUID REFERENCES public.document_comments(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE public.document_comments (
 
 -- Collaboration requests
 CREATE TABLE public.collaboration_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     requester_id UUID REFERENCES public.user_profiles(id) NOT NULL,
     requested_user_id UUID REFERENCES public.user_profiles(id),
@@ -191,7 +191,7 @@ CREATE TABLE public.collaboration_requests (
 
 -- Workflow definitions
 CREATE TABLE public.workflows (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     description TEXT,
     steps JSONB NOT NULL,
@@ -204,7 +204,7 @@ CREATE TABLE public.workflows (
 
 -- Workflow instances
 CREATE TABLE public.workflow_instances (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     workflow_id UUID REFERENCES public.workflows(id) NOT NULL,
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     current_step INTEGER DEFAULT 0,
@@ -216,7 +216,7 @@ CREATE TABLE public.workflow_instances (
 
 -- Workflow step executions
 CREATE TABLE public.workflow_executions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     instance_id UUID REFERENCES public.workflow_instances(id) ON DELETE CASCADE,
     step_number INTEGER NOT NULL,
     assigned_to UUID REFERENCES public.user_profiles(id),
@@ -232,7 +232,7 @@ CREATE TABLE public.workflow_executions (
 
 -- Audit log for compliance tracking
 CREATE TABLE public.audit_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     table_name TEXT NOT NULL,
     record_id UUID NOT NULL,
     action audit_action NOT NULL,
@@ -247,7 +247,7 @@ CREATE TABLE public.audit_logs (
 
 -- Compliance requirements
 CREATE TABLE public.compliance_requirements (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     description TEXT,
     regulation_type TEXT NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE public.compliance_requirements (
 
 -- Document compliance tracking
 CREATE TABLE public.document_compliance (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     requirement_id UUID REFERENCES public.compliance_requirements(id),
     is_compliant BOOLEAN DEFAULT false,
@@ -277,7 +277,7 @@ CREATE TABLE public.document_compliance (
 
 -- File attachments
 CREATE TABLE public.document_attachments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     file_name TEXT NOT NULL,
     file_path TEXT NOT NULL,
@@ -295,7 +295,7 @@ CREATE TABLE public.document_attachments (
 
 -- Notification templates
 CREATE TABLE public.notification_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     subject TEXT NOT NULL,
     body TEXT NOT NULL,
@@ -306,7 +306,7 @@ CREATE TABLE public.notification_templates (
 
 -- User notifications
 CREATE TABLE public.user_notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     message TEXT NOT NULL,
@@ -324,7 +324,7 @@ CREATE TABLE public.user_notifications (
 
 -- System settings
 CREATE TABLE public.system_settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     key TEXT UNIQUE NOT NULL,
     value JSONB NOT NULL,
     description TEXT,
@@ -335,7 +335,7 @@ CREATE TABLE public.system_settings (
 
 -- API keys for integrations
 CREATE TABLE public.api_keys (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     key_hash TEXT NOT NULL,
     permissions JSONB NOT NULL,

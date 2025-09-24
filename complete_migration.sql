@@ -17,7 +17,7 @@ CREATE TYPE audit_action AS ENUM ('create', 'read', 'update', 'delete', 'share',
 
 -- User profiles (extends Clerk auth)
 CREATE TABLE public.user_profiles (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     clerk_user_id TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     first_name TEXT NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE public.user_profiles (
 
 -- User sessions for audit trail
 CREATE TABLE public.user_sessions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     session_token TEXT NOT NULL,
     ip_address INET,
@@ -51,7 +51,7 @@ CREATE TABLE public.user_sessions (
 
 -- Organizations
 CREATE TABLE public.organizations (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     code TEXT UNIQUE NOT NULL,
     description TEXT,
@@ -66,7 +66,7 @@ CREATE TABLE public.organizations (
 
 -- Teams within organizations
 CREATE TABLE public.teams (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     description TEXT,
@@ -78,7 +78,7 @@ CREATE TABLE public.teams (
 
 -- Team memberships
 CREATE TABLE public.team_members (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     team_id UUID REFERENCES public.teams(id) ON DELETE CASCADE,
     user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     role user_role DEFAULT 'viewer',
@@ -92,7 +92,7 @@ CREATE TABLE public.team_members (
 
 -- APD Templates
 CREATE TABLE public.apd_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     description TEXT,
     template_type TEXT NOT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE public.apd_templates (
 
 -- APD Documents
 CREATE TABLE public.apd_documents (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     description TEXT,
     template_id UUID REFERENCES public.apd_templates(id),
@@ -131,7 +131,7 @@ CREATE TABLE public.apd_documents (
 
 -- APD Document versions (for version control)
 CREATE TABLE public.apd_versions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     version_number TEXT NOT NULL,
     content JSONB NOT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE public.apd_versions (
 
 -- Document sharing
 CREATE TABLE public.document_shares (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     shared_with_user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     shared_with_team_id UUID REFERENCES public.teams(id) ON DELETE CASCADE,
@@ -160,7 +160,7 @@ CREATE TABLE public.document_shares (
 
 -- Comments on documents
 CREATE TABLE public.document_comments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     parent_comment_id UUID REFERENCES public.document_comments(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE public.document_comments (
 
 -- Collaboration requests
 CREATE TABLE public.collaboration_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     requester_id UUID REFERENCES public.user_profiles(id) NOT NULL,
     requested_user_id UUID REFERENCES public.user_profiles(id),
@@ -191,7 +191,7 @@ CREATE TABLE public.collaboration_requests (
 
 -- Workflow definitions
 CREATE TABLE public.workflows (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     description TEXT,
     steps JSONB NOT NULL,
@@ -204,7 +204,7 @@ CREATE TABLE public.workflows (
 
 -- Workflow instances
 CREATE TABLE public.workflow_instances (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     workflow_id UUID REFERENCES public.workflows(id) NOT NULL,
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     current_step INTEGER DEFAULT 0,
@@ -216,7 +216,7 @@ CREATE TABLE public.workflow_instances (
 
 -- Workflow step executions
 CREATE TABLE public.workflow_executions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     instance_id UUID REFERENCES public.workflow_instances(id) ON DELETE CASCADE,
     step_number INTEGER NOT NULL,
     assigned_to UUID REFERENCES public.user_profiles(id),
@@ -232,7 +232,7 @@ CREATE TABLE public.workflow_executions (
 
 -- Audit log for compliance tracking
 CREATE TABLE public.audit_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     table_name TEXT NOT NULL,
     record_id UUID NOT NULL,
     action audit_action NOT NULL,
@@ -247,7 +247,7 @@ CREATE TABLE public.audit_logs (
 
 -- Compliance requirements
 CREATE TABLE public.compliance_requirements (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     description TEXT,
     regulation_type TEXT NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE public.compliance_requirements (
 
 -- Document compliance tracking
 CREATE TABLE public.document_compliance (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     requirement_id UUID REFERENCES public.compliance_requirements(id),
     is_compliant BOOLEAN DEFAULT false,
@@ -277,7 +277,7 @@ CREATE TABLE public.document_compliance (
 
 -- File attachments
 CREATE TABLE public.document_attachments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID REFERENCES public.apd_documents(id) ON DELETE CASCADE,
     file_name TEXT NOT NULL,
     file_path TEXT NOT NULL,
@@ -295,7 +295,7 @@ CREATE TABLE public.document_attachments (
 
 -- Notification templates
 CREATE TABLE public.notification_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     subject TEXT NOT NULL,
     body TEXT NOT NULL,
@@ -306,7 +306,7 @@ CREATE TABLE public.notification_templates (
 
 -- User notifications
 CREATE TABLE public.user_notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES public.user_profiles(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     message TEXT NOT NULL,
@@ -324,7 +324,7 @@ CREATE TABLE public.user_notifications (
 
 -- System settings
 CREATE TABLE public.system_settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     key TEXT UNIQUE NOT NULL,
     value JSONB NOT NULL,
     description TEXT,
@@ -335,7 +335,7 @@ CREATE TABLE public.system_settings (
 
 -- API keys for integrations
 CREATE TABLE public.api_keys (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     key_hash TEXT NOT NULL,
     permissions JSONB NOT NULL,
@@ -649,53 +649,47 @@ CREATE POLICY "Document creators and admins can delete documents" ON public.apd_
     )
   );
 
--- Document shares table policies
-CREATE POLICY "Document participants can view shares" ON public.document_shares
+-- Document collaborators table policies
+CREATE POLICY "Document collaborators can view collaboration info" ON public.document_collaborators
   FOR SELECT USING (
-    shared_with_user_id = (
-      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
-    )
-    OR shared_by = (
-      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+    user_id = (
+      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
-      WHERE ad.id = document_shares.document_id
-      AND ad.created_by = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      WHERE ad.id = document_collaborators.document_id
+      AND ad.owner_id = (
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
       )
     )
     OR EXISTS (
-      SELECT 1 FROM public.team_members tm
-      WHERE tm.team_id = document_shares.shared_with_team_id
-      AND tm.user_id = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      SELECT 1 FROM public.apd_documents ad
+      JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
+      WHERE ad.id = document_collaborators.document_id
+      AND uo.user_id = (
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
       )
+      AND uo.role = 'admin'
     )
   );
 
-CREATE POLICY "Document creators can manage shares" ON public.document_shares
+CREATE POLICY "Document owners can manage collaborators" ON public.document_collaborators
   FOR ALL USING (
-    shared_by = (
-      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+    EXISTS (
+      SELECT 1 FROM public.apd_documents ad
+      WHERE ad.id = document_collaborators.document_id
+      AND ad.owner_id = (
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      )
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
-      WHERE ad.id = document_shares.document_id
-      AND ad.created_by = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
+      WHERE ad.id = document_collaborators.document_id
+      AND uo.user_id = (
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
       )
-    )
-    OR EXISTS (
-      SELECT 1 FROM public.team_members tm
-      JOIN public.teams t ON t.id = tm.team_id
-      WHERE t.organization_id = (
-        SELECT organization_id FROM public.apd_documents WHERE id = document_shares.document_id
-      )
-      AND tm.user_id = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
-      )
-      AND tm.role = 'admin'
+      AND uo.role = 'admin'
     )
   );
 
@@ -707,20 +701,20 @@ CREATE POLICY "Document participants can view comments" ON public.document_comme
       WHERE ad.id = document_comments.document_id
       AND (
         ad.owner_id = (
-          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
         )
         OR EXISTS (
           SELECT 1 FROM public.document_collaborators dc
           WHERE dc.document_id = ad.id
           AND dc.user_id = (
-            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
           )
         )
         OR EXISTS (
           SELECT 1 FROM public.user_organizations uo
           WHERE uo.organization_id = ad.organization_id
           AND uo.user_id = (
-            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
           )
         )
       )
@@ -730,27 +724,27 @@ CREATE POLICY "Document participants can view comments" ON public.document_comme
 CREATE POLICY "Document participants can create comments" ON public.document_comments
   FOR INSERT WITH CHECK (
     user_id = (
-      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
     )
     AND EXISTS (
       SELECT 1 FROM public.apd_documents ad
       WHERE ad.id = document_comments.document_id
       AND (
         ad.owner_id = (
-          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
         )
         OR EXISTS (
           SELECT 1 FROM public.document_collaborators dc
           WHERE dc.document_id = ad.id
           AND dc.user_id = (
-            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
           )
         )
         OR EXISTS (
           SELECT 1 FROM public.user_organizations uo
           WHERE uo.organization_id = ad.organization_id
           AND uo.user_id = (
-            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
           )
         )
       )
@@ -760,20 +754,20 @@ CREATE POLICY "Document participants can create comments" ON public.document_com
 CREATE POLICY "Comment authors can update their comments" ON public.document_comments
   FOR UPDATE USING (
     user_id = (
-      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
     )
   );
 
 CREATE POLICY "Comment authors can delete their comments" ON public.document_comments
   FOR DELETE USING (
     user_id = (
-      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
       WHERE ad.id = document_comments.document_id
       AND ad.owner_id = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
       )
     )
     OR EXISTS (
@@ -781,7 +775,7 @@ CREATE POLICY "Comment authors can delete their comments" ON public.document_com
       JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
       WHERE ad.id = document_comments.document_id
       AND uo.user_id = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
       )
       AND uo.role = 'admin'
     )
@@ -798,7 +792,7 @@ CREATE POLICY "APD attachments access" ON storage.objects
         SELECT 1 FROM public.apd_documents ad
         WHERE ad.id::text = (storage.foldername(name))[1]
         AND ad.owner_id = (
-          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
         )
       )
       -- Document collaborators can access attachments
@@ -807,7 +801,7 @@ CREATE POLICY "APD attachments access" ON storage.objects
         JOIN public.document_collaborators dc ON dc.document_id = ad.id
         WHERE ad.id::text = (storage.foldername(name))[1]
         AND dc.user_id = (
-          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
         )
       )
       -- Organization admins can access attachments
@@ -816,7 +810,7 @@ CREATE POLICY "APD attachments access" ON storage.objects
         JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
         WHERE ad.id::text = (storage.foldername(name))[1]
         AND uo.user_id = (
-          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
         )
         AND uo.role = 'admin'
       )
@@ -853,7 +847,7 @@ CREATE POLICY "Organization assets access" ON storage.objects
       SELECT 1 FROM public.user_organizations uo
       WHERE uo.organization_id::text = (storage.foldername(name))[1]
       AND uo.user_id = (
-        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
       )
       AND (
         uo.role = 'admin'
@@ -863,13 +857,13 @@ CREATE POLICY "Organization assets access" ON storage.objects
           AND ad.id::text = (storage.foldername(name))[2]
           AND (
             ad.owner_id = (
-              SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+              SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
             )
             OR EXISTS (
               SELECT 1 FROM public.document_collaborators dc
               WHERE dc.document_id = ad.id
               AND dc.user_id = (
-                SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+                SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
               )
             )
           )
@@ -879,12 +873,12 @@ CREATE POLICY "Organization assets access" ON storage.objects
   );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_user_profiles_clerk_user_id ON public.user_profiles(clerk_user_id);
-CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON public.team_members(user_id);
-CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON public.team_members(team_id);
-CREATE INDEX IF NOT EXISTS idx_apd_documents_created_by ON public.apd_documents(created_by);
-CREATE INDEX IF NOT EXISTS idx_apd_documents_organization_id ON public.apd_documents(organization_id);
-CREATE INDEX IF NOT EXISTS idx_document_shares_document_id ON public.document_shares(document_id);
-CREATE INDEX IF NOT EXISTS idx_document_shares_user_id ON public.document_shares(shared_with_user_id);
-CREATE INDEX IF NOT EXISTS idx_document_comments_document_id ON public.document_comments(document_id);
-CREATE INDEX IF NOT EXISTS idx_document_comments_author_id ON public.document_comments(author_id);
+CREATE INDEX IF NOT EXISTS idx_users_clerk_id ON public.users(clerk_id);
+CREATE INDEX IF NOT EXISTS idx_user_organizations_user_id ON public.user_organizations(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_organizations_org_id ON public.user_organizations(organization_id);
+CREATE INDEX IF NOT EXISTS idx_apd_documents_owner_id ON public.apd_documents(owner_id);
+CREATE INDEX IF NOT EXISTS idx_apd_documents_org_id ON public.apd_documents(organization_id);
+CREATE INDEX IF NOT EXISTS idx_document_collaborators_doc_id ON public.document_collaborators(document_id);
+CREATE INDEX IF NOT EXISTS idx_document_collaborators_user_id ON public.document_collaborators(user_id);
+CREATE INDEX IF NOT EXISTS idx_document_comments_doc_id ON public.document_comments(document_id);
+CREATE INDEX IF NOT EXISTS idx_document_comments_user_id ON public.document_comments(user_id);

@@ -222,47 +222,53 @@ CREATE POLICY "Document creators and admins can delete documents" ON public.apd_
     )
   );
 
--- Document collaborators table policies
-CREATE POLICY "Document collaborators can view collaboration info" ON public.document_collaborators
+-- Document shares table policies
+CREATE POLICY "Document participants can view shares" ON public.document_shares
   FOR SELECT USING (
-    user_id = (
-      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+    shared_with_user_id = (
+      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+    )
+    OR shared_by = (
+      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
-      WHERE ad.id = document_collaborators.document_id
-      AND ad.owner_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      WHERE ad.id = document_shares.document_id
+      AND ad.created_by = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
       )
     )
     OR EXISTS (
-      SELECT 1 FROM public.apd_documents ad
-      JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
-      WHERE ad.id = document_collaborators.document_id
-      AND uo.user_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      SELECT 1 FROM public.team_members tm
+      WHERE tm.team_id = document_shares.shared_with_team_id
+      AND tm.user_id = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
       )
-      AND uo.role = 'admin'
     )
   );
 
-CREATE POLICY "Document owners can manage collaborators" ON public.document_collaborators
+CREATE POLICY "Document creators can manage shares" ON public.document_shares
   FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.apd_documents ad
-      WHERE ad.id = document_collaborators.document_id
-      AND ad.owner_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
-      )
+    shared_by = (
+      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
-      JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
-      WHERE ad.id = document_collaborators.document_id
-      AND uo.user_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      WHERE ad.id = document_shares.document_id
+      AND ad.created_by = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
       )
-      AND uo.role = 'admin'
+    )
+    OR EXISTS (
+      SELECT 1 FROM public.team_members tm
+      JOIN public.teams t ON t.id = tm.team_id
+      WHERE t.organization_id = (
+        SELECT organization_id FROM public.apd_documents WHERE id = document_shares.document_id
+      )
+      AND tm.user_id = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      )
+      AND tm.role = 'admin'
     )
   );
 
@@ -273,21 +279,23 @@ CREATE POLICY "Document participants can view comments" ON public.document_comme
       SELECT 1 FROM public.apd_documents ad
       WHERE ad.id = document_comments.document_id
       AND (
-        ad.owner_id = (
-          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+        ad.created_by = (
+          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
         )
         OR EXISTS (
-          SELECT 1 FROM public.document_collaborators dc
-          WHERE dc.document_id = ad.id
-          AND dc.user_id = (
-            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+          SELECT 1 FROM public.document_shares ds
+          WHERE ds.document_id = ad.id
+          AND ds.shared_with_user_id = (
+            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
           )
+          AND ds.is_active = true
         )
         OR EXISTS (
-          SELECT 1 FROM public.user_organizations uo
-          WHERE uo.organization_id = ad.organization_id
-          AND uo.user_id = (
-            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+          SELECT 1 FROM public.team_members tm
+          JOIN public.teams t ON t.id = tm.team_id
+          WHERE t.organization_id = ad.organization_id
+          AND tm.user_id = (
+            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
           )
         )
       )
@@ -296,28 +304,30 @@ CREATE POLICY "Document participants can view comments" ON public.document_comme
 
 CREATE POLICY "Document participants can create comments" ON public.document_comments
   FOR INSERT WITH CHECK (
-    user_id = (
-      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+    author_id = (
+      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
     )
     AND EXISTS (
       SELECT 1 FROM public.apd_documents ad
       WHERE ad.id = document_comments.document_id
       AND (
-        ad.owner_id = (
-          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+        ad.created_by = (
+          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
         )
         OR EXISTS (
-          SELECT 1 FROM public.document_collaborators dc
-          WHERE dc.document_id = ad.id
-          AND dc.user_id = (
-            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+          SELECT 1 FROM public.document_shares ds
+          WHERE ds.document_id = ad.id
+          AND ds.shared_with_user_id = (
+            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
           )
+          AND ds.is_active = true
         )
         OR EXISTS (
-          SELECT 1 FROM public.user_organizations uo
-          WHERE uo.organization_id = ad.organization_id
-          AND uo.user_id = (
-            SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+          SELECT 1 FROM public.team_members tm
+          JOIN public.teams t ON t.id = tm.team_id
+          WHERE t.organization_id = ad.organization_id
+          AND tm.user_id = (
+            SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
           )
         )
       )
@@ -326,31 +336,33 @@ CREATE POLICY "Document participants can create comments" ON public.document_com
 
 CREATE POLICY "Comment authors can update their comments" ON public.document_comments
   FOR UPDATE USING (
-    user_id = (
-      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+    author_id = (
+      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
     )
   );
 
 CREATE POLICY "Comment authors can delete their comments" ON public.document_comments
   FOR DELETE USING (
-    user_id = (
-      SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+    author_id = (
+      SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
       WHERE ad.id = document_comments.document_id
-      AND ad.owner_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      AND ad.created_by = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
       )
     )
     OR EXISTS (
       SELECT 1 FROM public.apd_documents ad
-      JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
-      WHERE ad.id = document_comments.document_id
-      AND uo.user_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      JOIN public.team_members tm ON tm.team_id IN (
+        SELECT id FROM public.teams WHERE organization_id = ad.organization_id
       )
-      AND uo.role = 'admin'
+      WHERE ad.id = document_comments.document_id
+      AND tm.user_id = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+      )
+      AND tm.role = 'admin'
     )
   );
 
@@ -364,28 +376,31 @@ CREATE POLICY "APD attachments access" ON storage.objects
       EXISTS (
         SELECT 1 FROM public.apd_documents ad
         WHERE ad.id::text = (storage.foldername(name))[1]
-        AND ad.owner_id = (
-          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+        AND ad.created_by = (
+          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
         )
       )
       -- Document collaborators can access attachments
       OR EXISTS (
         SELECT 1 FROM public.apd_documents ad
-        JOIN public.document_collaborators dc ON dc.document_id = ad.id
+        JOIN public.document_shares ds ON ds.document_id = ad.id
         WHERE ad.id::text = (storage.foldername(name))[1]
-        AND dc.user_id = (
-          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+        AND ds.shared_with_user_id = (
+          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
         )
+        AND ds.is_active = true
       )
       -- Organization admins can access attachments
       OR EXISTS (
         SELECT 1 FROM public.apd_documents ad
-        JOIN public.user_organizations uo ON uo.organization_id = ad.organization_id
-        WHERE ad.id::text = (storage.foldername(name))[1]
-        AND uo.user_id = (
-          SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+        JOIN public.team_members tm ON tm.team_id IN (
+          SELECT id FROM public.teams WHERE organization_id = ad.organization_id
         )
-        AND uo.role = 'admin'
+        WHERE ad.id::text = (storage.foldername(name))[1]
+        AND tm.user_id = (
+          SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
+        )
+        AND tm.role = 'admin'
       )
     )
   );
@@ -417,27 +432,29 @@ CREATE POLICY "Organization assets access" ON storage.objects
   FOR ALL USING (
     bucket_id = 'organization-assets'
     AND EXISTS (
-      SELECT 1 FROM public.user_organizations uo
-      WHERE uo.organization_id::text = (storage.foldername(name))[1]
-      AND uo.user_id = (
-        SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+      SELECT 1 FROM public.team_members tm
+      JOIN public.teams t ON t.id = tm.team_id
+      WHERE t.organization_id::text = (storage.foldername(name))[1]
+      AND tm.user_id = (
+        SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
       )
       AND (
-        uo.role = 'admin'
+        tm.role = 'admin'
         OR EXISTS (
           SELECT 1 FROM public.apd_documents ad
-          WHERE ad.organization_id = uo.organization_id
+          WHERE ad.organization_id = t.organization_id
           AND ad.id::text = (storage.foldername(name))[2]
           AND (
-            ad.owner_id = (
-              SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+            ad.created_by = (
+              SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
             )
             OR EXISTS (
-              SELECT 1 FROM public.document_collaborators dc
-              WHERE dc.document_id = ad.id
-              AND dc.user_id = (
-                SELECT id FROM public.users WHERE clerk_id = auth.uid()::text
+              SELECT 1 FROM public.document_shares ds
+              WHERE ds.document_id = ad.id
+              AND ds.shared_with_user_id = (
+                SELECT id FROM public.user_profiles WHERE clerk_user_id = auth.uid()::text
               )
+              AND ds.is_active = true
             )
           )
         )
@@ -446,12 +463,12 @@ CREATE POLICY "Organization assets access" ON storage.objects
   );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_clerk_id ON public.users(clerk_id);
-CREATE INDEX IF NOT EXISTS idx_user_organizations_user_id ON public.user_organizations(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_organizations_org_id ON public.user_organizations(organization_id);
-CREATE INDEX IF NOT EXISTS idx_apd_documents_owner_id ON public.apd_documents(owner_id);
-CREATE INDEX IF NOT EXISTS idx_apd_documents_org_id ON public.apd_documents(organization_id);
-CREATE INDEX IF NOT EXISTS idx_document_collaborators_doc_id ON public.document_collaborators(document_id);
-CREATE INDEX IF NOT EXISTS idx_document_collaborators_user_id ON public.document_collaborators(user_id);
-CREATE INDEX IF NOT EXISTS idx_document_comments_doc_id ON public.document_comments(document_id);
-CREATE INDEX IF NOT EXISTS idx_document_comments_user_id ON public.document_comments(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_clerk_user_id ON public.user_profiles(clerk_user_id);
+CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON public.team_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON public.team_members(team_id);
+CREATE INDEX IF NOT EXISTS idx_apd_documents_created_by ON public.apd_documents(created_by);
+CREATE INDEX IF NOT EXISTS idx_apd_documents_organization_id ON public.apd_documents(organization_id);
+CREATE INDEX IF NOT EXISTS idx_document_shares_document_id ON public.document_shares(document_id);
+CREATE INDEX IF NOT EXISTS idx_document_shares_user_id ON public.document_shares(shared_with_user_id);
+CREATE INDEX IF NOT EXISTS idx_document_comments_document_id ON public.document_comments(document_id);
+CREATE INDEX IF NOT EXISTS idx_document_comments_author_id ON public.document_comments(author_id);
