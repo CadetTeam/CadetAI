@@ -286,10 +286,27 @@ export default function UnifiedAuthPage() {
 
                 // Include captcha token on attempt
                 const attemptCaptcha = await getCaptchaTokenSafe('email_address_verification_attempt')
-                const verifyResult = await signUp.attemptEmailAddressVerification({
-                  code: otpCode,
-                  ...(attemptCaptcha ? { captchaToken: attemptCaptcha } : {}),
-                })
+                let verifyResult
+                try {
+                  verifyResult = await signUp.attemptEmailAddressVerification({
+                    code: otpCode,
+                    ...(attemptCaptcha ? { captchaToken: attemptCaptcha } : {}),
+                  })
+                } catch (attemptErr: unknown) {
+                  const msg = (attemptErr as { errors?: Array<{ message: string }> })?.errors?.[0]?.message || ""
+                  // If backend says already verified, just reload and activate
+                  if (msg.toLowerCase().includes('already been verified')) {
+                    try { await signUp.reload?.() } catch {}
+                    const sessionId = (signUp as unknown as { createdSessionId?: string }).createdSessionId
+                    if (sessionId) {
+                      await setActiveSignUp({ session: sessionId })
+                      setSuccess("Email verified! Redirecting to app...")
+                      setTimeout(() => { window.location.href = "/app" }, 800)
+                      return
+                    }
+                  }
+                  throw attemptErr
+                }
                 
                 console.log('OTP Verification Result:', verifyResult.status)
                 console.log('Full verification result:', verifyResult)
