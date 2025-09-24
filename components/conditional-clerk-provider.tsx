@@ -22,6 +22,7 @@ export function ConditionalClerkProvider({ children }: ConditionalClerkProviderP
       signUpUrl="/auth-unified"
       signInFallbackRedirectUrl="/app"
       signUpFallbackRedirectUrl="/app"
+      forceRedirectUrl="/app"
       appearance={{
         baseTheme: undefined,
         elements: {

@@ -107,6 +107,9 @@ export default function UnifiedAuthPage() {
     console.log('=== FORM SUBMISSION STARTED ===')
     console.log('Form submitted, mode:', mode)
     console.log('isLoaded:', isLoaded)
+    console.log('signUp available:', !!signUp)
+    console.log('signIn available:', !!signIn)
+    console.log('Current URL:', window.location.href)
     
     if (!isLoaded) {
       console.log('Clerk not loaded, returning')
