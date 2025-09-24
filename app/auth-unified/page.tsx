@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs"
+import { useSignIn, useSignUp, useCaptcha } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,7 +33,7 @@ type AuthMode = "signin" | "signup" | "forgot" | "otp" | "reset"
 export default function UnifiedAuthPage() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const { signUp, setActive: setActiveSignUp } = useSignUp()
-  const { client } = useClerk()
+  const { isLoaded: isCaptchaReady, getToken } = useCaptcha()
   
   const [mode, setMode] = useState<AuthMode>("signin")
   const [previousMode, setPreviousMode] = useState<AuthMode>("signin")
@@ -176,7 +176,7 @@ export default function UnifiedAuthPage() {
           // Create CAPTCHA token if bot protection is enabled
           let captchaToken: string | undefined
           try {
-            captchaToken = await client?.captcha?.createToken()
+            captchaToken = isCaptchaReady ? await getToken({ action: 'sign_up' }) : undefined
           } catch {
             captchaToken = undefined
           }
@@ -199,15 +199,15 @@ export default function UnifiedAuthPage() {
           } else if (signUpResult.status === 'missing_requirements') {
             // Proper OTP flow: prepare and move to OTP step
             try {
-              // Refresh CAPTCHA token for the verification step as well
+              // Create a captcha token specifically for the verification preparation
               let verificationCaptchaToken: string | undefined
               try {
-                verificationCaptchaToken = await client?.captcha?.createToken()
+                verificationCaptchaToken = isCaptchaReady ? await getToken({ action: 'email_address_verification' }) : undefined
               } catch {
                 verificationCaptchaToken = undefined
               }
 
-              await signUp.prepareEmailAddressVerification({ 
+              await signUp.prepareEmailAddressVerification({
                 strategy: 'email_code',
                 ...(verificationCaptchaToken ? { captchaToken: verificationCaptchaToken } : {}),
               })
@@ -374,8 +374,17 @@ export default function UnifiedAuthPage() {
             identifier: formData.email,
           })
         } else if (signUp && signUp.status === 'missing_requirements') {
+          // Include captcha token on resend as well
+          let resendCaptchaToken: string | undefined
+          try {
+            resendCaptchaToken = isCaptchaReady ? await getToken({ action: 'email_address_verification_resend' }) : undefined
+          } catch {
+            resendCaptchaToken = undefined
+          }
+
           await signUp.prepareEmailAddressVerification({
             strategy: 'email_code',
+            ...(resendCaptchaToken ? { captchaToken: resendCaptchaToken } : {}),
           })
         }
         startOtpTimer()
