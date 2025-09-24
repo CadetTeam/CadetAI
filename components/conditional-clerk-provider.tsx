@@ -16,7 +16,13 @@ export function ConditionalClerkProvider({ children }: ConditionalClerkProviderP
   }
 
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider 
+      publishableKey={publishableKey}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      afterSignInUrl="/app"
+      afterSignUpUrl="/app"
+    >
       {children}
     </ClerkProvider>
   )
