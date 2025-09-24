@@ -98,11 +98,21 @@ export default function UnifiedAuthPage() {
     }, 1000)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!isLoaded) return
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
     
+    console.log('=== FORM SUBMISSION STARTED ===')
     console.log('Form submitted, mode:', mode)
+    console.log('isLoaded:', isLoaded)
+    
+    if (!isLoaded) {
+      console.log('Clerk not loaded, returning')
+      return
+    }
+    
     setIsLoading(true)
     setError("")
     setSuccess("")
@@ -728,7 +738,8 @@ export default function UnifiedAuthPage() {
               )}
 
               <Button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
                 className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg disabled:opacity-50"
                 disabled={isLoading || (mode === "signup" && (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !Object.values(passwordChecks).every(Boolean)))}
               >
