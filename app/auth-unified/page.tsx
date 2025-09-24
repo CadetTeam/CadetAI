@@ -156,10 +156,15 @@ export default function UnifiedAuthPage() {
 
           if (signUpResult.status === 'missing_requirements') {
             try {
+              console.log('Sign-up status:', signUpResult.status)
+              console.log('Preparing email verification...')
+              
               // Prepare email verification to trigger OTP email
-              await signUp.prepareEmailAddressVerification({
+              const prepareResult = await signUp.prepareEmailAddressVerification({
                 strategy: 'email_code',
               })
+              
+              console.log('Email verification prepared:', prepareResult)
               
               setSuccess("Verification code sent to your email!")
               setPreviousMode("signup")
@@ -168,6 +173,7 @@ export default function UnifiedAuthPage() {
                 startOtpTimer()
               }, 1500)
             } catch (emailError: unknown) {
+              console.error('Email verification preparation error:', emailError)
               const error = emailError as { errors?: Array<{ message: string }> }
               setError(error.errors?.[0]?.message || "Failed to send verification email. Please try again.")
             }
@@ -222,6 +228,8 @@ export default function UnifiedAuthPage() {
                   code: otpCode,
                 })
                 
+                console.log('OTP Verification Result:', verifyResult.status)
+                
                 if (verifyResult.status === 'complete') {
                   try {
                     await setActiveSignUp({ session: verifyResult.createdSessionId })
@@ -244,6 +252,9 @@ export default function UnifiedAuthPage() {
                     const error = activeError as { errors?: Array<{ message: string }> }
                     setError(error.errors?.[0]?.message || "Failed to activate session. Please try again.")
                   }
+                } else if (verifyResult.status === 'missing_requirements') {
+                  // If still missing requirements, the sign-up might need additional steps
+                  setError("Verification incomplete. Please try again or contact support.")
                 } else {
                   setError(`Verification failed. Status: ${verifyResult.status}. Please check your code and try again.`)
                 }
