@@ -162,6 +162,7 @@ export default function UnifiedAuthPage() {
               })
               
               setSuccess("Verification code sent to your email!")
+              setPreviousMode("signup")
               setTimeout(() => {
                 setMode("otp")
                 startOtpTimer()
@@ -214,18 +215,38 @@ export default function UnifiedAuthPage() {
                   setMode("reset")
                 }, 1500)
               }
-            } else if (signUp && signUp.status === 'missing_requirements') {
-              // Handle signup verification
-              const verifyResult = await signUp.attemptEmailAddressVerification({
-                code: otpCode,
-              })
-              
-              if (verifyResult.status === 'complete') {
-                setActiveSignUp({ session: verifyResult.createdSessionId })
-                setSuccess("Email verified successfully!")
-                setTimeout(() => {
-                  window.location.href = "/app"
-                }, 1500)
+            } else if (signUp) {
+              // Handle signup verification - check if we're in OTP mode from signup
+              if (previousMode === "signup" || mode === "otp") {
+                const verifyResult = await signUp.attemptEmailAddressVerification({
+                  code: otpCode,
+                })
+                
+                if (verifyResult.status === 'complete') {
+                  try {
+                    await setActiveSignUp({ session: verifyResult.createdSessionId })
+                    setSuccess("Email verified successfully! Redirecting to app...")
+                    
+                    // Try multiple redirect methods to ensure it works
+                    setTimeout(() => {
+                      // Method 1: Direct window.location
+                      window.location.href = "/app"
+                    }, 1000)
+                    
+                    // Method 2: Fallback with router if available
+                    setTimeout(() => {
+                      if (typeof window !== 'undefined') {
+                        window.location.replace("/app")
+                      }
+                    }, 2000)
+                    
+                  } catch (activeError: unknown) {
+                    const error = activeError as { errors?: Array<{ message: string }> }
+                    setError(error.errors?.[0]?.message || "Failed to activate session. Please try again.")
+                  }
+                } else {
+                  setError(`Verification failed. Status: ${verifyResult.status}. Please check your code and try again.`)
+                }
               }
             }
           } catch (err: unknown) {
