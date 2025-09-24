@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSignIn, useSignUp } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -30,6 +31,9 @@ import { cn } from "@/lib/utils"
 type AuthMode = "signin" | "signup" | "forgot" | "otp" | "reset"
 
 export default function UnifiedAuthPage() {
+  const { signIn, setActive, isLoaded } = useSignIn()
+  const { signUp, setActive: setActiveSignUp } = useSignUp()
+  
   const [mode, setMode] = useState<AuthMode>("signin")
   const [previousMode, setPreviousMode] = useState<AuthMode>("signin")
   const [showPassword, setShowPassword] = useState(false)
@@ -96,39 +100,73 @@ export default function UnifiedAuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!isLoaded) return
+    
     setIsLoading(true)
     setError("")
+    setSuccess("")
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
-
       switch (mode) {
         case "signin":
-          if (formData.email === "demo@cadetai.com" && formData.password === "demo123") {
-            setSuccess("Welcome back! Redirecting to your workspace...")
+          if (!signIn) return
+          
+          // Try to sign in with email and password first
+          const result = await signIn.create({
+            identifier: formData.email,
+            password: formData.password,
+          })
+
+          if (result.status === 'complete') {
+            setActive({ session: result.createdSessionId })
+            setSuccess("Signed in successfully!")
             setTimeout(() => {
               window.location.href = "/app"
             }, 1500)
           } else {
-            setError("Invalid email or password. Try demo@cadetai.com / demo123")
+            setError("Sign in failed. Please check your credentials.")
           }
           break
 
         case "signup":
+          if (!signUp) return
+          
           if (formData.password !== formData.confirmPassword) {
             setError("Passwords do not match")
           } else if (!Object.values(passwordChecks).every(Boolean)) {
             setError("Password does not meet requirements")
           } else {
-            setSuccess("Account created successfully! Please verify your email.")
-            setTimeout(() => {
-              setMode("otp")
-              startOtpTimer()
-            }, 2000)
+            const result = await signUp.create({
+              emailAddress: formData.email,
+              password: formData.password,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+            })
+
+            if (result.status === 'missing_requirements') {
+              setSuccess("Verification code sent to your email!")
+              setTimeout(() => {
+                setMode("otp")
+                startOtpTimer()
+              }, 1500)
+            } else if (result.status === 'complete') {
+              setActiveSignUp({ session: result.createdSessionId })
+              setSuccess("Account created successfully!")
+              setTimeout(() => {
+                window.location.href = "/app"
+              }, 1500)
+            }
           }
           break
 
         case "forgot":
+          if (!signIn) return
+          
+          await signIn.create({
+            strategy: 'reset_password_email_code',
+            identifier: formData.email,
+          })
+          
           setSuccess("Password reset code sent to your email!")
           setPreviousMode("forgot")
           setTimeout(() => {
@@ -138,45 +176,82 @@ export default function UnifiedAuthPage() {
           break
 
         case "otp":
-          if (otpCode === "123456") {
-            setSuccess("Code verified successfully!")
-            setTimeout(() => {
-              if (previousMode === "forgot") {
-                setMode("reset")
-              } else {
-                window.location.href = "/app"
+          if (!signIn && !signUp) return
+          
+          try {
+            if (previousMode === "forgot" && signIn) {
+              // Handle password reset OTP
+              const result = await signIn.attemptFirstFactor({
+                strategy: 'reset_password_email_code',
+                code: otpCode,
+              })
+              
+              if (result.status === 'needs_new_password') {
+                setSuccess("Code verified! Please set your new password.")
+                setTimeout(() => {
+                  setMode("reset")
+                }, 1500)
               }
-            }, 1500)
-          } else {
-            setError("Invalid verification code. Try 123456")
+            } else if (signUp && signUp.status === 'missing_requirements') {
+              // Handle signup verification
+              const result = await signUp.attemptEmailAddressVerification({
+                code: otpCode,
+              })
+              
+              if (result.status === 'complete') {
+                setActiveSignUp({ session: result.createdSessionId })
+                setSuccess("Email verified successfully!")
+                setTimeout(() => {
+                  window.location.href = "/app"
+                }, 1500)
+              }
+            }
+          } catch (err: unknown) {
+            const error = err as { errors?: Array<{ message: string }> }
+            setError(error.errors?.[0]?.message || "Invalid verification code")
           }
           break
 
         case "reset":
-          if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match")
-          } else if (!Object.values(passwordChecks).every(Boolean)) {
-            setError("Password does not meet requirements")
-          } else {
-            setSuccess("Password reset successfully! Redirecting to sign in...")
-            setTimeout(() => {
-              setMode("signin")
-              setFormData(prev => ({ ...prev, password: "", confirmPassword: "" }))
-            }, 2000)
-          }
+          if (!signIn) return
+          
+          await signIn.resetPassword({
+            password: formData.password,
+          })
+          
+          setSuccess("Password reset successfully!")
+          setTimeout(() => {
+            setMode("signin")
+          }, 1500)
           break
       }
-    } catch {
-      setError("An error occurred. Please try again.")
+    } catch (err: unknown) {
+      const error = err as { errors?: Array<{ message: string }> }
+      setError(error.errors?.[0]?.message || "An error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const resendOtp = () => {
+  const resendOtp = async () => {
     if (otpTimer === 0) {
-      startOtpTimer()
-      setSuccess("New verification code sent!")
+      try {
+        if (previousMode === "forgot" && signIn) {
+          await signIn.create({
+            strategy: 'reset_password_email_code',
+            identifier: formData.email,
+          })
+        } else if (signUp && signUp.status === 'missing_requirements') {
+          await signUp.prepareEmailAddressVerification({
+            strategy: 'email_code',
+          })
+        }
+        startOtpTimer()
+        setSuccess("New verification code sent!")
+      } catch (err: unknown) {
+        const error = err as { errors?: Array<{ message: string }> }
+        setError(error.errors?.[0]?.message || "Failed to resend code")
+      }
     }
   }
 
@@ -385,7 +460,7 @@ export default function UnifiedAuthPage() {
                     <Input
                       id="otp"
                       type="text"
-                      placeholder="123456"
+                      placeholder="000000"
                       value={otpCode}
                       onChange={handleOtpChange}
                       className="pl-10 text-center text-2xl tracking-widest"
@@ -394,7 +469,7 @@ export default function UnifiedAuthPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Demo code: 123456</span>
+                    <span className="text-muted-foreground">Enter the 6-digit code from your email</span>
                     {otpTimer > 0 ? (
                       <span className="text-muted-foreground flex items-center">
                         <ClockIcon className="h-3 w-3 mr-1" />
