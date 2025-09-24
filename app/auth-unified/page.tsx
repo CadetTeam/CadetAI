@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useSignIn, useSignUp } from "@clerk/nextjs"
+import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,6 +33,7 @@ type AuthMode = "signin" | "signup" | "forgot" | "otp" | "reset"
 export default function UnifiedAuthPage() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const { signUp, setActive: setActiveSignUp } = useSignUp()
+  const { clerk } = useClerk()
   
   const [mode, setMode] = useState<AuthMode>("signin")
   const [previousMode, setPreviousMode] = useState<AuthMode>("signin")
@@ -172,11 +173,21 @@ export default function UnifiedAuthPage() {
             return
           }
 
+          // Create CAPTCHA token if bot protection is enabled
+          let captchaToken: string | undefined
+          try {
+            captchaToken = await clerk?.captcha?.createToken()
+          } catch {
+            captchaToken = undefined
+          }
+
           const signUpResult = await signUp.create({
             emailAddress: formData.email,
             password: formData.password,
             firstName: formData.firstName,
             lastName: formData.lastName,
+            // Pass CAPTCHA token when available to satisfy missing_requirements
+            ...(captchaToken ? { captchaToken } : {}),
           })
 
           if (signUpResult.status === 'complete') {
@@ -188,7 +199,18 @@ export default function UnifiedAuthPage() {
           } else if (signUpResult.status === 'missing_requirements') {
             // Proper OTP flow: prepare and move to OTP step
             try {
-              await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+              // Refresh CAPTCHA token for the verification step as well
+              let verificationCaptchaToken: string | undefined
+              try {
+                verificationCaptchaToken = await clerk?.captcha?.createToken()
+              } catch {
+                verificationCaptchaToken = undefined
+              }
+
+              await signUp.prepareEmailAddressVerification({ 
+                strategy: 'email_code',
+                ...(verificationCaptchaToken ? { captchaToken: verificationCaptchaToken } : {}),
+              })
               setSuccess("Verification code sent to your email!")
               setPreviousMode("signup")
               setMode("otp")
