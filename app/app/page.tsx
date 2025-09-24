@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { CardSlider } from "@/components/ui/card-slider"
-import { Eye, Users2 } from "lucide-react"
+import { EyeOpenIcon, PersonIcon } from "@radix-ui/react-icons"
 
 // Mock data for demonstration
 const recentAPDFiles = [
@@ -124,9 +124,9 @@ export default function AppDashboard() {
           title: file.title,
           description: file.description,
           stats: [
-            { label: "Views", value: file.views.toLocaleString(), icon: Eye },
+            { label: "Views", value: file.views.toLocaleString(), icon: EyeOpenIcon },
             { label: "Data Size", value: `${file.dataSize}MB` },
-            { label: "Online", value: file.online.toLocaleString(), icon: Users2 },
+            { label: "Online", value: file.online.toLocaleString(), icon: PersonIcon },
             { label: "Members", value: file.members.toLocaleString() }
           ],
           isActive: file.isActive,
@@ -143,7 +143,7 @@ export default function AppDashboard() {
           title: template.title,
           description: template.description,
           stats: [
-            { label: "Views", value: template.views.toLocaleString(), icon: Eye },
+            { label: "Views", value: template.views.toLocaleString(), icon: EyeOpenIcon },
             { label: "Clones", value: template.clones.toLocaleString() }
           ],
           isActive: template.isActive,
@@ -160,7 +160,7 @@ export default function AppDashboard() {
           title: project.title,
           description: project.description,
           stats: [
-            { label: "Views", value: project.views.toLocaleString(), icon: Eye },
+            { label: "Views", value: project.views.toLocaleString(), icon: EyeOpenIcon },
             { label: "Clones", value: project.clones.toLocaleString() }
           ],
           isActive: project.isActive,
