@@ -43,6 +43,20 @@ const apps: App[] = [
     href: "/app/security"
   },
   {
+    id: "wallet",
+    name: "Wallet",
+    lightIcon: "/app-icons/light-wallet.png",
+    darkIcon: "/app-icons/dark-wallet.png",
+    href: "/app/wallet"
+  },
+  {
+    id: "windows",
+    name: "Windows",
+    lightIcon: "/app-icons/light-windows.png",
+    darkIcon: "/app-icons/dark-windows.png",
+    href: "/app/windows"
+  },
+  {
     id: "files",
     name: "Files",
     lightIcon: "/app-icons/light-folder.png",
@@ -55,119 +69,6 @@ const apps: App[] = [
     lightIcon: "/app-icons/light-key.png",
     darkIcon: "/app-icons/dark-key.png",
     href: "/app/keys"
-  },
-  {
-    id: "add",
-    name: "Add New",
-    lightIcon: "/app-icons/light-add.png",
-    darkIcon: "/app-icons/dark-add.png",
-    href: "/app/add",
-    badge: "NEW"
-  },
-  {
-    id: "identity",
-    name: "Identity",
-    lightIcon: "/app-icons/light-fingerprint.png",
-    darkIcon: "/app-icons/dark-fingerprint.png",
-    href: "/app/identity"
-  },
-  {
-    id: "search",
-    name: "Search",
-    lightIcon: "/app-icons/light-search.png",
-    darkIcon: "/app-icons/dark-search.png",
-    href: "/app/search"
-  },
-  {
-    id: "create",
-    name: "Create",
-    lightIcon: "/app-icons/light-create.png",
-    darkIcon: "/app-icons/dark-create.png",
-    href: "/app/create"
-  },
-  {
-    id: "new-doc",
-    name: "New Doc",
-    lightIcon: "/app-icons/light-new-doc.png",
-    darkIcon: "/app-icons/dark-new-doc.png",
-    href: "/app/new-doc"
-  },
-  {
-    id: "pricing",
-    name: "Pricing",
-    lightIcon: "/app-icons/light-pricing.png",
-    darkIcon: "/app-icons/dark-pricing.png",
-    href: "/app/pricing"
-  },
-  {
-    id: "new-file",
-    name: "New File",
-    lightIcon: "/app-icons/light-new-file.png",
-    darkIcon: "/app-icons/dark-new-file.png",
-    href: "/app/new-file"
-  },
-  {
-    id: "wallet",
-    name: "Wallet",
-    lightIcon: "/app-icons/light-wallet.png",
-    darkIcon: "/app-icons/dark-wallet.png",
-    href: "/app/wallet"
-  },
-  {
-    id: "cards",
-    name: "Cards",
-    lightIcon: "/app-icons/light-cards.png",
-    darkIcon: "/app-icons/dark-cards.png",
-    href: "/app/cards"
-  },
-  {
-    id: "grid",
-    name: "Grid",
-    lightIcon: "/app-icons/light-grid.png",
-    darkIcon: "/app-icons/dark-grid.png",
-    href: "/app/grid"
-  },
-  {
-    id: "discount",
-    name: "Discount",
-    lightIcon: "/app-icons/light-discount.png",
-    darkIcon: "/app-icons/dark-discount.png",
-    href: "/app/discount"
-  },
-  {
-    id: "new-page",
-    name: "New Page",
-    lightIcon: "/app-icons/light-new-page.png",
-    darkIcon: "/app-icons/dark-new-page.png",
-    href: "/app/new-page"
-  },
-  {
-    id: "account",
-    name: "Account",
-    lightIcon: "/app-icons/light-account.png",
-    darkIcon: "/app-icons/dark-account.png",
-    href: "/app/account"
-  },
-  {
-    id: "storage",
-    name: "Storage",
-    lightIcon: "/app-icons/light-storage.png",
-    darkIcon: "/app-icons/dark-storage.png",
-    href: "/app/storage"
-  },
-  {
-    id: "search-doc",
-    name: "Search Doc",
-    lightIcon: "/app-icons/light-search-doc.png",
-    darkIcon: "/app-icons/dark-search-doc.png",
-    href: "/app/search-doc"
-  },
-  {
-    id: "modules",
-    name: "Modules",
-    lightIcon: "/app-icons/light-modules.png",
-    darkIcon: "/app-icons/dark-modules.png",
-    href: "/app/modules"
   }
 ]
 

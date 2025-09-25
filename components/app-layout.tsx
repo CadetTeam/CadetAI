@@ -40,8 +40,8 @@ export function AppLayout({ children }: AppLayoutProps) {
   // Show app layout for authenticated users
   return (
     <div className="flex h-screen bg-background">
-      {/* App Menu - Show on home page and non-APDGPT app pages */}
-      {(isHomePage || !isAPDGPTApp) && (
+      {/* App Menu - Only show on home page, positioned outside header */}
+      {isHomePage && (
         <div className="z-30">
           <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
         </div>
@@ -55,7 +55,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       )}
       
       {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col overflow-hidden ${(isHomePage || !isAPDGPTApp) ? 'ml-12' : ''} z-20`}>
+      <div className={`flex-1 flex flex-col overflow-hidden ${isHomePage ? 'ml-12' : ''} z-20`}>
         {/* Header */}
         <div className="z-30">
           <AppHeader />

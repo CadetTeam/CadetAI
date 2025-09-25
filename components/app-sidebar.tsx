@@ -19,8 +19,7 @@ import {
   CodeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  HamburgerMenuIcon,
-  ChatBubbleIcon
+  HamburgerMenuIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -30,7 +29,6 @@ import { Logo } from "@/components/Logo"
 const mainNavItems = [
   { href: "/app", label: "Home", icon: HomeIcon, shortcut: "⌘H" },
   { href: "/app/apd-gpt/engine", label: "APD Engine", icon: FileTextIcon, shortcut: "⌘B" },
-  { href: "/app/chat", label: "Chat", icon: ChatBubbleIcon, shortcut: "⌘C" },
   { href: "/app/apd-gpt/history", label: "History", icon: ClockIcon, shortcut: "⌘S" },
   { href: "/app/apd-gpt/performance", label: "Performance", icon: BarChartIcon, shortcut: "⌘K" },
 ]
@@ -67,8 +65,8 @@ export function AppSidebar() {
       }
     }
 
-    // Auto-collapse sidebar on History, APD Engine, and Chat pages
-    const shouldAutoCollapse = pathname.includes('/apd-gpt/history') || pathname.includes('/apd-gpt/engine') || pathname.includes('/app/chat')
+           // Auto-collapse sidebar on History and APD Engine pages
+           const shouldAutoCollapse = pathname.includes('/apd-gpt/history') || pathname.includes('/apd-gpt/engine')
     if (shouldAutoCollapse) {
       setIsCollapsed(true)
       setIsExpanded(false)
