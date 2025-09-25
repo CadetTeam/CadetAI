@@ -12,7 +12,6 @@ import {
   PersonIcon,
   PlusIcon
 } from "@radix-ui/react-icons"
-import { cn } from "@/lib/utils"
 
 export function FloatingChat() {
   const [isOpen, setIsOpen] = useState(false)
@@ -73,7 +72,7 @@ export function FloatingChat() {
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-2 max-w-[80%]">
                   <p className="text-sm text-gray-800 dark:text-gray-200">
-                    Hey there! I'm Cadet, your AI assistant. How can I help you today?
+                    Hey there! I&apos;m Cadet, your AI assistant. How can I help you today?
                   </p>
                 </div>
               </div>
