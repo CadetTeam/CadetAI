@@ -4,10 +4,6 @@ import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { 
-  ChevronRightIcon,
-  ChevronLeftIcon
-} from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 
@@ -73,7 +69,6 @@ const apps: App[] = [
 ]
 
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
   const { theme } = useTheme()
 
   const handleAppClick = (app: App) => {
@@ -83,25 +78,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   }
 
   return (
-    <div className={cn(
-      "fixed left-0 top-0 z-50 h-full bg-background border-r border-border transition-all duration-300 flex flex-col",
-      isExpanded ? "w-16" : "w-12"
-    )}>
-      {/* Expand/Collapse Button */}
-      <div className="p-2 border-b border-border">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full h-8 p-0"
-        >
-          {isExpanded ? (
-            <ChevronLeftIcon className="h-4 w-4" />
-          ) : (
-            <ChevronRightIcon className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
+    <div className="fixed left-0 top-0 z-50 h-full w-16 bg-background border-r border-border flex flex-col">
 
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto py-2">
@@ -120,7 +97,6 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     "w-full h-10 p-0 relative group",
                     isActive && "bg-accent text-accent-foreground"
                   )}
-                  title={isExpanded ? undefined : app.name}
                 >
                   <div className="relative w-6 h-6">
                     <Image
@@ -140,13 +116,6 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                       {app.badge}
                     </Badge>
                   )}
-
-                  {/* Tooltip for collapsed state */}
-                  {!isExpanded && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
-                      {app.name}
-                    </div>
-                  )}
                 </Button>
               </div>
             )
@@ -160,7 +129,6 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
           variant="ghost"
           size="sm"
           className="w-full h-10 p-0"
-          title={isExpanded ? undefined : "Add New App"}
         >
           <div className="relative w-6 h-6">
             <Image
