@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ClerkAPI } from '@clerk/backend'
+import { createClerkClient } from '@clerk/backend'
 
-const clerk = ClerkAPI({
+const clerk = createClerkClient({
   secretKey: process.env.CLERK_SECRET_KEY!,
 })
 
@@ -21,15 +21,17 @@ export async function POST(req: NextRequest) {
       firstName: firstName,
       lastName: lastName,
       skipPasswordChecks: true,
-      emailVerified: true, // Skip email verification for admin-created users
     })
 
     console.log('User created successfully:', user.id)
     return NextResponse.json({ message: 'User created successfully', userId: user.id })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating user via admin API:', error)
+    const errorMessage = error instanceof Error && 'errors' in error 
+      ? (error as { errors?: Array<{ message: string }> }).errors?.[0]?.message 
+      : 'Failed to create user'
     return NextResponse.json({ 
-      error: error.errors?.[0]?.message || 'Failed to create user' 
+      error: errorMessage
     }, { status: 500 })
   }
 }

@@ -51,7 +51,16 @@ export function AppSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
+
+  // Define pages where sidebar should be collapsed
+  const collapsedPages = [
+    '/app/apd-gpt/engine',
+    '/app/apd-gpt/history', 
+    '/app/apd-gpt/performance'
+  ]
+  
+  const shouldCollapseOnThisPage = collapsedPages.includes(pathname)
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -66,6 +75,17 @@ export function AppSidebar() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Auto-collapse on specific pages
+  useEffect(() => {
+    if (!isMobile && shouldCollapseOnThisPage) {
+      setIsCollapsed(true)
+      setIsExpanded(false)
+    } else if (!isMobile && !shouldCollapseOnThisPage) {
+      setIsCollapsed(false)
+      setIsExpanded(true)
+    }
+  }, [pathname, isMobile, shouldCollapseOnThisPage])
 
   const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
@@ -88,21 +108,24 @@ export function AppSidebar() {
           if (isMobile) {
             setIsExpanded(!isExpanded)
           } else {
-            setIsCollapsed(!isCollapsed)
-            setIsExpanded(!isExpanded)
+            // Only allow manual toggle if not on auto-collapse pages
+            if (!shouldCollapseOnThisPage) {
+              setIsCollapsed(!isCollapsed)
+              setIsExpanded(!isExpanded)
+            }
           }
         }}
       >
         {isMobile ? (
-          <HamburgerMenuIcon className="w-3 h-3" />
+          <HamburgerMenuIcon className="w-4 h-4" />
         ) : (
-          isCollapsed ? <ChevronRightIcon className="w-3 h-3" /> : <ChevronLeftIcon className="w-3 h-3" />
+          isCollapsed ? <ChevronRightIcon className="w-4 h-4" /> : <ChevronLeftIcon className="w-4 h-4" />
         )}
       </Button>
 
       {/* Logo */}
       <div className="flex items-center justify-center p-4 border-b border-border">
-        <Logo variant="icon" size={32} className="flex-shrink-0" />
+        <Logo variant="icon" size={shouldShowExpanded ? 32 : 40} className="flex-shrink-0" />
         {shouldShowExpanded && (
           <span className="ml-3 text-lg font-semibold text-foreground">CadetAI</span>
         )}
@@ -132,7 +155,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-5 h-5")} />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -182,7 +205,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-5 h-5")} />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -235,7 +258,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-5 h-5")} />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>

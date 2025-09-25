@@ -70,6 +70,7 @@ export default function UnifiedAuthPage() {
   // Debug mode changes
   useEffect(() => {
     console.log('🔄 Mode changed to:', mode)
+    console.log('🚀 AUTH FLOW v2.0 - Fixed bypass logic')
   }, [mode])
   
   const [formData, setFormData] = useState({
@@ -78,7 +79,8 @@ export default function UnifiedAuthPage() {
     confirmPassword: "",
     firstName: "",
     lastName: "",
-    organization: ""
+    organization: "",
+    username: ""
   })
 
   const [passwordChecks, setPasswordChecks] = useState({
@@ -188,7 +190,7 @@ export default function UnifiedAuthPage() {
           })
           
           // Validate required fields
-          if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+          if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.username) {
             setError("Please fill in all required fields")
             return
           }
@@ -204,40 +206,79 @@ export default function UnifiedAuthPage() {
           }
 
           // Create CAPTCHA token if bot protection is enabled
+          console.log('🔒 Generating CAPTCHA token...')
           const captchaToken = await getCaptchaTokenSafe('sign_up')
+          console.log('CAPTCHA token generated:', captchaToken ? 'Yes' : 'No')
 
-          const signUpResult = await signUp.create({
+          const signUpPayload: {
+            emailAddress: string
+            password: string
+            firstName: string
+            lastName: string
+            username: string
+            captchaToken?: string
+          } = {
             emailAddress: formData.email,
             password: formData.password,
             firstName: formData.firstName,
             lastName: formData.lastName,
-            ...(captchaToken ? { captchaToken } : {}),
-          })
+            username: formData.username,
+          }
+
+          // Always include captcha token if available
+          if (captchaToken) {
+            signUpPayload.captchaToken = captchaToken
+            console.log('✅ Including CAPTCHA token in signup')
+          } else {
+            console.log('⚠️ No CAPTCHA token available')
+          }
+
+          const signUpResult = await signUp.create(signUpPayload)
 
           console.log('Sign-up result:', signUpResult.status)
+          console.log('Sign-up result details:', signUpResult)
 
           if (signUpResult.status === 'complete') {
+            console.log('✅ Signup completed successfully!')
+            console.log('Created User ID:', signUpResult.createdUserId)
+            console.log('Created Session ID:', signUpResult.createdSessionId)
+            
             // Sync user to Supabase immediately
             try {
               const userId = signUpResult.createdUserId
               if (userId) {
+                console.log('🔄 Starting Supabase sync for user:', userId)
                 await clerkSupabaseSync.syncUserToSupabase(userId)
-                console.log('User synced to Supabase on signup completion')
+                console.log('✅ User synced to Supabase on signup completion')
+              } else {
+                console.error('❌ No user ID found in signup result')
               }
             } catch (syncError) {
-              console.error('Error syncing user to Supabase:', syncError)
+              console.error('❌ Error syncing user to Supabase:', syncError)
               // Don't block the flow for sync errors
             }
             
+            console.log('🔄 Activating session...')
             setActiveSignUp({ session: signUpResult.createdSessionId })
             setSuccess("Account created successfully!")
             setTimeout(() => {
-              window.location.href = "/app"
+              console.log('🚀 Redirecting to organization setup')
+              window.location.href = "/organization-setup"
             }, 1500)
           } else if (signUpResult.status === 'missing_requirements') {
-            // Check if email verification is required
-            if (signUpResult.unverifiedFields?.includes('email_address')) {
-              console.log('Email verification required, preparing verification')
+            console.log('❌ Missing requirements:', signUpResult.unverifiedFields)
+            console.log('Required fields:', signUpResult.requiredFields)
+            console.log('Missing fields:', signUpResult.missingFields)
+            
+            // Check what's missing
+            const missingFields = signUpResult.missingFields || []
+            const hasCaptchaIssue = missingFields.some(field => field.includes('captcha') || field.includes('token'))
+            
+            if (hasCaptchaIssue) {
+              console.log('🔒 CAPTCHA token required')
+              setError("CAPTCHA verification required. Please refresh the page and try again.")
+            } else if (signUpResult.unverifiedFields?.includes('email_address')) {
+              console.log('📧 Email verification required, preparing verification')
               try {
                 const prepareCaptcha = await getCaptchaTokenSafe('email_address_verification_prepare')
                 await signUp.prepareEmailAddressVerification({
@@ -255,7 +296,8 @@ export default function UnifiedAuthPage() {
                 setError("Failed to send verification code. Please try again.")
               }
             } else {
-              setError(`Account creation failed. Missing requirements: ${signUpResult.unverifiedFields?.join(', ')}`)
+              const missingFields = signUpResult.unverifiedFields || signUpResult.missingFields || []
+              setError(`Account creation failed. Missing requirements: ${missingFields.join(', ')}`)
             }
           } else {
             setError(`Account creation failed. Status: ${signUpResult.status}. Please try again.`)
@@ -349,10 +391,10 @@ export default function UnifiedAuthPage() {
                   await setActiveSignUp({ session: verifyResult.createdSessionId })
                   setSuccess("Email verified successfully! Redirecting to app...")
                   
-                  // Step 4: Redirect to app
-                  console.log('🚀 Redirecting to /app')
+                  // Step 4: Redirect to organization setup
+                  console.log('🚀 Redirecting to organization setup')
                   setTimeout(() => {
-                    window.location.replace("/app")
+                    window.location.replace("/organization-setup")
                   }, 1000)
                   
                 } else if (verifyResult.status === 'missing_requirements') {
@@ -372,8 +414,8 @@ export default function UnifiedAuthPage() {
                           await clerkSupabaseSync.syncUserToSupabase(userId)
                         }
                         await setActiveSignUp({ session: signUp.createdSessionId })
-                        setSuccess("Account verified successfully! Redirecting to app...")
-                        setTimeout(() => { window.location.replace("/app") }, 1000)
+                        setSuccess("Account verified successfully! Redirecting to organization setup...")
+                        setTimeout(() => { window.location.replace("/organization-setup") }, 1000)
                       } else {
                         setError("Verification incomplete. Please try again or contact support.")
                       }
@@ -410,8 +452,8 @@ export default function UnifiedAuthPage() {
                         await clerkSupabaseSync.syncUserToSupabase(userId)
                       }
                       await setActiveSignUp({ session: signUp.createdSessionId })
-                      setSuccess("Session activated! Redirecting to app...")
-                      setTimeout(() => { window.location.replace("/app") }, 500)
+                      setSuccess("Session activated! Redirecting to organization setup...")
+                      setTimeout(() => { window.location.replace("/organization-setup") }, 500)
                     } else {
                       // Fallback: try to sign in with credentials
                       console.log('🔄 No session found, attempting sign-in fallback')
@@ -422,8 +464,8 @@ export default function UnifiedAuthPage() {
                         })
                         if (signinResult.status === 'complete') {
                           await setActive({ session: signinResult.createdSessionId })
-                          setSuccess("Signed in successfully! Redirecting to app...")
-                          setTimeout(() => { window.location.replace("/app") }, 500)
+                          setSuccess("Signed in successfully! Redirecting to organization setup...")
+                          setTimeout(() => { window.location.replace("/organization-setup") }, 500)
                         } else {
                           setError("Email verified but unable to sign in. Please try signing in manually.")
                         }
@@ -676,6 +718,26 @@ export default function UnifiedAuthPage() {
                 </div>
               )}
 
+              {/* Username Field for Sign Up */}
+              {mode === "signup" && (
+                <div className="space-y-2">
+                  <Label htmlFor="username">Username</Label>
+                  <div className="relative">
+                    <PersonIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      id="username"
+                      name="username"
+                      type="text"
+                      placeholder="johndoe"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Organization Field for Sign Up */}
               {mode === "signup" && (
                 <div className="space-y-2">
@@ -837,6 +899,13 @@ export default function UnifiedAuthPage() {
                 </div>
               )}
 
+              {/* CAPTCHA for Sign Up */}
+              {mode === "signup" && (
+                <div id="clerk-captcha" className="w-full">
+                  {/* CAPTCHA widget will be rendered here */}
+                </div>
+              )}
+
               {/* Terms for Sign Up */}
               {mode === "signup" && (
                 <div className="flex items-center space-x-2">
@@ -863,7 +932,7 @@ export default function UnifiedAuthPage() {
                 type="button"
                 onClick={handleSubmit}
                 className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg disabled:opacity-50"
-                disabled={isLoading || (mode === "signup" && (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !Object.values(passwordChecks).every(Boolean)))}
+                disabled={isLoading || (mode === "signup" && (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword || !formData.username || !Object.values(passwordChecks).every(Boolean)))}
               >
                 {isLoading ? (
                   <>
@@ -940,7 +1009,8 @@ export default function UnifiedAuthPage() {
                         confirmPassword: "",
                         firstName: "",
                         lastName: "",
-                        organization: ""
+                        organization: "",
+                        username: ""
                       })
                     }}
                   >
