@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
+import { useClerk } from "@clerk/nextjs"
 import Link from "next/link"
-import { NewTeamModal } from "@/components/modals/new-team-modal"
-import { InviteUsersModal } from "@/components/modals/invite-users-modal"
+import { NewTeamCard } from "@/components/cards/new-team-card"
+import { InviteUsersCard } from "@/components/cards/invite-users-card"
 import { 
   HomeIcon,
   FileTextIcon,
@@ -36,7 +37,7 @@ const mainNavItems = [
 const peopleNavItems = [
   { href: "/app/apd-gpt/teams/new", label: "New Team", icon: PlusIcon, shortcut: "⌘T", isModal: true },
   { href: "/app/apd-gpt/teams", label: "Teams", icon: PersonIcon },
-  { href: "/app/apd-gpt/teams/invite", label: "Invite users", icon: PlusIcon, arrow: true, isModal: true },
+  { href: "/app/apd-gpt/teams/invite", label: "Invite users", icon: PersonIcon, arrow: true, isModal: true },
   { href: "/app/apd-gpt/settings", label: "Settings", icon: GearIcon, shortcut: "⌘S" },
 ]
 
@@ -49,12 +50,14 @@ const utilitiesNavItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { signOut } = useClerk()
   const [isCollapsed, setIsCollapsed] = useState(false) // Default to expanded
   const [isMobile, setIsMobile] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
-  const [isNewTeamModalOpen, setIsNewTeamModalOpen] = useState(false)
-  const [isInviteUsersModalOpen, setIsInviteUsersModalOpen] = useState(false)
+  const [isNewTeamCardOpen, setIsNewTeamCardOpen] = useState(false)
+  const [isInviteUsersCardOpen, setIsInviteUsersCardOpen] = useState(false)
+  const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 })
 
   // Check if mobile on mount and resize, and auto-collapse on specific pages
   useEffect(() => {
@@ -65,11 +68,17 @@ export function AppSidebar() {
       }
     }
 
-           // Auto-collapse sidebar on History and APD Engine pages
-           const shouldAutoCollapse = pathname.includes('/apd-gpt/history') || pathname.includes('/apd-gpt/engine')
+    // Auto-collapse sidebar on History and APD Engine pages, but keep expanded on home page
+    const isHomePage = pathname === '/app'
+    const shouldAutoCollapse = (pathname.includes('/apd-gpt/history') || pathname.includes('/apd-gpt/engine')) && !isHomePage
+    
     if (shouldAutoCollapse) {
       setIsCollapsed(true)
       setIsExpanded(false)
+    } else if (isHomePage) {
+      // Ensure home page defaults to expanded
+      setIsCollapsed(false)
+      setIsExpanded(true)
     }
     
     checkMobile()
@@ -80,11 +89,20 @@ export function AppSidebar() {
   const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
 
-  const handleModalAction = (href: string) => {
+  const handleCardAction = (href: string, event: React.MouseEvent) => {
+    const buttonRect = event.currentTarget.getBoundingClientRect()
+    const position = {
+      top: buttonRect.top,
+      left: buttonRect.right + 8 // Position to the right of the button
+    }
+    setCardPosition(position)
+    
     if (href === "/app/apd-gpt/teams/new") {
-      setIsNewTeamModalOpen(true)
+      setIsNewTeamCardOpen(true)
+      setIsInviteUsersCardOpen(false)
     } else if (href === "/app/apd-gpt/teams/invite") {
-      setIsInviteUsersModalOpen(true)
+      setIsInviteUsersCardOpen(true)
+      setIsNewTeamCardOpen(false)
     }
   }
 
@@ -94,6 +112,14 @@ export function AppSidebar() {
     setIsExpanded(false)
     // Navigate to APD Engine page
     window.location.href = "/app/apd-gpt/engine"
+  }
+
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirectUrl: "/auth" })
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
   }
 
   return (
@@ -161,7 +187,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-4 h-4")} />
+                    <item.icon className="w-4 h-4" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -197,7 +223,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-4 h-4")} />
+                  <item.icon className="w-4 h-4" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -248,11 +274,11 @@ export function AppSidebar() {
                 return (
                   <button
                     key={item.href}
-                    onClick={() => handleModalAction(item.href)}
+                    onClick={(e) => handleCardAction(item.href, e)}
                     className={commonClassName}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-4 h-4")} />
+                    <item.icon className="w-4 h-4" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -286,7 +312,7 @@ export function AppSidebar() {
                   className={commonClassName}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-4 h-4")} />
+                  <item.icon className="w-4 h-4" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -327,6 +353,45 @@ export function AppSidebar() {
           <nav className="space-y-1">
             {utilitiesNavItems.map((item) => {
               const isActive = pathname === item.href
+              const isLogout = item.href === "/app/logout"
+              
+              if (isLogout) {
+                return (
+                  <button
+                    key={item.href}
+                    onClick={handleLogout}
+                    className={cn(
+                      "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
+                      "hover:bg-accent hover:text-accent-foreground",
+                      isActive && "bg-accent text-accent-foreground",
+                      !shouldShowExpanded && "justify-center"
+                    )}
+                    title={!shouldShowExpanded ? item.label : undefined}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {shouldShowExpanded && (
+                      <>
+                        <span className="ml-3">{item.label}</span>
+                        {item.shortcut && (
+                          <span className="ml-auto text-xs text-muted-foreground">
+                            {item.shortcut}
+                          </span>
+                        )}
+                      </>
+                    )}
+                    {/* Tooltip for collapsed state */}
+                    {!shouldShowExpanded && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                        {item.label}
+                        {item.shortcut && (
+                          <span className="ml-2 text-muted-foreground">{item.shortcut}</span>
+                        )}
+                      </div>
+                    )}
+                  </button>
+                )
+              }
+              
               return (
                 <Link
                   key={item.href}
@@ -339,7 +404,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-4 h-4")} />
+                  <item.icon className="w-4 h-4" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -366,14 +431,16 @@ export function AppSidebar() {
         </div>
       </div>
 
-      {/* Modals */}
-      <NewTeamModal 
-        isOpen={isNewTeamModalOpen} 
-        onClose={() => setIsNewTeamModalOpen(false)} 
+      {/* Cards */}
+      <NewTeamCard 
+        isOpen={isNewTeamCardOpen} 
+        onClose={() => setIsNewTeamCardOpen(false)}
+        position={cardPosition}
       />
-      <InviteUsersModal 
-        isOpen={isInviteUsersModalOpen} 
-        onClose={() => setIsInviteUsersModalOpen(false)} 
+      <InviteUsersCard 
+        isOpen={isInviteUsersCardOpen} 
+        onClose={() => setIsInviteUsersCardOpen(false)}
+        position={cardPosition}
       />
     </div>
   )

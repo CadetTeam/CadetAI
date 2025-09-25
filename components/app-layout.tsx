@@ -18,8 +18,8 @@ export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname()
   const [currentApp, setCurrentApp] = useState("apdgpt")
 
-  // Show marketing page for unauthenticated users
-  if (!isSignedIn) {
+  // Show marketing page for unauthenticated users or auth pages
+  if (!isSignedIn || pathname.startsWith('/auth')) {
     return <>{children}</>
   }
 
