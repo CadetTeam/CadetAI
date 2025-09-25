@@ -19,7 +19,8 @@ import {
   CodeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  HamburgerMenuIcon
+  HamburgerMenuIcon,
+  ChatBubbleIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,8 +28,9 @@ import { Separator } from "@/components/ui/separator"
 import { Logo } from "@/components/Logo"
 
 const mainNavItems = [
-  { href: "/app", label: "Home", icon: HomeIcon, shortcut: "⌘P" },
+  { href: "/app", label: "Home", icon: HomeIcon, shortcut: "⌘H" },
   { href: "/app/apd-gpt/engine", label: "APD Engine", icon: FileTextIcon, shortcut: "⌘B" },
+  { href: "/app/chat", label: "Chat", icon: ChatBubbleIcon, shortcut: "⌘C" },
   { href: "/app/apd-gpt/history", label: "History", icon: ClockIcon, shortcut: "⌘S" },
   { href: "/app/apd-gpt/performance", label: "Performance", icon: BarChartIcon, shortcut: "⌘K" },
 ]
@@ -56,7 +58,7 @@ export function AppSidebar() {
   const [isNewTeamModalOpen, setIsNewTeamModalOpen] = useState(false)
   const [isInviteUsersModalOpen, setIsInviteUsersModalOpen] = useState(false)
 
-  // Check if mobile on mount and resize
+  // Check if mobile on mount and resize, and auto-collapse on specific pages
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
@@ -64,11 +66,18 @@ export function AppSidebar() {
         setIsCollapsed(true)
       }
     }
+
+    // Auto-collapse sidebar on History, APD Engine, and Chat pages
+    const shouldAutoCollapse = pathname.includes('/apd-gpt/history') || pathname.includes('/apd-gpt/engine') || pathname.includes('/app/chat')
+    if (shouldAutoCollapse) {
+      setIsCollapsed(true)
+      setIsExpanded(false)
+    }
     
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  }, [pathname])
 
   const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
