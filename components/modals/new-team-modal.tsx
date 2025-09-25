@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useOrganization, useOrganizationList } from "@clerk/nextjs"
+import { useOrganizationList } from "@clerk/nextjs"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
