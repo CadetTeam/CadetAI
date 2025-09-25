@@ -15,7 +15,6 @@ import {
   LinkBreak1Icon,
   GlobeIcon,
   CodeIcon,
-  UpdateIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   HamburgerMenuIcon
@@ -48,19 +47,10 @@ const utilitiesNavItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true) // Default to collapsed
   const [isMobile, setIsMobile] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
-
-  // Define pages where sidebar should be collapsed
-  const collapsedPages = [
-    '/app/apd-gpt/engine',
-    '/app/apd-gpt/history', 
-    '/app/apd-gpt/performance'
-  ]
-  
-  const shouldCollapseOnThisPage = collapsedPages.includes(pathname)
+  const [isExpanded, setIsExpanded] = useState(false) // Default to collapsed
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -75,17 +65,6 @@ export function AppSidebar() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
-
-  // Auto-collapse on specific pages
-  useEffect(() => {
-    if (!isMobile && shouldCollapseOnThisPage) {
-      setIsCollapsed(true)
-      setIsExpanded(false)
-    } else if (!isMobile && !shouldCollapseOnThisPage) {
-      setIsCollapsed(false)
-      setIsExpanded(true)
-    }
-  }, [pathname, isMobile, shouldCollapseOnThisPage])
 
   const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
@@ -108,11 +87,8 @@ export function AppSidebar() {
           if (isMobile) {
             setIsExpanded(!isExpanded)
           } else {
-            // Only allow manual toggle if not on auto-collapse pages
-            if (!shouldCollapseOnThisPage) {
-              setIsCollapsed(!isCollapsed)
-              setIsExpanded(!isExpanded)
-            }
+            setIsCollapsed(!isCollapsed)
+            setIsExpanded(!isExpanded)
           }
         }}
       >
@@ -282,86 +258,6 @@ export function AppSidebar() {
               )
             })}
           </nav>
-        </div>
-
-        {/* Technologies Section */}
-        <div className="space-y-2">
-          {shouldShowExpanded && (
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Technologies
-            </h3>
-          )}
-          <div className={cn(
-            "flex items-center",
-            shouldShowExpanded ? "space-x-2" : "justify-center"
-          )}>
-            <div className="w-6 h-6 bg-gray-700 rounded flex items-center justify-center">
-              <span className="text-white text-xs font-bold">Z</span>
-            </div>
-            <div className="w-6 h-6 bg-gray-600 rounded flex items-center justify-center">
-              <span className="text-white text-xs font-bold">S</span>
-            </div>
-            <div className="w-6 h-6 bg-gray-800 rounded flex items-center justify-center">
-              <span className="text-white text-xs font-bold">4+</span>
-            </div>
-            {shouldShowExpanded && <span className="text-xs text-muted-foreground">4+</span>}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Chat Interface */}
-      <div className="p-4 border-t border-border">
-        <div className="space-y-3">
-          {/* Audio Waveform */}
-          {shouldShowExpanded && (
-            <div className="h-8 bg-muted rounded flex items-center justify-center">
-              <div className="flex space-x-1">
-                {[...Array(20)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1 bg-primary rounded-full animate-pulse"
-                    style={{
-                      height: `${Math.random() * 20 + 4}px`,
-                      animationDelay: `${i * 0.1}s`
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Chat Input */}
-          <div className="relative">
-            {shouldShowExpanded ? (
-              <input
-                type="text"
-                placeholder="Hey Cadet..."
-                className="w-full px-3 py-2 pr-20 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            ) : (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full h-8 bg-muted hover:bg-accent"
-                title="Chat with Cadet"
-              >
-                <UpdateIcon className="w-4 h-4" />
-              </Button>
-            )}
-            {shouldShowExpanded && (
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                  <UpdateIcon className="w-3 h-3" />
-                </Button>
-                <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                  <PersonIcon className="w-3 h-3" />
-                </Button>
-                <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                  <PlusIcon className="w-3 h-3" />
-                </Button>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>

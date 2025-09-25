@@ -4,6 +4,7 @@ import { useAuth } from "@clerk/nextjs"
 import { AppSidebar } from "./app-sidebar"
 import { AppHeader } from "./app-header"
 import { RightSidebar } from "./right-sidebar"
+import { FloatingChat } from "./floating-chat"
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -38,6 +39,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           <RightSidebar />
         </div>
       </div>
+      
+      {/* Floating Chat */}
+      <FloatingChat />
     </div>
   )
 }
