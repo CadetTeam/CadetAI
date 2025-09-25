@@ -1,0 +1,277 @@
+"use client"
+
+import { useState } from "react"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { 
+  ChevronRightIcon,
+  ChevronLeftIcon
+} from "@radix-ui/react-icons"
+import { cn } from "@/lib/utils"
+import Image from "next/image"
+
+interface App {
+  id: string
+  name: string
+  lightIcon: string
+  darkIcon: string
+  href: string
+  isActive?: boolean
+  badge?: string
+}
+
+interface AppMenuProps {
+  currentApp: string
+  onAppChange: (appId: string) => void
+}
+
+const apps: App[] = [
+  {
+    id: "apdgpt",
+    name: "APD GPT",
+    lightIcon: "/app-icons/light-folder.png",
+    darkIcon: "/app-icons/dark-folder.png", 
+    href: "/app",
+    isActive: true
+  },
+  {
+    id: "security",
+    name: "Security",
+    lightIcon: "/app-icons/light-fingerprint.png",
+    darkIcon: "/app-icons/dark-fingerprint.png",
+    href: "/app/security"
+  },
+  {
+    id: "files",
+    name: "Files",
+    lightIcon: "/app-icons/light-folder.png",
+    darkIcon: "/app-icons/dark-folder.png",
+    href: "/app/files"
+  },
+  {
+    id: "keys",
+    name: "Keys",
+    lightIcon: "/app-icons/light-key.png",
+    darkIcon: "/app-icons/dark-key.png",
+    href: "/app/keys"
+  },
+  {
+    id: "add",
+    name: "Add New",
+    lightIcon: "/app-icons/light-add.png",
+    darkIcon: "/app-icons/dark-add.png",
+    href: "/app/add",
+    badge: "NEW"
+  },
+  {
+    id: "identity",
+    name: "Identity",
+    lightIcon: "/app-icons/light-fingerprint.png",
+    darkIcon: "/app-icons/dark-fingerprint.png",
+    href: "/app/identity"
+  },
+  {
+    id: "search",
+    name: "Search",
+    lightIcon: "/app-icons/light-search.png",
+    darkIcon: "/app-icons/dark-search.png",
+    href: "/app/search"
+  },
+  {
+    id: "create",
+    name: "Create",
+    lightIcon: "/app-icons/light-create.png",
+    darkIcon: "/app-icons/dark-create.png",
+    href: "/app/create"
+  },
+  {
+    id: "new-doc",
+    name: "New Doc",
+    lightIcon: "/app-icons/light-new-doc.png",
+    darkIcon: "/app-icons/dark-new-doc.png",
+    href: "/app/new-doc"
+  },
+  {
+    id: "pricing",
+    name: "Pricing",
+    lightIcon: "/app-icons/light-pricing.png",
+    darkIcon: "/app-icons/dark-pricing.png",
+    href: "/app/pricing"
+  },
+  {
+    id: "new-file",
+    name: "New File",
+    lightIcon: "/app-icons/light-new-file.png",
+    darkIcon: "/app-icons/dark-new-file.png",
+    href: "/app/new-file"
+  },
+  {
+    id: "wallet",
+    name: "Wallet",
+    lightIcon: "/app-icons/light-wallet.png",
+    darkIcon: "/app-icons/dark-wallet.png",
+    href: "/app/wallet"
+  },
+  {
+    id: "cards",
+    name: "Cards",
+    lightIcon: "/app-icons/light-cards.png",
+    darkIcon: "/app-icons/dark-cards.png",
+    href: "/app/cards"
+  },
+  {
+    id: "grid",
+    name: "Grid",
+    lightIcon: "/app-icons/light-grid.png",
+    darkIcon: "/app-icons/dark-grid.png",
+    href: "/app/grid"
+  },
+  {
+    id: "discount",
+    name: "Discount",
+    lightIcon: "/app-icons/light-discount.png",
+    darkIcon: "/app-icons/dark-discount.png",
+    href: "/app/discount"
+  },
+  {
+    id: "new-page",
+    name: "New Page",
+    lightIcon: "/app-icons/light-new-page.png",
+    darkIcon: "/app-icons/dark-new-page.png",
+    href: "/app/new-page"
+  },
+  {
+    id: "account",
+    name: "Account",
+    lightIcon: "/app-icons/light-account.png",
+    darkIcon: "/app-icons/dark-account.png",
+    href: "/app/account"
+  },
+  {
+    id: "storage",
+    name: "Storage",
+    lightIcon: "/app-icons/light-storage.png",
+    darkIcon: "/app-icons/dark-storage.png",
+    href: "/app/storage"
+  },
+  {
+    id: "search-doc",
+    name: "Search Doc",
+    lightIcon: "/app-icons/light-search-doc.png",
+    darkIcon: "/app-icons/dark-search-doc.png",
+    href: "/app/search-doc"
+  },
+  {
+    id: "modules",
+    name: "Modules",
+    lightIcon: "/app-icons/light-modules.png",
+    darkIcon: "/app-icons/dark-modules.png",
+    href: "/app/modules"
+  }
+]
+
+export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const { theme } = useTheme()
+
+  const handleAppClick = (app: App) => {
+    onAppChange(app.id)
+    // In a real implementation, you would navigate to the app
+    console.log(`Switching to ${app.name} app`)
+  }
+
+  return (
+    <div className={cn(
+      "fixed left-0 top-0 z-50 h-full bg-background border-r border-border transition-all duration-300 flex flex-col",
+      isExpanded ? "w-16" : "w-12"
+    )}>
+      {/* Expand/Collapse Button */}
+      <div className="p-2 border-b border-border">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full h-8 p-0"
+        >
+          {isExpanded ? (
+            <ChevronLeftIcon className="h-4 w-4" />
+          ) : (
+            <ChevronRightIcon className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+
+      {/* App Icons */}
+      <div className="flex-1 overflow-y-auto py-2">
+        <div className="space-y-1 px-1">
+          {apps.map((app) => {
+            const isActive = currentApp === app.id
+            const iconSrc = theme === 'dark' ? app.lightIcon : app.darkIcon
+
+            return (
+              <div key={app.id} className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleAppClick(app)}
+                  className={cn(
+                    "w-full h-10 p-0 relative group",
+                    isActive && "bg-accent text-accent-foreground"
+                  )}
+                  title={isExpanded ? undefined : app.name}
+                >
+                  <div className="relative w-6 h-6">
+                    <Image
+                      src={iconSrc}
+                      alt={app.name}
+                      width={24}
+                      height={24}
+                      className="object-contain"
+                    />
+                  </div>
+                  
+                  {/* Badge */}
+                  {app.badge && (
+                    <Badge 
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-blue-500 text-white"
+                    >
+                      {app.badge}
+                    </Badge>
+                  )}
+
+                  {/* Tooltip for collapsed state */}
+                  {!isExpanded && (
+                    <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                      {app.name}
+                    </div>
+                  )}
+                </Button>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Bottom Section - Add New App */}
+      <div className="p-2 border-t border-border">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full h-10 p-0"
+          title={isExpanded ? undefined : "Add New App"}
+        >
+          <div className="relative w-6 h-6">
+            <Image
+              src={theme === 'dark' ? "/app-icons/light-add.png" : "/app-icons/dark-add.png"}
+              alt="Add New App"
+              width={24}
+              height={24}
+              className="object-contain opacity-60 hover:opacity-100 transition-opacity"
+            />
+          </div>
+        </Button>
+      </div>
+    </div>
+  )
+}
