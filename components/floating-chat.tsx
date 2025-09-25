@@ -1,11 +1,11 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Badge } from "@/components/ui/badge"
 import {
   PaperPlaneIcon,
   UploadIcon,
@@ -221,9 +221,11 @@ export function FloatingChat() {
               </div>
               <div className="p-4">
                 {showFilePreview.type.startsWith('image/') ? (
-                  <img
+                  <Image
                     src={URL.createObjectURL(showFilePreview.file)}
                     alt={showFilePreview.name}
+                    width={800}
+                    height={600}
                     className="max-w-full h-auto rounded-lg"
                   />
                 ) : (
