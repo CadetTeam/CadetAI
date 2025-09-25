@@ -24,7 +24,7 @@ export function EmptyAppPage({
   description = "This app is coming soon!",
   features = []
 }: EmptyAppPageProps) {
-  const [currentApp, setCurrentApp] = useState("apdgpt")
+  const [, setCurrentApp] = useState("apdgpt")
 
   const handleAppChange = (appId: string) => {
     setCurrentApp(appId)
