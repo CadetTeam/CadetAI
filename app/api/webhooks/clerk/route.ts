@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { clerkSupabaseSync } from '@/lib/clerk-supabase-sync'
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -68,30 +69,38 @@ export async function POST(req: Request) {
     console.log(`New user created: ${id}`)
     
     try {
-      // Create user profile in Supabase
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .insert({
-          clerk_user_id: id,
-          email: email_addresses[0]?.email_address || '',
-          first_name: first_name || '',
-          last_name: last_name || '',
-          avatar_url: image_url || null,
-          role: 'viewer', // Default role
-          is_active: true
-        })
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Error creating user profile:', error)
-        return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 })
-      }
-
-      console.log('User profile created successfully:', data)
+      // Use the new sync service for better reliability
+      const syncResult = await clerkSupabaseSync.syncUserToSupabase(id)
+      console.log('User synced via webhook:', syncResult)
     } catch (err) {
       console.error('Error in user.created webhook:', err)
-      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+      
+      // Fallback to direct Supabase insertion
+      try {
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .insert({
+            clerk_user_id: id,
+            email: email_addresses[0]?.email_address || '',
+            first_name: first_name || '',
+            last_name: last_name || '',
+            avatar_url: image_url || null,
+            role: 'viewer', // Default role
+            is_active: true
+          })
+          .select()
+          .single()
+
+        if (error) {
+          console.error('Error creating user profile (fallback):', error)
+          return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 })
+        }
+
+        console.log('User profile created successfully (fallback):', data)
+      } catch (fallbackErr) {
+        console.error('Error in fallback user creation:', fallbackErr)
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+      }
     }
   }
 

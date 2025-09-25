@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs"
+import { clerkSupabaseSync } from "@/lib/clerk-supabase-sync"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -65,6 +66,11 @@ export default function UnifiedAuthPage() {
   const [success, setSuccess] = useState("")
   const [otpCode, setOtpCode] = useState("")
   const [otpTimer, setOtpTimer] = useState(0)
+
+  // Debug mode changes
+  useEffect(() => {
+    console.log('🔄 Mode changed to:', mode)
+  }, [mode])
   
   const [formData, setFormData] = useState({
     email: "",
@@ -133,6 +139,8 @@ export default function UnifiedAuthPage() {
     console.log('signUp available:', !!signUp)
     console.log('signIn available:', !!signIn)
     console.log('Current URL:', window.location.href)
+    console.log('OTP Code length:', otpCode?.length || 0)
+    console.log('Form Data:', formData)
     
     if (!isLoaded) {
       console.log('Clerk not loaded, returning')
@@ -203,31 +211,51 @@ export default function UnifiedAuthPage() {
             password: formData.password,
             firstName: formData.firstName,
             lastName: formData.lastName,
-            // Pass CAPTCHA token when available to satisfy missing_requirements
             ...(captchaToken ? { captchaToken } : {}),
           })
 
+          console.log('Sign-up result:', signUpResult.status)
+
           if (signUpResult.status === 'complete') {
+            // Sync user to Supabase immediately
+            try {
+              const userId = signUpResult.createdUserId
+              if (userId) {
+                await clerkSupabaseSync.syncUserToSupabase(userId)
+                console.log('User synced to Supabase on signup completion')
+              }
+            } catch (syncError) {
+              console.error('Error syncing user to Supabase:', syncError)
+              // Don't block the flow for sync errors
+            }
+            
             setActiveSignUp({ session: signUpResult.createdSessionId })
             setSuccess("Account created successfully!")
             setTimeout(() => {
               window.location.href = "/app"
             }, 1500)
           } else if (signUpResult.status === 'missing_requirements') {
-            // Proper OTP flow: prepare and move to OTP step
-            try {
-              const verificationCaptchaToken = await getCaptchaTokenSafe('email_address_verification')
-              await signUp.prepareEmailAddressVerification({
-                strategy: 'email_code',
-                ...(verificationCaptchaToken ? { captchaToken: verificationCaptchaToken } : {}),
-              })
-              setSuccess("Verification code sent to your email!")
-              setPreviousMode("signup")
-              setMode("otp")
-              startOtpTimer()
-            } catch (emailError: unknown) {
-              const error = emailError as { errors?: Array<{ message: string }> }
-              setError(error.errors?.[0]?.message || "Failed to send verification email. Please try again.")
+            // Check if email verification is required
+            if (signUpResult.unverifiedFields?.includes('email_address')) {
+              console.log('Email verification required, preparing verification')
+              try {
+                const prepareCaptcha = await getCaptchaTokenSafe('email_address_verification_prepare')
+                await signUp.prepareEmailAddressVerification({
+                  strategy: 'email_code',
+                  ...(prepareCaptcha ? { captchaToken: prepareCaptcha } : {}),
+                })
+                setSuccess("Verification code sent to your email!")
+                setPreviousMode("signup")
+                setTimeout(() => {
+                  setMode("otp")
+                  startOtpTimer()
+                }, 1500)
+              } catch (prepareError) {
+                console.error('Error preparing email verification:', prepareError)
+                setError("Failed to send verification code. Please try again.")
+              }
+            } else {
+              setError(`Account creation failed. Missing requirements: ${signUpResult.unverifiedFields?.join(', ')}`)
             }
           } else {
             setError(`Account creation failed. Status: ${signUpResult.status}. Please try again.`)
@@ -251,19 +279,25 @@ export default function UnifiedAuthPage() {
           break
 
         case "otp":
-          console.log('OTP case triggered')
-          console.log('Available objects:', { hasSignIn: !!signIn, hasSignUp: !!signUp })
-          console.log('Previous mode:', previousMode)
+          console.log('=== OTP VERIFICATION STARTED ===')
           console.log('OTP code:', otpCode)
+          console.log('Previous mode:', previousMode)
+          console.log('Available objects:', { hasSignIn: !!signIn, hasSignUp: !!signUp })
+          
+          if (!otpCode || otpCode.length !== 6) {
+            setError("Please enter a valid 6-digit verification code")
+            return
+          }
           
           if (!signIn && !signUp) {
-            console.log('No signIn or signUp objects available')
+            setError("Authentication session not found. Please try signing up again.")
             return
           }
           
           try {
             if (previousMode === "forgot" && signIn) {
               // Handle password reset OTP
+              console.log('Handling password reset OTP')
               const resetResult = await signIn.attemptFirstFactor({
                 strategy: 'reset_password_email_code',
                 code: otpCode,
@@ -274,131 +308,143 @@ export default function UnifiedAuthPage() {
                 setTimeout(() => {
                   setMode("reset")
                 }, 1500)
+              } else {
+                setError(`Reset failed. Status: ${resetResult.status}`)
               }
-            } else if (signUp) {
-              // Handle signup verification - check if we're in OTP mode from signup
-              if (previousMode === "signup" || mode === "otp") {
-                console.log('Attempting email verification with code:', otpCode)
-                console.log('Current signUp status:', signUp.status)
-
-                // Always refresh the server state before attempting verification
-                try { await signUp.reload?.() } catch {}
-
-                // Include captcha token on attempt
-                const attemptCaptcha = await getCaptchaTokenSafe('email_address_verification_attempt')
-                let verifyResult
-                try {
-                  verifyResult = await signUp.attemptEmailAddressVerification({
-                    code: otpCode,
-                    ...(attemptCaptcha ? { captchaToken: attemptCaptcha } : {}),
-                  })
-                } catch (attemptErr: unknown) {
-                  const msg = (attemptErr as { errors?: Array<{ message: string }> })?.errors?.[0]?.message || ""
-                  // If backend says already verified, just reload and activate
-                  if (msg.toLowerCase().includes('already been verified')) {
-                    try { await signUp.reload?.() } catch {}
-                    const sessionId = (signUp as unknown as { createdSessionId?: string }).createdSessionId
-                    if (sessionId) {
-                      await setActiveSignUp({ session: sessionId })
-                      setSuccess("Email verified! Redirecting to app...")
-                      setTimeout(() => { window.location.href = "/app" }, 800)
-                      return
-                    }
-                    // Fallback: if server says verified but we don't have a session, sign the user in
-                    if (signIn) {
-                      try {
-                        const signin = await signIn.create({ identifier: formData.email, password: formData.password })
-                        if (signin.status === 'complete') {
-                          await setActive({ session: signin.createdSessionId })
-                          setSuccess("Email verified! Redirecting to app...")
-                          setTimeout(() => { window.location.href = "/app" }, 800)
-                          return
-                        }
-                      } catch {}
-                    }
-                  }
-                  throw attemptErr
-                }
+            } else if (signUp && (previousMode === "signup" || mode === "otp")) {
+              // Handle signup verification - PROPER CLERK FLOW
+              console.log('Handling signup OTP verification')
+              console.log('Current signUp status:', signUp.status)
+              
+              // Step 1: Attempt email verification with the OTP code
+              const attemptCaptcha = await getCaptchaTokenSafe('email_address_verification_attempt')
+              console.log('Attempting verification with code:', otpCode)
+              
+              try {
+                const verifyResult = await signUp.attemptEmailAddressVerification({
+                  code: otpCode,
+                  ...(attemptCaptcha ? { captchaToken: attemptCaptcha } : {}),
+                })
                 
                 console.log('OTP Verification Result:', verifyResult.status)
                 console.log('Full verification result:', verifyResult)
                 
                 if (verifyResult.status === 'complete') {
-                  try {
-                    console.log('Setting active sign-up with session:', verifyResult.createdSessionId)
-                    await setActiveSignUp({ session: verifyResult.createdSessionId })
-                    setSuccess("Email verified successfully! Redirecting to app...")
-                    
-                    // Try multiple redirect methods to ensure it works
-                    setTimeout(() => {
-                      console.log('Redirecting to /app')
-                      window.location.href = "/app"
-                    }, 1000)
-                    
-                    // Method 2: Fallback with router if available
-                    setTimeout(() => {
-                      if (typeof window !== 'undefined') {
-                        console.log('Fallback redirect to /app')
-                        window.location.replace("/app")
-                      }
-                    }, 2000)
-                    
-                  } catch (activeError: unknown) {
-                    console.error('Error setting active sign-up:', activeError)
-                    const error = activeError as { errors?: Array<{ message: string }> }
-                    setError(error.errors?.[0]?.message || "Failed to activate session. Please try again.")
-                  }
-                } else if (verifyResult.status === 'missing_requirements') {
-                  // If still missing requirements, try to complete the sign-up
-                  console.log('Still missing requirements, checking what\'s needed')
-                  console.log('Sign-up missing requirements:', verifyResult.unverifiedFields)
+                  console.log('✅ OTP verification successful!')
                   
-                  // Check if we need to complete the sign-up
-                  if (verifyResult.unverifiedFields && verifyResult.unverifiedFields.length > 0) {
-                    setError(`Additional verification required: ${verifyResult.unverifiedFields.join(', ')}`)
-                  } else {
-                    // Try to complete the sign-up anyway
+                  // Step 2: Sync user to Supabase using createdUserId
+                  try {
+                    const userId = verifyResult.createdUserId
+                    if (userId) {
+                      console.log('Syncing user to Supabase:', userId)
+                      await clerkSupabaseSync.syncUserToSupabase(userId)
+                      console.log('✅ User synced to Supabase')
+                    }
+                  } catch (syncError) {
+                    console.error('⚠️ Sync error (non-blocking):', syncError)
+                  }
+                  
+                  // Step 3: Activate session and redirect
+                  console.log('Activating session:', verifyResult.createdSessionId)
+                  await setActiveSignUp({ session: verifyResult.createdSessionId })
+                  setSuccess("Email verified successfully! Redirecting to app...")
+                  
+                  // Step 4: Redirect to app
+                  console.log('🚀 Redirecting to /app')
+                  setTimeout(() => {
+                    window.location.replace("/app")
+                  }, 1000)
+                  
+                } else if (verifyResult.status === 'missing_requirements') {
+                  console.log('❌ Still missing requirements:', verifyResult.unverifiedFields)
+                  
+                  // Check if we need to complete the signup process
+                  if (verifyResult.unverifiedFields?.length === 0) {
+                    console.log('🔄 No unverified fields, trying to complete signup...')
                     try {
-                      console.log('Reloading signUp to see if verification already applied')
-                      try { await signUp.reload?.() } catch {}
-
-                      // If server already marked verified, status may now be complete
-                      if ((signUp as unknown as { status?: string }).status === 'complete') {
-                        const maybeSessionId = (signUp as unknown as { createdSessionId?: string }).createdSessionId
-                        if (maybeSessionId) {
-                          await setActiveSignUp({ session: maybeSessionId })
-                          setSuccess("Email verified successfully! Redirecting to app...")
-                          setTimeout(() => { window.location.href = "/app" }, 800)
-                          return
-                        }
-                      }
-
-                      const attemptCaptcha2 = await getCaptchaTokenSafe('email_address_verification_attempt')
-                      const completeResult = await signUp.attemptEmailAddressVerification({
-                        code: otpCode,
-                        ...(attemptCaptcha2 ? { captchaToken: attemptCaptcha2 } : {}),
-                      })
+                      // Reload the signup to get latest state
+                      await signUp.reload()
                       
-                      if (completeResult.status === 'complete') {
-                        await setActiveSignUp({ session: completeResult.createdSessionId })
-                        setSuccess("Email verified successfully! Redirecting to app...")
-                        setTimeout(() => {
-                          window.location.href = "/app"
-                        }, 1000)
+                      if (signUp.status === 'complete') {
+                        console.log('✅ Signup now complete after reload')
+                        const userId = signUp.createdUserId
+                        if (userId) {
+                          await clerkSupabaseSync.syncUserToSupabase(userId)
+                        }
+                        await setActiveSignUp({ session: signUp.createdSessionId })
+                        setSuccess("Account verified successfully! Redirecting to app...")
+                        setTimeout(() => { window.location.replace("/app") }, 1000)
                       } else {
                         setError("Verification incomplete. Please try again or contact support.")
                       }
-                    } catch (completeError: unknown) {
-                      console.error('Error completing sign-up:', completeError)
-                      setError("Verification failed. Please try again.")
+                    } catch (reloadError) {
+                      console.error('Error reloading signup:', reloadError)
+                      setError("Verification incomplete. Please try again.")
                     }
+                  } else {
+                    setError(`Additional verification required: ${verifyResult.unverifiedFields.join(', ')}`)
                   }
                 } else {
+                  console.log('❌ Verification failed with status:', verifyResult.status)
                   setError(`Verification failed. Status: ${verifyResult.status}. Please check your code and try again.`)
                 }
+                
+              } catch (verifyError: unknown) {
+                const error = verifyError as { errors?: Array<{ message: string }> }
+                const errorMessage = error.errors?.[0]?.message || "Unknown verification error"
+                console.error('❌ Verification attempt failed:', errorMessage)
+                
+                // Handle "already verified" case
+                if (errorMessage.toLowerCase().includes('already been verified')) {
+                  console.log('🔄 Email already verified, attempting session activation')
+                  setSuccess("Email already verified! Activating session...")
+                  
+                  try {
+                    // Reload signup to get latest state
+                    await signUp.reload?.()
+                    
+                    if (signUp.status === 'complete' && signUp.createdSessionId) {
+                      console.log('✅ Found session ID, activating:', signUp.createdSessionId)
+                      const userId = signUp.createdUserId
+                      if (userId) {
+                        await clerkSupabaseSync.syncUserToSupabase(userId)
+                      }
+                      await setActiveSignUp({ session: signUp.createdSessionId })
+                      setSuccess("Session activated! Redirecting to app...")
+                      setTimeout(() => { window.location.replace("/app") }, 500)
+                    } else {
+                      // Fallback: try to sign in with credentials
+                      console.log('🔄 No session found, attempting sign-in fallback')
+                      if (signIn && formData.email && formData.password) {
+                        const signinResult = await signIn.create({ 
+                          identifier: formData.email, 
+                          password: formData.password 
+                        })
+                        if (signinResult.status === 'complete') {
+                          await setActive({ session: signinResult.createdSessionId })
+                          setSuccess("Signed in successfully! Redirecting to app...")
+                          setTimeout(() => { window.location.replace("/app") }, 500)
+                        } else {
+                          setError("Email verified but unable to sign in. Please try signing in manually.")
+                        }
+                      } else {
+                        setError("Email verified but unable to activate session. Please try signing in manually.")
+                      }
+                    }
+                  } catch (activationError: unknown) {
+                    console.error('❌ Session activation failed:', activationError)
+                    setError("Email verified but unable to activate session. Please try signing in manually.")
+                  }
+                } else {
+                  setError(`Verification failed: ${errorMessage}`)
+                }
               }
+            } else {
+              console.log('❌ No valid signup context found')
+              setError("Unable to verify code. Please try signing up again.")
             }
           } catch (err: unknown) {
+            console.error('❌ OTP verification error:', err)
             const error = err as { errors?: Array<{ message: string }> }
             setError(error.errors?.[0]?.message || "Invalid verification code")
           }
