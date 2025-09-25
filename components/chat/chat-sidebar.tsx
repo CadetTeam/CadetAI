@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
   ChevronLeftIcon,
@@ -10,7 +9,6 @@ import {
   ChatBubbleIcon,
   UploadIcon,
   ClockIcon,
-  PlusIcon,
   TrashIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
@@ -85,17 +83,6 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
     }
   }
 
-  const handleNewChat = () => {
-    const newChat: ChatThread = {
-      id: Date.now().toString(),
-      title: "New Chat",
-      preview: "Start a new conversation with Cadet...",
-      timestamp: new Date(),
-      messageCount: 0
-    }
-    setChatThreads(prev => [newChat, ...prev])
-    onViewChange('ask')
-  }
 
   const handleDeleteChat = (chatId: string) => {
     setChatThreads(prev => prev.filter(chat => chat.id !== chatId))
