@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   "/subscription",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/auth(.*)",
   "/api/webhooks(.*)",
 ]);
 
@@ -20,8 +21,14 @@ export default clerkMiddleware(async (auth, req) => {
     return Response.redirect(new URL('/auth-unified', req.url));
   }
   
+  // Protect all app routes - users must be signed in to access any /app/* routes
   if (isProtectedRoute(req) && !isPublicRoute(req)) {
-    await auth.protect();
+    const { userId } = await auth()
+    
+    // If user is not signed in and trying to access protected route, redirect to auth
+    if (!userId) {
+      return Response.redirect(new URL('/auth-unified', req.url));
+    }
   }
 });
 

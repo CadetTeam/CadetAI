@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs"
+import { useSignIn, useSignUp, useClerk, useAuth } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 import { clerkSupabaseSync } from "@/lib/clerk-supabase-sync"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -35,6 +36,8 @@ export default function UnifiedAuthPage() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const { signUp, setActive: setActiveSignUp } = useSignUp()
   const { client } = useClerk()
+  const { isSignedIn, isLoaded: authLoaded } = useAuth()
+  const router = useRouter()
 
   // Best-effort helper to get a bot-protection token without breaking types
   const getCaptchaTokenSafe = async (action: string): Promise<string | undefined> => {
@@ -66,6 +69,38 @@ export default function UnifiedAuthPage() {
   const [success, setSuccess] = useState("")
   const [otpCode, setOtpCode] = useState("")
   const [otpTimer, setOtpTimer] = useState(0)
+
+  // Check if user is already signed in and redirect to app
+  useEffect(() => {
+    if (authLoaded && isSignedIn) {
+      console.log('🔄 User already signed in, redirecting to app')
+      router.push('/app')
+    }
+  }, [authLoaded, isSignedIn, router])
+
+  // Show loading while checking authentication status
+  if (!authLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Checking authentication...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If user is signed in, show loading while redirecting
+  if (isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Redirecting to app...</p>
+        </div>
+      </div>
+    )
+  }
 
   // Debug mode changes
   useEffect(() => {
