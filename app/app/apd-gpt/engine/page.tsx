@@ -215,18 +215,20 @@ export default function APDEnginePage() {
   }, [setNodes])
 
   return (
-    <div className="h-full w-full bg-gray-50 dark:bg-gray-900">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onNodeClick={onNodeClick}
-        nodeTypes={nodeTypes}
-        fitView
-        className="bg-gray-50 dark:bg-gray-900"
-      >
+    <>
+      {/* Full-screen ReactFlow Canvas */}
+      <div className="fixed inset-0 z-10">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          nodeTypes={nodeTypes}
+          fitView
+          className="bg-gray-50 dark:bg-gray-900"
+        >
         <Controls />
         <MiniMap 
           nodeStrokeColor={(n: Node) => {
@@ -244,7 +246,7 @@ export default function APDEnginePage() {
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
         {/* Legend Panel */}
-        <Panel position="top-left" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4">
+        <Panel position="top-left" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 z-20">
           <div className="space-y-3">
             <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Legend</h3>
             <div className="space-y-2">
@@ -265,7 +267,7 @@ export default function APDEnginePage() {
         </Panel>
 
         {/* Status Legend */}
-        <Panel position="top-right" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4">
+        <Panel position="top-right" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 z-20">
           <div className="space-y-3">
             <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Status</h3>
             <div className="space-y-2">
@@ -286,7 +288,7 @@ export default function APDEnginePage() {
         </Panel>
 
         {/* Controls Panel */}
-        <Panel position="bottom-left" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4">
+        <Panel position="bottom-left" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 z-20">
           <div className="flex space-x-2">
             <Button size="sm" onClick={addNewNode}>
               <PlusIcon className="w-4 h-4 mr-2" />
@@ -305,7 +307,7 @@ export default function APDEnginePage() {
 
         {/* Node Details Panel */}
         {selectedNode && (
-          <Panel position="bottom-right" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 max-w-sm">
+          <Panel position="bottom-right" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 max-w-sm z-20">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Node Details</h3>
@@ -346,6 +348,7 @@ export default function APDEnginePage() {
           </Panel>
         )}
       </ReactFlow>
-    </div>
+      </div>
+    </>
   )
 }

@@ -42,16 +42,24 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="flex h-screen bg-background">
       {/* App Menu - Show on home page and non-APDGPT app pages */}
       {(isHomePage || !isAPDGPTApp) && (
-        <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
+        <div className="z-30">
+          <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
+        </div>
       )}
       
       {/* Left Sidebar - Only show for APDGPT app pages */}
-      {isAPDGPTApp && <AppSidebar />}
+      {isAPDGPTApp && (
+        <div className="z-30">
+          <AppSidebar />
+        </div>
+      )}
       
       {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col overflow-hidden ${(isHomePage || !isAPDGPTApp) ? 'ml-12' : ''}`}>
+      <div className={`flex-1 flex flex-col overflow-hidden ${(isHomePage || !isAPDGPTApp) ? 'ml-12' : ''} z-20`}>
         {/* Header */}
-        <AppHeader />
+        <div className="z-30">
+          <AppHeader />
+        </div>
         
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
@@ -60,7 +68,11 @@ export function AppLayout({ children }: AppLayoutProps) {
           </main>
           
           {/* Right Sidebar - Only show for APDGPT app pages */}
-          {isAPDGPTApp && <RightSidebar />}
+          {isAPDGPTApp && (
+            <div className="z-30">
+              <RightSidebar />
+            </div>
+          )}
         </div>
       </div>
       
