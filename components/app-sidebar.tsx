@@ -81,6 +81,14 @@ export function AppSidebar() {
     }
   }
 
+  const handleAPDEngineClick = () => {
+    // Minimize the sidebar when APD Engine is clicked
+    setIsCollapsed(true)
+    setIsExpanded(false)
+    // Navigate to APD Engine page
+    window.location.href = "/app/apd-gpt/engine"
+  }
+
   return (
     <div 
       className={cn(
@@ -131,6 +139,45 @@ export function AppSidebar() {
           <nav className="space-y-1">
             {mainNavItems.map((item) => {
               const isActive = pathname === item.href
+              const isAPDEngine = item.href === "/app/apd-gpt/engine"
+              
+              if (isAPDEngine) {
+                return (
+                  <button
+                    key={item.href}
+                    onClick={handleAPDEngineClick}
+                    className={cn(
+                      "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
+                      "hover:bg-accent hover:text-accent-foreground",
+                      isActive && "bg-accent text-accent-foreground",
+                      !shouldShowExpanded && "justify-center"
+                    )}
+                    title={!shouldShowExpanded ? item.label : undefined}
+                  >
+                    <item.icon className={cn("transition-all", shouldShowExpanded ? "w-4 h-4" : "w-4 h-4")} />
+                    {shouldShowExpanded && (
+                      <>
+                        <span className="ml-3">{item.label}</span>
+                        {item.shortcut && (
+                          <span className="ml-auto text-xs text-muted-foreground">
+                            {item.shortcut}
+                          </span>
+                        )}
+                      </>
+                    )}
+                    {/* Tooltip for collapsed state */}
+                    {!shouldShowExpanded && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
+                        {item.label}
+                        {item.shortcut && (
+                          <span className="ml-2 text-muted-foreground">{item.shortcut}</span>
+                        )}
+                      </div>
+                    )}
+                  </button>
+                )
+              }
+
               return (
                 <Link
                   key={item.href}
