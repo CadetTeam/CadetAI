@@ -105,7 +105,7 @@ export default function AppDashboard() {
   }, [])
 
   return (
-    <div className="space-y-8">
+    <div className="p-6 space-y-8">
       {/* Hero Banner */}
       <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white">
         <div className="relative z-10">

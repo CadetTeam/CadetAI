@@ -17,7 +17,7 @@ export default function HistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="p-6 space-y-6">
         {/* Header Skeleton */}
         <div className="space-y-4">
           <Skeleton className="h-8 w-1/3" />
@@ -70,7 +70,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Chat History</h1>

@@ -55,7 +55,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
-          <main className="flex-1 overflow-auto p-6">
+          <main className="flex-1 overflow-auto">
             {children}
           </main>
           

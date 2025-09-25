@@ -123,7 +123,7 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
   ]
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-screen">
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
@@ -171,24 +171,6 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
         ))}
       </div>
 
-      <Separator />
-
-      {/* New Chat Button */}
-      <div className="p-4">
-        <Button
-          onClick={handleNewChat}
-          className={cn(
-            "w-full",
-            collapsed ? "px-2" : "px-3"
-          )}
-          title={collapsed ? "New Chat" : undefined}
-        >
-          <PlusIcon className="h-4 w-4" />
-          {!collapsed && <span className="ml-2">New Chat</span>}
-        </Button>
-      </div>
-
-      <Separator />
 
       {/* Chat History */}
       {currentView === 'history' && (

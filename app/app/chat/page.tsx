@@ -10,7 +10,7 @@ export default function ChatPage() {
   const [currentView, setCurrentView] = useState<'ask' | 'uploads' | 'history'>('ask')
 
   return (
-    <div className="flex h-full bg-background">
+    <div className="flex h-screen bg-background">
       {/* Chat Sidebar */}
       <div className={cn(
         "border-r border-border bg-sidebar transition-all duration-300",

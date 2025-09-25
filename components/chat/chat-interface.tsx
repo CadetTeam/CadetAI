@@ -61,14 +61,12 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
     setIsLoading(true)
     setIsTyping(true)
 
-    // Simulate AI response with OSS120B model
+    // Simulate AI response
     setTimeout(() => {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: `I understand you're asking about "${userMessage.content}". As Cadet, I'm here to help you with APD documents, compliance analysis, and team collaboration. Let me provide you with a comprehensive response based on the OSS120B model's analysis capabilities.
-
-This is a simulated response from the OSS120B model. In a real implementation, this would connect to OpenAI and Perplexity APIs to provide accurate, contextual responses based on your specific needs.
+        content: `I understand you're asking about "${userMessage.content}". As Cadet, I'm here to help you with APD documents, compliance analysis, and team collaboration. Let me provide you with a comprehensive response based on your specific needs.
 
 Would you like me to elaborate on any particular aspect of your question?`,
         timestamp: new Date()
@@ -119,9 +117,9 @@ Would you like me to elaborate on any particular aspect of your question?`,
           <div className="flex items-center justify-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
             <Badge variant="outline" className="flex items-center space-x-1">
               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <span>OSS120B Model</span>
+              <span>Online</span>
             </Badge>
-            <Badge variant="outline">OpenAI + Perplexity</Badge>
+            <Badge variant="outline">AI Assistant</Badge>
           </div>
         </div>
 
