@@ -9,7 +9,6 @@ import {
   PersonIcon, 
   EyeOpenIcon, 
   ClockIcon,
-  Cross2Icon,
   HomeIcon as BuildingIcon
 } from "@radix-ui/react-icons"
 
@@ -136,7 +135,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
               Organization Vendors
             </DialogTitle>
             <DialogDescription>
-              Manage vendors that have access to your organization's resources.
+              Manage vendors that have access to your organization&apos;s resources.
             </DialogDescription>
           </DialogHeader>
 

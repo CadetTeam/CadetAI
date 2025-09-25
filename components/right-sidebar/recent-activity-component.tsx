@@ -9,8 +9,7 @@ import {
   ChatBubbleIcon, 
   UpdateIcon,
   PersonIcon,
-  ClockIcon,
-  CheckCircledIcon
+  ClockIcon
 } from "@radix-ui/react-icons"
 
 interface ActivityItem {

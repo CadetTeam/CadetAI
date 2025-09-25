@@ -13,29 +13,20 @@ import { ReactFlow,
   Node,
   BackgroundVariant,
   Panel,
-  NodeTypes,
-  EdgeTypes
+  NodeTypes
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { 
-  FileTextIcon, 
-  CheckIcon, 
   DownloadIcon, 
   Share1Icon, 
-  ClockIcon, 
-  PersonIcon, 
-  IdCardIcon, 
-  FileIcon, 
-  UpdateIcon, 
   PlusIcon,
-  EyeOpenIcon,
   GearIcon
 } from "@radix-ui/react-icons"
 
 // Custom Node Types
-const APDNode = ({ data, selected }: { data: any; selected: boolean }) => {
+const APDNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
   return (
     <div className={`px-4 py-2 shadow-md rounded-md border-2 bg-white dark:bg-gray-800 ${
       selected ? 'border-blue-500' : 'border-gray-300 dark:border-gray-600'
@@ -54,7 +45,7 @@ const APDNode = ({ data, selected }: { data: any; selected: boolean }) => {
   )
 }
 
-const ProcessNode = ({ data, selected }: { data: any; selected: boolean }) => {
+const ProcessNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
   return (
     <div className={`px-4 py-2 shadow-md rounded-md border-2 bg-blue-50 dark:bg-blue-900/20 ${
       selected ? 'border-blue-500' : 'border-blue-300 dark:border-blue-600'
@@ -70,7 +61,7 @@ const ProcessNode = ({ data, selected }: { data: any; selected: boolean }) => {
   )
 }
 
-const DecisionNode = ({ data, selected }: { data: any; selected: boolean }) => {
+const DecisionNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
   return (
     <div className={`px-4 py-2 shadow-md rounded-md border-2 bg-yellow-50 dark:bg-yellow-900/20 transform rotate-45 ${
       selected ? 'border-yellow-500' : 'border-yellow-300 dark:border-yellow-600'
@@ -238,12 +229,12 @@ export default function APDEnginePage() {
       >
         <Controls />
         <MiniMap 
-          nodeStrokeColor={(n: any) => {
-            if (n.data?.status === 'complete') return '#10b981'
-            if (n.data?.status === 'pending') return '#f59e0b'
+          nodeStrokeColor={(n: Node) => {
+            if ((n.data as Record<string, unknown>)?.status === 'complete') return '#10b981'
+            if ((n.data as Record<string, unknown>)?.status === 'pending') return '#f59e0b'
             return '#ef4444'
           }}
-          nodeColor={(n: any) => {
+          nodeColor={(n: Node) => {
             if (n.type === 'processNode') return '#3b82f6'
             if (n.type === 'decisionNode') return '#f59e0b'
             return '#6b7280'

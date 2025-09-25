@@ -9,7 +9,6 @@ import {
   PersonIcon, 
   EyeOpenIcon, 
   ClockIcon,
-  Cross2Icon,
   PersonIcon as CollaboratorsIcon
 } from "@radix-ui/react-icons"
 
