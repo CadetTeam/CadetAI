@@ -7,7 +7,7 @@ const clerk = createClerkClient({
 
 export async function POST(req: NextRequest) {
   try {
-    const { emailAddress, role, organizationId, skipEmailVerification } = await req.json()
+    const { emailAddress, role, organizationId } = await req.json()
     
     if (!emailAddress || !organizationId) {
       return NextResponse.json({ error: 'Email address and organization ID are required' }, { status: 400 })

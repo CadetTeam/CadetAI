@@ -13,7 +13,6 @@ import {
   CheckCircledIcon, 
   ExclamationTriangleIcon, 
   UpdateIcon,
-  PersonIcon,
   HomeIcon as BuildingIcon
 } from "@radix-ui/react-icons"
 
@@ -31,7 +30,6 @@ interface TeamFormData {
 }
 
 export function NewTeamModal({ isOpen, onClose }: NewTeamModalProps) {
-  const { organization } = useOrganization()
   const { createOrganization } = useOrganizationList()
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState("")

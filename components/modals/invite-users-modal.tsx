@@ -4,17 +4,14 @@ import { useState } from "react"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { 
   CheckCircledIcon, 
   ExclamationTriangleIcon, 
   UpdateIcon,
-  PersonIcon,
   PlusIcon,
   Cross2Icon,
   EnvelopeClosedIcon as MailIcon
@@ -40,7 +37,6 @@ interface EmailInvite {
 
 export function InviteUsersModal({ isOpen, onClose }: InviteUsersModalProps) {
   const { organization } = useOrganization()
-  const { user } = useUser()
   const [isInviting, setIsInviting] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
