@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { UploadsView } from "@/components/chat/uploads-view"
@@ -11,9 +11,7 @@ import {
   PaperPlaneIcon,
   UploadIcon,
   StopIcon,
-  MixerHorizontalIcon,
   CopyIcon,
-  UpdateIcon,
   ReloadIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"

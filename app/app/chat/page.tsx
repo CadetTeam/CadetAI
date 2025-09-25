@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ChatInterface } from "@/components/chat/chat-interface"
 import { ChatSidebar } from "@/components/chat/chat-sidebar"
 import { cn } from "@/lib/utils"

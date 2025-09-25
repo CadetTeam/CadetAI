@@ -1,16 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import React from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  ChatBubbleIcon,
-  PlusIcon
+  ChatBubbleIcon
 } from "@radix-ui/react-icons"
 
 export function FloatingChat() {
-  const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
   const handleOpenChat = () => {
