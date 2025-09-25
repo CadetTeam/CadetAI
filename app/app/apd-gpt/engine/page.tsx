@@ -36,10 +36,10 @@ const APDNode = ({ data, selected }: { data: Record<string, unknown>; selected: 
           data.status === 'complete' ? 'bg-green-500' : 
           data.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
         }`} />
-        <div className="font-bold text-sm">{data.label}</div>
+        <div className="font-bold text-sm">{data.label as string}</div>
       </div>
       <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-        {data.description}
+        {data.description as string}
       </div>
     </div>
   )
@@ -52,10 +52,10 @@ const ProcessNode = ({ data, selected }: { data: Record<string, unknown>; select
     }`}>
       <div className="flex items-center space-x-2">
         <GearIcon className="w-4 h-4 text-blue-600" />
-        <div className="font-bold text-sm text-blue-900 dark:text-blue-100">{data.label}</div>
+        <div className="font-bold text-sm text-blue-900 dark:text-blue-100">{data.label as string}</div>
       </div>
       <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-        {data.description}
+        {data.description as string}
       </div>
     </div>
   )
@@ -67,7 +67,7 @@ const DecisionNode = ({ data, selected }: { data: Record<string, unknown>; selec
       selected ? 'border-yellow-500' : 'border-yellow-300 dark:border-yellow-600'
     }`}>
       <div className="transform -rotate-45 font-bold text-sm text-yellow-900 dark:text-yellow-100">
-        {data.label}
+        {data.label as string}
       </div>
     </div>
   )
