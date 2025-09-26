@@ -55,7 +55,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       )}
       
       {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col overflow-hidden ${isHomePage ? 'ml-12' : ''} z-20`}>
+      <div className="flex-1 flex flex-col overflow-hidden z-20">
         {/* Header */}
         <div className="z-30">
           <AppHeader />

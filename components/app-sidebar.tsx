@@ -116,7 +116,7 @@ export function AppSidebar() {
 
   const handleLogout = async () => {
     try {
-      await signOut({ redirectUrl: "/auth" })
+      await signOut({ redirectUrl: "/auth-unified" })
     } catch (error) {
       console.error("Error signing out:", error)
     }

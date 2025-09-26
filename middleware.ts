@@ -23,12 +23,7 @@ export default clerkMiddleware(async (auth, req) => {
   
   // Protect all app routes - users must be signed in to access any /app/* routes
   if (isProtectedRoute(req) && !isPublicRoute(req)) {
-    const { userId } = await auth()
-    
-    // If user is not signed in and trying to access protected route, redirect to auth
-    if (!userId) {
-      return Response.redirect(new URL('/auth-unified', req.url));
-    }
+    await auth.protect()
   }
 });
 

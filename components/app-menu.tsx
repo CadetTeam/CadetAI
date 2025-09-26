@@ -77,7 +77,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   }
 
   return (
-    <div className="fixed left-0 top-0 z-50 h-full w-16 bg-background border-r border-border flex flex-col">
+    <div className="h-full w-16 bg-background border-r border-border flex flex-col">
 
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto py-2">
