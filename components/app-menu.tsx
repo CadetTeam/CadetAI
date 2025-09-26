@@ -5,9 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { 
-  PlusIcon
-} from "@radix-ui/react-icons"
 
 interface App {
   id: string
