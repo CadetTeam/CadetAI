@@ -33,7 +33,6 @@ export function VendorComponent({ className }: VendorComponentProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const { user } = useUser()
 
   useEffect(() => {
@@ -42,7 +41,6 @@ export function VendorComponent({ className }: VendorComponentProps) {
 
       try {
         setIsLoading(true)
-        setError(null)
 
         // Fetch vendors from Supabase
         const { data: vendorData, error: vendorError } = await supabase
@@ -55,7 +53,15 @@ export function VendorComponent({ className }: VendorComponentProps) {
         if (vendorError) throw vendorError
 
         // Transform data to match Vendor interface
-        const transformedVendors: Vendor[] = (vendorData || []).map((vendor: any) => ({
+        const transformedVendors: Vendor[] = (vendorData || []).map((vendor: {
+          id: string;
+          name: string;
+          avatar_url?: string;
+          organization_name: string;
+          access_level: string;
+          last_access: string;
+          status: string;
+        }) => ({
           id: vendor.id,
           name: vendor.name,
           avatar: vendor.avatar_url,
@@ -70,7 +76,6 @@ export function VendorComponent({ className }: VendorComponentProps) {
 
       } catch (err) {
         console.error('Error fetching vendors:', err)
-        setError('Failed to load vendors')
       } finally {
         setIsLoading(false)
       }

@@ -8,7 +8,6 @@ import { RightSidebar } from "./right-sidebar"
 import { FloatingChat } from "./floating-chat"
 import { AppMenu } from "./app-menu"
 import { MobileAppMenu } from "./mobile-app-menu"
-import { MobileRightMenu } from "./mobile-right-menu"
 import { useState, useEffect } from "react"
 
 interface AppLayoutProps {
