@@ -69,7 +69,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
           organization: vendor.organization_name,
           accessLevel: vendor.access_level as 'admin' | 'read' | 'write',
           lastAccess: formatLastAccess(vendor.last_access),
-          status: vendor.status
+          status: vendor.status as 'active' | 'pending' | 'suspended'
         }))
 
         setVendors(transformedVendors)
