@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import { 
+  PlusIcon
+} from "@radix-ui/react-icons"
 
 interface App {
   id: string
@@ -26,7 +29,7 @@ const apps: App[] = [
     id: "apdgpt",
     name: "APD GPT",
     lightIcon: "/app-icons/light-folder.png",
-    darkIcon: "/app-icons/dark-folder.png", 
+    darkIcon: "/app-icons/dark-folder.png",
     href: "/app",
     isActive: true
   },
@@ -97,7 +100,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     isActive && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <div className="relative w-6 h-6">
+                  <div className="relative w-6 h-6 flex items-center justify-center">
                     <Image
                       src={iconSrc}
                       alt={app.name}
@@ -129,7 +132,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
           size="sm"
           className="w-full h-10 p-0"
         >
-          <div className="relative w-6 h-6">
+          <div className="relative w-6 h-6 flex items-center justify-center">
             <Image
               src={theme === 'dark' ? "/app-icons/light-add.png" : "/app-icons/dark-add.png"}
               alt="Add New App"
