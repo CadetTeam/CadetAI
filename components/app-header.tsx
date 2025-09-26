@@ -1,12 +1,13 @@
 "use client"
 
-import { MagnifyingGlassIcon, BellIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons"
+import { MagnifyingGlassIcon, BellIcon, QuestionMarkCircledIcon, HeartIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/Logo"
 import { useUser } from "@clerk/nextjs"
+import Link from "next/link"
 
 export function AppHeader() {
   const { user } = useUser()
@@ -34,6 +35,11 @@ export function AppHeader() {
       {/* Right Side Actions */}
       <div className="flex items-center space-x-2">
         <ThemeToggle />
+        <Link href="/app/knowledge-base">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Knowledge Base">
+            <HeartIcon className="w-4 h-4" />
+          </Button>
+        </Link>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
           <BellIcon className="w-4 h-4" />
         </Button>

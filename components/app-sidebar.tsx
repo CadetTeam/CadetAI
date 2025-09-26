@@ -20,7 +20,8 @@ import {
   CodeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  HamburgerMenuIcon
+  HamburgerMenuIcon,
+  AvatarIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -36,7 +37,7 @@ const mainNavItems = [
 
 const peopleNavItems = [
   { href: "/app/apd-gpt/teams/new", label: "New Team", icon: PlusIcon, shortcut: "⌘T", isModal: true },
-  { href: "/app/apd-gpt/teams", label: "Teams", icon: PersonIcon },
+  { href: "/app/apd-gpt/teams", label: "Teams", icon: AvatarIcon },
   { href: "/app/apd-gpt/teams/invite", label: "Invite users", icon: PersonIcon, arrow: true, isModal: true },
   { href: "/app/apd-gpt/settings", label: "Settings", icon: GearIcon, shortcut: "⌘S" },
 ]
@@ -187,7 +188,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4" />
+                           <item.icon className="w-5 h-5" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -223,7 +224,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                           <item.icon className="w-5 h-5" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -278,7 +279,7 @@ export function AppSidebar() {
                     className={commonClassName}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4" />
+                           <item.icon className="w-5 h-5" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -312,7 +313,7 @@ export function AppSidebar() {
                   className={commonClassName}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                           <item.icon className="w-5 h-5" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -368,7 +369,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4" />
+                           <item.icon className="w-5 h-5" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -404,7 +405,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                           <item.icon className="w-5 h-5" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>

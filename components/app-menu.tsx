@@ -83,11 +83,11 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
     <div className="h-full w-16 bg-background border-r border-border flex flex-col">
 
       {/* App Icons */}
-      <div className="flex-1 overflow-y-auto py-2">
+      <div className="flex-1 overflow-y-auto flex items-center justify-center">
         <div className="space-y-1 px-1">
           {apps.map((app) => {
             const isActive = currentApp === app.id
-            const iconSrc = theme === 'dark' ? app.lightIcon : app.darkIcon
+            const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
 
             return (
               <div key={app.id} className="relative">
