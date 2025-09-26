@@ -80,7 +80,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   }
 
   return (
-    <div className="h-full w-16 bg-background border-r border-border flex flex-col">
+    <div className="h-screen w-16 bg-background border-r border-border flex flex-col">
 
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto flex items-center justify-center">
@@ -126,7 +126,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
       </div>
 
       {/* Bottom Section - Add New App */}
-      <div className="p-2 border-t border-border">
+      <div className="p-2">
         <Button
           variant="ghost"
           size="sm"

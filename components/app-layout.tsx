@@ -7,7 +7,9 @@ import { AppHeader } from "./app-header"
 import { RightSidebar } from "./right-sidebar"
 import { FloatingChat } from "./floating-chat"
 import { AppMenu } from "./app-menu"
-import { useState } from "react"
+import { MobileAppMenu } from "./mobile-app-menu"
+import { MobileRightMenu } from "./mobile-right-menu"
+import { useState, useEffect } from "react"
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -17,6 +19,18 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { isSignedIn } = useAuth()
   const pathname = usePathname()
   const [currentApp, setCurrentApp] = useState("apdgpt")
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Show marketing page for unauthenticated users or auth pages
   if (!isSignedIn || pathname.startsWith('/auth')) {
@@ -40,15 +54,20 @@ export function AppLayout({ children }: AppLayoutProps) {
   // Show app layout for authenticated users
   return (
     <div className="flex h-screen bg-background">
-      {/* App Menu - Only show on home page, positioned outside header */}
-      {isHomePage && (
+      {/* Mobile App Menu - Only show on mobile */}
+      {isMobile && (
+        <MobileAppMenu currentApp={currentApp} onAppChange={handleAppChange} />
+      )}
+
+      {/* Desktop App Menu - Only show on desktop and home page */}
+      {!isMobile && isHomePage && (
         <div className="z-30">
           <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
         </div>
       )}
       
-      {/* Left Sidebar - Only show for APDGPT app pages */}
-      {isAPDGPTApp && (
+      {/* Desktop Left Sidebar - Only show for APDGPT app pages on desktop */}
+      {!isMobile && isAPDGPTApp && (
         <div className="z-30">
           <AppSidebar />
         </div>
@@ -67,8 +86,8 @@ export function AppLayout({ children }: AppLayoutProps) {
             {children}
           </main>
           
-          {/* Right Sidebar - Only show for APDGPT app pages */}
-          {isAPDGPTApp && (
+          {/* Desktop Right Sidebar - Only show for APDGPT app pages on desktop */}
+          {!isMobile && isAPDGPTApp && (
             <div className="z-30">
               <RightSidebar />
             </div>
@@ -78,6 +97,11 @@ export function AppLayout({ children }: AppLayoutProps) {
       
       {/* Floating Chat */}
       <FloatingChat />
+      
+      {/* Mobile Right Menu - Only show on mobile */}
+      {isMobile && isAPDGPTApp && (
+        <MobileRightMenu />
+      )}
     </div>
   )
 }
