@@ -4,13 +4,20 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
+import { 
+  HomeIcon,
+  LockClosedIcon,
+  PersonIcon,
+  DesktopIcon,
+  FileTextIcon,
+  LockClosedIcon as KeyIcon,
+  PlusIcon
+} from "@radix-ui/react-icons"
 
 interface App {
   id: string
   name: string
-  lightIcon: string
-  darkIcon: string
+  icon: React.ElementType
   href: string
   isActive?: boolean
   badge?: string
@@ -25,44 +32,38 @@ const apps: App[] = [
   {
     id: "apdgpt",
     name: "APD GPT",
-    lightIcon: "/app-icons/light-folder.png",
-    darkIcon: "/app-icons/dark-folder.png",
+    icon: HomeIcon,
     href: "/app",
     isActive: true
   },
   {
     id: "security",
     name: "Security",
-    lightIcon: "/app-icons/light-fingerprint.png",
-    darkIcon: "/app-icons/dark-fingerprint.png",
+    icon: LockClosedIcon,
     href: "/app/security"
   },
   {
     id: "wallet",
     name: "Wallet",
-    lightIcon: "/app-icons/light-wallet.png",
-    darkIcon: "/app-icons/dark-wallet.png",
+    icon: PersonIcon,
     href: "/app/wallet"
   },
   {
     id: "windows",
     name: "Windows",
-    lightIcon: "/app-icons/light-windows.png",
-    darkIcon: "/app-icons/dark-windows.png",
+    icon: DesktopIcon,
     href: "/app/windows"
   },
   {
     id: "files",
     name: "Files",
-    lightIcon: "/app-icons/light-folder.png",
-    darkIcon: "/app-icons/dark-folder.png",
+    icon: FileTextIcon,
     href: "/app/files"
   },
   {
     id: "keys",
     name: "Keys",
-    lightIcon: "/app-icons/light-key.png",
-    darkIcon: "/app-icons/dark-key.png",
+    icon: KeyIcon,
     href: "/app/keys"
   }
 ]
@@ -84,7 +85,6 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
         <div className="space-y-1 px-1">
           {apps.map((app) => {
             const isActive = currentApp === app.id
-            const iconSrc = theme === 'dark' ? app.lightIcon : app.darkIcon
 
             return (
               <div key={app.id} className="relative">
@@ -98,13 +98,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                   )}
                 >
                   <div className="relative w-6 h-6 flex items-center justify-center">
-                    <Image
-                      src={iconSrc}
-                      alt={app.name}
-                      width={24}
-                      height={24}
-                      className="object-contain"
-                    />
+                    <app.icon className="w-6 h-6" />
                   </div>
                   
                   {/* Badge */}
@@ -130,13 +124,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
           className="w-full h-10 p-0"
         >
           <div className="relative w-6 h-6 flex items-center justify-center">
-            <Image
-              src={theme === 'dark' ? "/app-icons/light-add.png" : "/app-icons/dark-add.png"}
-              alt="Add New App"
-              width={24}
-              height={24}
-              className="object-contain opacity-60 hover:opacity-100 transition-opacity"
-            />
+            <PlusIcon className="w-6 h-6 opacity-60 hover:opacity-100 transition-opacity" />
           </div>
         </Button>
       </div>
