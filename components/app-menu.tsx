@@ -1,22 +1,19 @@
 "use client"
 
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 import { 
-  HomeIcon,
-  LockClosedIcon,
-  PersonIcon,
-  DesktopIcon,
-  FileTextIcon,
-  LockClosedIcon as KeyIcon,
   PlusIcon
 } from "@radix-ui/react-icons"
 
 interface App {
   id: string
   name: string
-  icon: React.ElementType
+  lightIcon: string
+  darkIcon: string
   href: string
   isActive?: boolean
   badge?: string
@@ -31,43 +28,50 @@ const apps: App[] = [
   {
     id: "apdgpt",
     name: "APD GPT",
-    icon: HomeIcon,
+    lightIcon: "/app-icons/light-folder.png",
+    darkIcon: "/app-icons/dark-folder.png",
     href: "/app",
     isActive: true
   },
   {
     id: "security",
     name: "Security",
-    icon: LockClosedIcon,
+    lightIcon: "/app-icons/light-fingerprint.png",
+    darkIcon: "/app-icons/dark-fingerprint.png",
     href: "/app/security"
   },
   {
     id: "wallet",
     name: "Wallet",
-    icon: PersonIcon,
+    lightIcon: "/app-icons/light-wallet.png",
+    darkIcon: "/app-icons/dark-wallet.png",
     href: "/app/wallet"
   },
   {
     id: "windows",
     name: "Windows",
-    icon: DesktopIcon,
+    lightIcon: "/app-icons/light-windows.png",
+    darkIcon: "/app-icons/dark-windows.png",
     href: "/app/windows"
   },
   {
     id: "files",
     name: "Files",
-    icon: FileTextIcon,
+    lightIcon: "/app-icons/light-folder.png",
+    darkIcon: "/app-icons/dark-folder.png",
     href: "/app/files"
   },
   {
     id: "keys",
     name: "Keys",
-    icon: KeyIcon,
+    lightIcon: "/app-icons/light-key.png",
+    darkIcon: "/app-icons/dark-key.png",
     href: "/app/keys"
   }
 ]
 
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
+  const { theme } = useTheme()
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
@@ -83,6 +87,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
         <div className="space-y-1 px-1">
           {apps.map((app) => {
             const isActive = currentApp === app.id
+            const iconSrc = theme === 'dark' ? app.lightIcon : app.darkIcon
 
             return (
               <div key={app.id} className="relative">
@@ -96,7 +101,13 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                   )}
                 >
                   <div className="relative w-6 h-6 flex items-center justify-center">
-                    <app.icon className="w-6 h-6" />
+                    <Image
+                      src={iconSrc}
+                      alt={app.name}
+                      width={24}
+                      height={24}
+                      className="object-contain"
+                    />
                   </div>
                   
                   {/* Badge */}
