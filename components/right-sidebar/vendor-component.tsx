@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -11,6 +11,8 @@ import {
   ClockIcon,
   HomeIcon as BuildingIcon
 } from "@radix-ui/react-icons"
+import { useUser } from "@clerk/nextjs"
+import { supabase } from "@/lib/supabase-client"
 
 interface Vendor {
   id: string
@@ -27,39 +29,66 @@ interface VendorComponentProps {
   className?: string
 }
 
-// Mock data - in real app this would come from API
-const mockVendors: Vendor[] = [
-  {
-    id: "1",
-    name: "Acme Corp",
-    initials: "AC",
-    organization: "Acme Corporation",
-    accessLevel: 'read',
-    lastAccess: "2 hours ago",
-    status: 'active'
-  },
-  {
-    id: "2", 
-    name: "Tech Solutions",
-    initials: "TS",
-    organization: "Tech Solutions Inc",
-    accessLevel: 'write',
-    lastAccess: "1 day ago",
-    status: 'active'
-  },
-  {
-    id: "3",
-    name: "Data Systems",
-    initials: "DS", 
-    organization: "Data Systems LLC",
-    accessLevel: 'read',
-    lastAccess: "3 days ago",
-    status: 'pending'
-  }
-]
-
 export function VendorComponent({ className }: VendorComponentProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { user } = useUser()
+
+  useEffect(() => {
+    const fetchVendors = async () => {
+      if (!user) return
+
+      try {
+        setIsLoading(true)
+        setError(null)
+
+        // Fetch vendors from Supabase
+        const { data: vendorData, error: vendorError } = await supabase
+          .from('vendors')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('last_access', { ascending: false })
+          .limit(10)
+
+        if (vendorError) throw vendorError
+
+        // Transform data to match Vendor interface
+        const transformedVendors: Vendor[] = (vendorData || []).map((vendor: any) => ({
+          id: vendor.id,
+          name: vendor.name,
+          avatar: vendor.avatar_url,
+          initials: vendor.name.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
+          organization: vendor.organization_name,
+          accessLevel: vendor.access_level,
+          lastAccess: formatLastAccess(vendor.last_access),
+          status: vendor.status
+        }))
+
+        setVendors(transformedVendors)
+
+      } catch (err) {
+        console.error('Error fetching vendors:', err)
+        setError('Failed to load vendors')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchVendors()
+  }, [user])
+
+  const formatLastAccess = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+    
+    if (diffInHours < 1) return 'Just now'
+    if (diffInHours < 24) return `${diffInHours} hours ago`
+    const diffInDays = Math.floor(diffInHours / 24)
+    return `${diffInDays} days ago`
+  }
 
   const getAccessLevelColor = (level: string) => {
     switch (level) {
@@ -110,17 +139,33 @@ export function VendorComponent({ className }: VendorComponentProps) {
         </div>
 
         <div className="flex items-center space-x-2">
-          {mockVendors.slice(0, 3).map((vendor) => (
-            <Avatar key={vendor.id} className="h-8 w-8 border-2 border-background">
-              <AvatarImage src={vendor.avatar} alt={vendor.name} />
-              <AvatarFallback className="text-xs font-medium">
-                {vendor.initials}
-              </AvatarFallback>
-            </Avatar>
-          ))}
-          {mockVendors.length > 3 && (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
-              +{mockVendors.length - 3}
+          {isLoading ? (
+            // Skeleton loading state
+            <>
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+            </>
+          ) : vendors.length > 0 ? (
+            <>
+              {vendors.slice(0, 3).map((vendor) => (
+                <Avatar key={vendor.id} className="h-8 w-8 border-2 border-background">
+                  <AvatarImage src={vendor.avatar} alt={vendor.name} />
+                  <AvatarFallback className="text-xs font-medium">
+                    {vendor.initials}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+              {vendors.length > 3 && (
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                  +{vendors.length - 3}
+                </div>
+              )}
+            </>
+          ) : (
+            // Empty state
+            <div className="text-xs text-muted-foreground">
+              No vendors yet
             </div>
           )}
         </div>
@@ -140,7 +185,22 @@ export function VendorComponent({ className }: VendorComponentProps) {
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {mockVendors.map((vendor) => (
+            {isLoading ? (
+              // Skeleton loading for modal
+              <>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center space-x-3 p-4 border rounded-lg animate-pulse">
+                    <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                    </div>
+                    <div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  </div>
+                ))}
+              </>
+            ) : vendors.length > 0 ? (
+              vendors.map((vendor) => (
               <div
                 key={vendor.id}
                 className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
@@ -201,7 +261,20 @@ export function VendorComponent({ className }: VendorComponentProps) {
                   </Button>
                 </div>
               </div>
-            ))}
+              ))
+            ) : (
+              // Empty state for modal
+              <div className="text-center py-8">
+                <BuildingIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">No vendors found</h3>
+                <p className="text-muted-foreground mb-4">
+                  No vendors have access to your organization yet.
+                </p>
+                <Button variant="outline" size="sm">
+                  Invite Vendor
+                </Button>
+              </div>
+            )}
           </div>
 
           <DialogFooter>
