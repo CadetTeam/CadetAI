@@ -13,7 +13,8 @@ import {
   CopyIcon,
   ReloadIcon,
   Cross2Icon,
-  EyeOpenIcon
+  EyeOpenIcon,
+  DotsHorizontalIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 
@@ -40,9 +41,22 @@ export function FloatingChat() {
   const [isSending, setIsSending] = useState(false)
   const [attachments, setAttachments] = useState<FileAttachment[]>([])
   const [showFilePreview, setShowFilePreview] = useState<FileAttachment | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isRightMenuOpen, setIsRightMenuOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -125,8 +139,23 @@ export function FloatingChat() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      {/* Mobile Right Menu Button - Only show on mobile */}
+      {isMobile && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsRightMenuOpen(!isRightMenuOpen)}
+          className="fixed bottom-6 right-6 z-50 h-12 w-12 p-0 bg-black rounded-full shadow-lg hover:bg-gray-800"
+        >
+          <DotsHorizontalIcon className="w-6 h-6 text-white" />
+        </Button>
+      )}
+
       {/* Glassmorphic Floating Chat Interface */}
-      <div className="w-[600px] max-w-[90vw] bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10">
+      <div className={cn(
+        "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
+        isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"
+      )}>
         {/* Messages Area */}
         {messages.length > 0 && (
           <ScrollArea className="max-h-[400px] p-4">

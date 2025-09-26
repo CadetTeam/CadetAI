@@ -100,12 +100,12 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     isActive && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <div className="relative w-6 h-6 flex items-center justify-center">
+                  <div className="relative w-8 h-8 flex items-center justify-center">
                     <Image
                       src={iconSrc}
                       alt={app.name}
-                      width={24}
-                      height={24}
+                      width={32}
+                      height={32}
                       className="object-contain"
                     />
                   </div>
@@ -132,8 +132,8 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
           size="sm"
           className="w-full h-10 p-0"
         >
-          <div className="relative w-6 h-6 flex items-center justify-center">
-            <PlusIcon className="w-6 h-6 opacity-60 hover:opacity-100 transition-opacity" />
+          <div className="relative w-8 h-8 flex items-center justify-center">
+            <PlusIcon className="w-8 h-8 opacity-60 hover:opacity-100 transition-opacity" />
           </div>
         </Button>
       </div>

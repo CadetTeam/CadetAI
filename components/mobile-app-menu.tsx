@@ -101,7 +101,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
               <h3 className="text-sm font-semibold text-foreground mb-3 px-2">Apps</h3>
               {apps.map((app) => {
                 const isActive = currentApp === app.id
-                const iconSrc = app.darkIcon // Use dark icons for better contrast on glassmorphic background
+                const iconSrc = app.lightIcon // Use light icons for better contrast on glassmorphic background
 
                 return (
                   <Button

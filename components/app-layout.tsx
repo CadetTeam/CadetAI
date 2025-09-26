@@ -97,11 +97,6 @@ export function AppLayout({ children }: AppLayoutProps) {
       
       {/* Floating Chat */}
       <FloatingChat />
-      
-      {/* Mobile Right Menu - Only show on mobile */}
-      {isMobile && isAPDGPTApp && (
-        <MobileRightMenu />
-      )}
     </div>
   )
 }

@@ -11,9 +11,9 @@ export default function HistoryPage() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Chat Sidebar - Full height, no gaps */}
+      {/* Chat Sidebar - Top aligned, left sticky, full height */}
       <div className={cn(
-        "border-r border-border bg-sidebar transition-all duration-300",
+        "border-r border-border bg-sidebar transition-all duration-300 sticky top-0 h-screen",
         sidebarCollapsed ? "w-16" : "w-64"
       )}>
         <ChatSidebar 
