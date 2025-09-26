@@ -55,7 +55,7 @@ export const supabase = {
   get schema() { return getSupabaseClient().schema },
   get rpc() { return getSupabaseClient().rpc },
   get functions() { return getSupabaseClient().functions }
-} as any
+} as SupabaseClient
 
 export const supabaseAdmin = {
   get auth() { return getSupabaseAdminClient().auth },
@@ -68,4 +68,4 @@ export const supabaseAdmin = {
   get schema() { return getSupabaseAdminClient().schema },
   get rpc() { return getSupabaseAdminClient().rpc },
   get functions() { return getSupabaseAdminClient().functions }
-} as any
+} as SupabaseClient
