@@ -167,7 +167,7 @@ export function AppSidebar() {
         <div className="space-y-2">
           {shouldShowExpanded && (
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              ADP GPT
+              APD GPT
             </h3>
           )}
           <nav className="space-y-1">
