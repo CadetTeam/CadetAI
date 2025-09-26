@@ -67,7 +67,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
           avatar: vendor.avatar_url,
           initials: vendor.name.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
           organization: vendor.organization_name,
-          accessLevel: vendor.access_level,
+          accessLevel: vendor.access_level as 'admin' | 'read' | 'write',
           lastAccess: formatLastAccess(vendor.last_access),
           status: vendor.status
         }))
