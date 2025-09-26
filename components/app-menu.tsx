@@ -1,6 +1,5 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -69,7 +68,6 @@ const apps: App[] = [
 ]
 
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
-  const { theme } = useTheme()
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
