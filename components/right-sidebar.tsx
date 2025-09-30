@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { VendorComponent } from "@/components/right-sidebar/vendor-component"
+import { ContractorComponent } from "@/components/right-sidebar/contractor-component"
 import { CollaboratorsComponent } from "@/components/right-sidebar/collaborators-component"
 import { RecentActivityComponent } from "@/components/right-sidebar/recent-activity-component"
 import { cn } from "@/lib/utils"
@@ -40,14 +40,14 @@ export function RightSidebar() {
           </div>
         </div>
 
-        {/* Vendors Component */}
+        {/* Contractors Component */}
         <div className={cn(
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
           <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-[5px]">
             <div className="rounded-xl p-[10px]">
-              <VendorComponent />
+              <ContractorComponent />
             </div>
           </div>
         </div>

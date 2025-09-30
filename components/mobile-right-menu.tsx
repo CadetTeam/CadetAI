@@ -12,7 +12,7 @@ import {
   EyeOpenIcon
 } from "@radix-ui/react-icons"
 
-interface Vendor {
+interface Contractor {
   id: string
   name: string
   avatar: string
@@ -36,7 +36,7 @@ interface Activity {
   user?: string
 }
 
-const mockVendors: Vendor[] = [
+const mockContractors: Contractor[] = [
   {
     id: "1",
     name: "Acme Corp",
@@ -146,25 +146,25 @@ export function MobileRightMenu({ anchorClassName }: MobileRightMenuProps) {
         <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}>
           <div className="absolute bottom-20 right-6 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 min-w-[320px] max-w-[90vw] max-h-[70vh] overflow-y-auto">
             
-            {/* Vendors Section */}
+            {/* Contractors Section */}
             <Card className="mb-4">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Vendors</CardTitle>
+                <CardTitle className="text-sm font-semibold">Contractors</CardTitle>
                 <CardDescription className="text-xs">Organizations with access</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-2">
-                  {mockVendors.map((vendor) => (
-                    <div key={vendor.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  {mockContractors.map((contractor) => (
+                    <div key={contractor.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="text-xs bg-blue-500 text-white">
-                            {vendor.avatar}
+                            {contractor.avatar}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium">{vendor.name}</p>
-                          <p className="text-xs text-muted-foreground">{vendor.lastActivity}</p>
+                          <p className="text-sm font-medium">{contractor.name}</p>
+                          <p className="text-xs text-muted-foreground">{contractor.lastActivity}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1">

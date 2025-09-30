@@ -14,7 +14,7 @@ import {
 import { useUser } from "@clerk/nextjs"
 import { supabase } from "@/lib/supabase-client"
 
-interface Vendor {
+interface Contractor {
   id: string
   name: string
   avatar?: string
@@ -25,35 +25,35 @@ interface Vendor {
   status: 'active' | 'pending' | 'suspended'
 }
 
-interface VendorComponentProps {
+interface ContractorComponentProps {
   className?: string
 }
 
-export function VendorComponent({ className }: VendorComponentProps) {
+export function ContractorComponent({ className }: ContractorComponentProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [contractors, setContractors] = useState<Contractor[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useUser()
 
   useEffect(() => {
-    const fetchVendors = async () => {
+    const fetchContractors = async () => {
       if (!user) return
 
       try {
         setIsLoading(true)
 
-        // Fetch vendors from Supabase
-        const { data: vendorData, error: vendorError } = await supabase
-          .from('vendors')
+        // Fetch contractors from Supabase
+        const { data: contractorData, error: contractorError } = await supabase
+          .from('contractors')
           .select('*')
           .eq('user_id', user.id)
           .order('last_access', { ascending: false })
           .limit(10)
 
-        if (vendorError) throw vendorError
+        if (contractorError) throw contractorError
 
-        // Transform data to match Vendor interface
-        const transformedVendors: Vendor[] = (vendorData || []).map((vendor: {
+        // Transform data to match Contractor interface
+        const transformedContractors: Contractor[] = (contractorData || []).map((contractor: {
           id: string;
           name: string;
           avatar_url?: string;
@@ -62,26 +62,26 @@ export function VendorComponent({ className }: VendorComponentProps) {
           last_access: string;
           status: string;
         }) => ({
-          id: vendor.id,
-          name: vendor.name,
-          avatar: vendor.avatar_url,
-          initials: vendor.name.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
-          organization: vendor.organization_name,
-          accessLevel: vendor.access_level as 'admin' | 'read' | 'write',
-          lastAccess: formatLastAccess(vendor.last_access),
-          status: vendor.status as 'active' | 'pending' | 'suspended'
+          id: contractor.id,
+          name: contractor.name,
+          avatar: contractor.avatar_url,
+          initials: contractor.name.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
+          organization: contractor.organization_name,
+          accessLevel: contractor.access_level as 'admin' | 'read' | 'write',
+          lastAccess: formatLastAccess(contractor.last_access),
+          status: contractor.status as 'active' | 'pending' | 'suspended'
         }))
 
-        setVendors(transformedVendors)
+        setContractors(transformedContractors)
 
       } catch (err) {
-        console.error('Error fetching vendors:', err)
+        console.error('Error fetching contractors:', err)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchVendors()
+    fetchContractors()
   }, [user])
 
   const formatLastAccess = (dateString: string) => {
@@ -113,18 +113,18 @@ export function VendorComponent({ className }: VendorComponentProps) {
     }
   }
 
-  const handleProfileClick = (vendor: Vendor) => {
-    console.log('View profile for:', vendor.name)
+  const handleProfileClick = (contractor: Contractor) => {
+    console.log('View profile for:', contractor.name)
     // TODO: Implement profile view
   }
 
-  const handleAccessClick = (vendor: Vendor) => {
-    console.log('Manage access for:', vendor.name)
+  const handleAccessClick = (contractor: Contractor) => {
+    console.log('Manage access for:', contractor.name)
     // TODO: Implement access management
   }
 
-  const handleActivityClick = (vendor: Vendor) => {
-    console.log('View activity for:', vendor.name)
+  const handleActivityClick = (contractor: Contractor) => {
+    console.log('View activity for:', contractor.name)
     // TODO: Implement activity view
   }
 
@@ -132,7 +132,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
     <>
       <div className={`space-y-3 ${className}`}>
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-foreground">Vendors</h3>
+          <h3 className="text-sm font-semibold text-foreground">Contractors</h3>
           <Button
             variant="ghost"
             size="sm"
@@ -151,41 +151,41 @@ export function VendorComponent({ className }: VendorComponentProps) {
               <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
               <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
             </>
-          ) : vendors.length > 0 ? (
+          ) : contractors.length > 0 ? (
             <>
-              {vendors.slice(0, 3).map((vendor) => (
-                <Avatar key={vendor.id} className="h-8 w-8 border-2 border-background">
-                  <AvatarImage src={vendor.avatar} alt={vendor.name} />
+              {contractors.slice(0, 3).map((contractor) => (
+                <Avatar key={contractor.id} className="h-8 w-8 border-2 border-background">
+                  <AvatarImage src={contractor.avatar} alt={contractor.name} />
                   <AvatarFallback className="text-xs font-medium">
-                    {vendor.initials}
+                    {contractor.initials}
                   </AvatarFallback>
                 </Avatar>
               ))}
-              {vendors.length > 3 && (
+              {contractors.length > 3 && (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
-                  +{vendors.length - 3}
+                  +{contractors.length - 3}
                 </div>
               )}
             </>
           ) : (
             // Empty state
             <div className="text-xs text-muted-foreground">
-              No vendors yet
+              No contractors yet
             </div>
           )}
         </div>
       </div>
 
-      {/* Vendor Modal */}
+      {/* Contractor Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <BuildingIcon className="h-5 w-5" />
-              Organization Vendors
+              Organization Contractors
             </DialogTitle>
             <DialogDescription>
-              Manage vendors that have access to your organization&apos;s resources.
+              Manage contractors that have access to your organization&apos;s resources.
             </DialogDescription>
           </DialogHeader>
 
@@ -204,33 +204,33 @@ export function VendorComponent({ className }: VendorComponentProps) {
                   </div>
                 ))}
               </>
-            ) : vendors.length > 0 ? (
-              vendors.map((vendor) => (
+            ) : contractors.length > 0 ? (
+              contractors.map((contractor) => (
               <div
-                key={vendor.id}
+                key={contractor.id}
                 className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={vendor.avatar} alt={vendor.name} />
+                    <AvatarImage src={contractor.avatar} alt={contractor.name} />
                     <AvatarFallback>
-                      {vendor.initials}
+                      {contractor.initials}
                     </AvatarFallback>
                   </Avatar>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-foreground">{vendor.name}</h4>
-                      <Badge className={getStatusColor(vendor.status)}>
-                        {vendor.status}
+                      <h4 className="font-medium text-foreground">{contractor.name}</h4>
+                      <Badge className={getStatusColor(contractor.status)}>
+                        {contractor.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{vendor.organization}</p>
+                    <p className="text-sm text-muted-foreground">{contractor.organization}</p>
                     <div className="flex items-center gap-2">
-                      <Badge className={getAccessLevelColor(vendor.accessLevel)}>
-                        {vendor.accessLevel}
+                      <Badge className={getAccessLevelColor(contractor.accessLevel)}>
+                        {contractor.accessLevel}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        Last access: {vendor.lastAccess}
+                        Last access: {contractor.lastAccess}
                       </span>
                     </div>
                   </div>
@@ -240,7 +240,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleProfileClick(vendor)}
+                    onClick={() => handleProfileClick(contractor)}
                     className="h-8 w-8 p-0"
                     title="View Profile"
                   >
@@ -249,7 +249,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleAccessClick(vendor)}
+                    onClick={() => handleAccessClick(contractor)}
                     className="h-8 w-8 p-0"
                     title="Manage Access"
                   >
@@ -258,7 +258,7 @@ export function VendorComponent({ className }: VendorComponentProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleActivityClick(vendor)}
+                    onClick={() => handleActivityClick(contractor)}
                     className="h-8 w-8 p-0"
                     title="Recent Activity"
                   >
@@ -271,12 +271,12 @@ export function VendorComponent({ className }: VendorComponentProps) {
               // Empty state for modal
               <div className="text-center py-8">
                 <BuildingIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">No vendors found</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">No contractors found</h3>
                 <p className="text-muted-foreground mb-4">
-                  No vendors have access to your organization yet.
+                  No contractors have access to your organization yet.
                 </p>
                 <Button variant="outline" size="sm">
-                  Invite Vendor
+                  Invite Contractor
                 </Button>
               </div>
             )}
