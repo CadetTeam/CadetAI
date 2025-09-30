@@ -110,7 +110,10 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
   ]
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className={cn(
+      "flex flex-col h-full fixed left-16 top-0 bottom-0 bg-background border-r border-border z-30 transition-all duration-300",
+      collapsed ? "w-16" : "w-64"
+    )}>
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">

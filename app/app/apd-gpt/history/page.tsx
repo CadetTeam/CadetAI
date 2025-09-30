@@ -11,21 +11,19 @@ export default function HistoryPage() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Chat Sidebar - Top aligned, left sticky, full height */}
-      <div className={cn(
-        "border-r border-border bg-sidebar transition-all duration-300 sticky top-0 h-screen",
-        sidebarCollapsed ? "w-16" : "w-64"
-      )}>
-        <ChatSidebar 
-          collapsed={sidebarCollapsed}
-          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-          currentView={currentView}
-          onViewChange={setCurrentView}
-        />
-      </div>
+      {/* Chat Sidebar - Fixed positioned to touch header, footer, and left global menu */}
+      <ChatSidebar 
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        currentView={currentView}
+        onViewChange={setCurrentView}
+      />
 
-      {/* Main Chat Area - Full height, no gaps */}
-      <div className="flex-1 flex flex-col">
+      {/* Main Chat Area - Full height, with left margin to account for fixed sidebar */}
+      <div className={cn(
+        "flex-1 flex flex-col transition-all duration-300",
+        sidebarCollapsed ? "ml-16" : "ml-64"
+      )}>
         <ChatInterface 
           currentView={currentView}
           sidebarCollapsed={sidebarCollapsed}

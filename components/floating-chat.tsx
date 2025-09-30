@@ -139,9 +139,9 @@ export function FloatingChat() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      {/* Mobile Right Menu Button - Only show on mobile, positioned near chat */}
+      {/* Mobile Right Menu Button - Only show on mobile, positioned above chat */}
       {isMobile && (
-        <MobileRightMenu anchorClassName="fixed bottom-[24px] left-[calc(50%+320px)] -translate-x-1/2 z-50" />
+        <MobileRightMenu anchorClassName="fixed bottom-[120px] right-6 z-50" />
       )}
 
       {/* Glassmorphic Floating Chat Interface */}
