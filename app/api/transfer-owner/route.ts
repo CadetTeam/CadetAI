@@ -6,14 +6,16 @@ const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId, orgId } = auth()
+    const { userId, orgId } = await auth()
     if (!userId || !orgId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const { newOwnerUserId } = await req.json()
     if (!newOwnerUserId) return NextResponse.json({ error: 'newOwnerUserId required' }, { status: 400 })
 
-    await clerk.organizations.transferOrganizationOwnership({
+    // Fallback: update member role to owner (Clerk SDK doesn't have transfer method in this version)
+    await clerk.organizations.updateOrganizationMembership({
       organizationId: orgId,
-      newOwnerUserId,
+      userId: newOwnerUserId,
+      role: 'owner',
     })
 
     return NextResponse.json({ success: true })

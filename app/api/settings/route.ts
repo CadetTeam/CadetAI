@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -8,27 +8,24 @@ const supabase = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 )
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const { userId, orgId } = auth()
+    const { userId, orgId } = await auth()
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Load profile
     const { data: profile } = await supabase
       .from('user_profiles')
       .select('*')
       .eq('clerk_user_id', userId)
       .maybeSingle()
 
-    // Load user settings
     const { data: userSettings } = await supabase
       .from('user_settings')
       .select('settings')
       .eq('user_profile_id', profile?.id ?? '')
       .maybeSingle()
 
-    // Resolve org via Clerk mapping
-    let orgSettings: any = null
+    let orgSettings: Record<string, unknown> | null = null
     if (orgId) {
       const { data: mapping } = await supabase
         .from('organization_mappings')
@@ -42,27 +39,27 @@ export async function GET(req: NextRequest) {
           .select('settings')
           .eq('organization_id', mapping.organization_id)
           .maybeSingle()
-        orgSettings = data?.settings ?? null
+        orgSettings = (data?.settings as Record<string, unknown>) ?? null
       }
     }
 
-    return NextResponse.json({ profile, userSettings: userSettings?.settings ?? {}, orgSettings: orgSettings ?? {} })
+    return NextResponse.json({ profile, userSettings: (userSettings?.settings as Record<string, unknown>) ?? {}, orgSettings: orgSettings ?? {} })
   } catch (e) {
     console.error(e)
     return NextResponse.json({ error: 'Failed to load settings' }, { status: 500 })
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function PUT(req: Request) {
   try {
-    const { userId, orgId } = auth()
+    const { userId, orgId } = await auth()
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const body = await req.json()
 
-    // Clerk role/permission check: require admin on org to update org settings
     let isOrgAdmin = false
     if (orgId) {
-      const membership = await clerkClient().organizations.getOrganizationMembershipList({ organizationId: orgId, limit: 200 })
+      const client = await clerkClient()
+      const membership = await client.organizations.getOrganizationMembershipList({ organizationId: orgId, limit: 200 })
       const me = membership.data.find(m => m.publicUserData?.userId === userId)
       isOrgAdmin = !!me && (me.role === 'admin' || me.role === 'org:admin' || me.role === 'owner')
     }
@@ -73,7 +70,7 @@ export async function PUT(req: NextRequest) {
       .eq('clerk_user_id', userId)
       .single()
 
-    if (body.userSettings) {
+    if (body.userSettings && profile?.id) {
       await supabase
         .from('user_settings')
         .upsert({ user_profile_id: profile.id, settings: body.userSettings })
@@ -88,7 +85,7 @@ export async function PUT(req: NextRequest) {
         .eq('clerk_organization_id', orgId)
         .maybeSingle()
 
-      if (mapping?.organization_id) {
+      if (mapping?.organization_id && profile?.id) {
         await supabase
           .from('organization_settings')
           .upsert({ organization_id: mapping.organization_id, settings: body.orgSettings, updated_by: profile.id })

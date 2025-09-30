@@ -5,10 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
+// removed unused: Label, Textarea, Switch, Separator
 import { Badge } from "@/components/ui/badge"
 import { 
   Shield, 
@@ -21,10 +18,8 @@ import {
   Building,
   Download,
   Upload,
-  Trash2,
   Save,
   UserPlus,
-  Crown,
   ArrowRightLeft
 } from "lucide-react"
 
@@ -44,8 +39,9 @@ export default function SettingsPage() {
         const res = await fetch('/api/settings', { cache: 'no-store' })
         if (!res.ok) throw new Error('Failed to load settings')
         await res.json()
-      } catch (e: any) {
-        setLoadError(e?.message || 'Failed to load settings')
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'Failed to load settings'
+        setLoadError(message)
       } finally {
         setIsLoading(false)
       }
@@ -64,8 +60,9 @@ export default function SettingsPage() {
       })
       if (!res.ok) throw new Error('Failed to save settings')
       setSavedAt(new Date().toLocaleTimeString())
-    } catch (e: any) {
-      setSaveError(e?.message || 'Failed to save settings')
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to save settings'
+      setSaveError(message)
     } finally {
       setIsSaving(false)
     }
@@ -412,8 +409,9 @@ function MembersAdminPanel() {
         const data = await res.json()
         setMembers(data.members || [])
         setCurrentUserId(data.currentUserId || null)
-      } catch (e:any) {
-        setError(e?.message || 'Failed to load members')
+      } catch (e) {
+        const message = e instanceof Error ? e.message : 'Failed to load members'
+        setError(message)
       } finally {
         setLoading(false)
       }
@@ -430,8 +428,9 @@ function MembersAdminPanel() {
       })
       if (!res.ok) throw new Error('Failed to invite user')
       setInviteEmail("")
-    } catch (e:any) {
-      setError(e?.message || 'Failed to invite user')
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to invite user'
+      setError(message)
     } finally {
       setUpdating(null)
     }
@@ -447,8 +446,9 @@ function MembersAdminPanel() {
       })
       if (!res.ok) throw new Error('Failed to update role')
       setMembers(prev => prev.map(m => m.id === membershipId ? { ...m, role } : m))
-    } catch (e:any) {
-      setError(e?.message || 'Failed to update role')
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to update role'
+      setError(message)
     } finally {
       setUpdating(null)
     }
@@ -500,8 +500,9 @@ function MembersAdminPanel() {
         body: JSON.stringify({ newOwnerUserId: userId })
       })
       if (!res.ok) throw new Error('Failed to transfer ownership')
-    } catch (e:any) {
-      setError(e?.message || 'Failed to transfer ownership')
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to transfer ownership'
+      setError(message)
     } finally {
       setTransferring(false)
     }

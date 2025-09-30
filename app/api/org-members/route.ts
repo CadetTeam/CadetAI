@@ -6,7 +6,7 @@ const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
 
 export async function GET(req: NextRequest) {
   try {
-    const { userId, orgId } = auth()
+    const { userId, orgId } = await auth()
     if (!userId || !orgId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const url = new URL(req.url)
@@ -30,16 +30,21 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { userId, orgId } = auth()
+    const { userId, orgId } = await auth()
     if (!userId || !orgId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const { membershipId, role, organizationId } = await req.json()
     if (!membershipId || !role) return NextResponse.json({ error: 'membershipId and role required' }, { status: 400 })
 
-    await clerk.organizations.updateOrganizationMembership(
-      organizationId || orgId,
-      membershipId,
-      { role }
-    )
+    const org = organizationId || orgId
+    const memberships = await clerk.organizations.getOrganizationMembershipList({ organizationId: org, limit: 200 })
+    const target = memberships.data.find(m => m.id === membershipId)
+    if (!target?.publicUserData?.userId) return NextResponse.json({ error: 'Membership not found' }, { status: 404 })
+
+    await clerk.organizations.updateOrganizationMembership({
+      organizationId: org,
+      userId: target.publicUserData.userId,
+      role,
+    })
     return NextResponse.json({ success: true })
   } catch (e) {
     console.error(e)
@@ -49,7 +54,7 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { userId, orgId } = auth()
+    const { userId, orgId } = await auth()
     if (!userId || !orgId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const { membershipId, organizationId, targetUserId } = await req.json()
     const org = organizationId || orgId
@@ -59,8 +64,11 @@ export async function DELETE(req: NextRequest) {
       // Leave organization
       await clerk.organizations.deleteOrganizationMembership({ organizationId: org, userId: targetUserId })
     } else if (membershipId) {
-      // Remove another member by membership id
-      await clerk.organizations.deleteOrganizationMembership({ organizationId: org, organizationMembershipId: membershipId })
+      // Remove another member by membership id -> resolve to userId
+      const memberships = await clerk.organizations.getOrganizationMembershipList({ organizationId: org, limit: 200 })
+      const target = memberships.data.find(m => m.id === membershipId)
+      if (!target?.publicUserData?.userId) return NextResponse.json({ error: 'Target membership not found' }, { status: 404 })
+      await clerk.organizations.deleteOrganizationMembership({ organizationId: org, userId: target.publicUserData.userId })
     }
 
     return NextResponse.json({ success: true })
