@@ -127,7 +127,7 @@ export function AppSidebar() {
   return (
     <div 
       className={cn(
-        "flex flex-col bg-sidebar border-r border-border transition-all duration-300 relative",
+        "flex flex-col bg-sidebar border-r border-border transition-all duration-300 relative h-screen",
         sidebarWidth
       )}
       onMouseEnter={() => !isMobile && setIsHovered(true)}
@@ -163,7 +163,7 @@ export function AppSidebar() {
       </div>
 
       {/* Main Navigation */}
-      <div className="flex-1 p-4 space-y-6">
+      <div className="flex-1 p-4 space-y-6 overflow-y-auto">
         {/* APD GPT Section */}
         <div className="space-y-2">
           {shouldShowExpanded && (

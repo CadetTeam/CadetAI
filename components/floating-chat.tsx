@@ -13,8 +13,7 @@ import {
   CopyIcon,
   ReloadIcon,
   Cross2Icon,
-  EyeOpenIcon,
-  DotsHorizontalIcon
+  EyeOpenIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import { MobileRightMenu } from "@/components/mobile-right-menu"
@@ -43,7 +42,7 @@ export function FloatingChat() {
   const [attachments, setAttachments] = useState<FileAttachment[]>([])
   const [showFilePreview, setShowFilePreview] = useState<FileAttachment | null>(null)
   const [isMobile, setIsMobile] = useState(false)
-  const [isRightMenuOpen, setIsRightMenuOpen] = useState(false)
+  
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -142,10 +141,10 @@ export function FloatingChat() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       {/* Mobile Right Menu Button - Only show on mobile, positioned near chat */}
       {isMobile && (
-        <MobileRightMenu anchorClassName="fixed bottom-[calc(24px+0px)] left-[calc(50%+340px)] -translate-x-1/2 z-50" />
+        <MobileRightMenu anchorClassName="fixed bottom-[24px] left-[calc(50%+340px)] -translate-x-1/2 z-50" />
       )}
 
-      {/* Glassmorphic Floating Chat Interface */
+      {/* Glassmorphic Floating Chat Interface */}
       <div className={cn(
         "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
         isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"

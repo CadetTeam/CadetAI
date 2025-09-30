@@ -252,9 +252,7 @@ export default function TeamsPage() {
               <Button variant="outline" onClick={() => setShowInviteModal(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => setShowInviteModal(false)}>
-                Send Invite
-              </Button>
+              <InviteUserButton onDone={() => setShowInviteModal(false)} />
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -383,6 +381,42 @@ export default function TeamsPage() {
           ))
         )}
       </div>
+    </div>
+  )
+}
+
+function InviteUserButton({ onDone }: { onDone: () => void }) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleInvite = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      // Grab form fields
+      const email = (document.getElementById('email') as HTMLInputElement)?.value
+      const role = (document.getElementById('role') as HTMLInputElement)?.value || 'basic_member'
+      const res = await fetch('/api/invite-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailAddress: email, role })
+      })
+      if (!res.ok) throw new Error('Failed to send invite')
+      onDone()
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to invite'
+      setError(message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      {error && <span className="text-xs text-red-500">{error}</span>}
+      <Button onClick={handleInvite} disabled={loading}>
+        {loading ? 'Sending…' : 'Send Invite'}
+      </Button>
     </div>
   )
 }

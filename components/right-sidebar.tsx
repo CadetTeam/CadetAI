@@ -30,10 +30,12 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4 space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Call Prep</h3>
-            <div className="text-sm text-muted-foreground">
-              No call preparation items available.
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-[5px]">
+            <div className="rounded-xl p-[10px] space-y-3">
+              <h3 className="text-sm font-semibold text-foreground">Call Prep</h3>
+              <div className="text-sm text-muted-foreground">
+                No call preparation items available.
+              </div>
             </div>
           </div>
         </div>
@@ -43,8 +45,10 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4">
-            <VendorComponent />
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-[5px]">
+            <div className="rounded-xl p-[10px]">
+              <VendorComponent />
+            </div>
           </div>
         </div>
 
@@ -53,8 +57,10 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4">
-            <CollaboratorsComponent />
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-[5px]">
+            <div className="rounded-xl p-[10px]">
+              <CollaboratorsComponent />
+            </div>
           </div>
         </div>
 
@@ -63,8 +69,10 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4">
-            <RecentActivityComponent />
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-[5px]">
+            <div className="rounded-xl p-[10px]">
+              <RecentActivityComponent />
+            </div>
           </div>
         </div>
       </div>
