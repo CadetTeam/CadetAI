@@ -16,6 +16,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "CadetAI Platform",
   description: "A secure, compliant platform delivering 6 modular 'apps' aligned with government-mandated processes",
+  icons: {
+    icon: "/logos/cadetai-icon-dark.png",
+    shortcut: "/logos/cadetai-icon-dark.png",
+    apple: "/logos/cadetai-icon-dark.png"
+  }
 };
 
 export default function RootLayout({
