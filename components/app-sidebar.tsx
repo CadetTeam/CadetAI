@@ -189,7 +189,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className={cn("w-5 h-5", !shouldShowExpanded && "w-6 h-6") } />
+                    <item.icon className="w-6 h-6" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -225,7 +225,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className={cn("w-5 h-5", !shouldShowExpanded && "w-6 h-6") } />
+                  <item.icon className="w-6 h-6" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -280,7 +280,7 @@ export function AppSidebar() {
                     className={commonClassName}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-5 h-5" />
+                           <item.icon className="w-6 h-6" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -314,7 +314,7 @@ export function AppSidebar() {
                   className={commonClassName}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-5 h-5" />
+                           <item.icon className="w-6 h-6" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -370,7 +370,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-5 h-5" />
+                           <item.icon className="w-6 h-6" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -406,7 +406,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-5 h-5" />
+                           <item.icon className="w-6 h-6" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
