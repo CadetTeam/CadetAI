@@ -16,7 +16,6 @@ import {
   ExitIcon,
   GearIcon,
   LinkBreak1Icon,
-  GlobeIcon,
   CodeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -44,7 +43,6 @@ const peopleNavItems = [
 
 const utilitiesNavItems = [
   { href: "/app/apd-gpt/integrations", label: "Integrations", icon: LinkBreak1Icon },
-  { href: "/app/apd-gpt/support", label: "Support", icon: GlobeIcon },
   { href: "/app/apd-gpt/api", label: "API", icon: CodeIcon },
   { href: "/app/logout", label: "Log out", icon: ExitIcon, shortcut: "⌘⇧Q" },
 ]
@@ -189,7 +187,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4" />
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -280,7 +278,7 @@ export function AppSidebar() {
                     className={commonClassName}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-4 h-4" />
+                           <item.icon className="w-4 h-4 flex-shrink-0" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -314,7 +312,7 @@ export function AppSidebar() {
                   className={commonClassName}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-4 h-4" />
+                           <item.icon className="w-4 h-4 flex-shrink-0" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -370,7 +368,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-4 h-4" />
+                           <item.icon className="w-4 h-4 flex-shrink-0" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>

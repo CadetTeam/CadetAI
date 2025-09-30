@@ -107,13 +107,15 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     isActive && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <div className="relative w-8 h-8 flex items-center justify-center">
+                  <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
                     <Image
                       src={iconSrc}
                       alt={app.name}
                       width={32}
                       height={32}
                       className="object-contain"
+                      unoptimized
+                      priority
                     />
                   </div>
                   

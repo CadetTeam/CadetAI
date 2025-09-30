@@ -87,13 +87,15 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                     )}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="relative w-6 h-6 flex items-center justify-center">
+                      <div className="relative w-6 h-6 flex items-center justify-center flex-shrink-0">
                         <Image
                           src={iconSrc}
                           alt={app.name}
                           width={24}
                           height={24}
                           className="object-contain"
+                          unoptimized
+                          priority
                         />
                       </div>
                       <span className="text-sm font-medium">{app.name}</span>
