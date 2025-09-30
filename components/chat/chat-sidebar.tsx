@@ -4,8 +4,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
-  ChevronLeftIcon,
-  ChevronRightIcon,
   ChatBubbleIcon,
   UploadIcon,
   ClockIcon,
@@ -22,8 +20,6 @@ interface ChatThread {
 }
 
 interface ChatSidebarProps {
-  collapsed: boolean
-  onToggle: () => void
   currentView: 'ask' | 'uploads' | 'history'
   onViewChange: (view: 'ask' | 'uploads' | 'history') => void
 }
@@ -67,7 +63,7 @@ const mockChatThreads: ChatThread[] = [
   }
 ]
 
-export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: ChatSidebarProps) {
+export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
   const [chatThreads, setChatThreads] = useState<ChatThread[]>(mockChatThreads)
 
   const formatTimeAgo = (date: Date) => {
@@ -110,29 +106,14 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
   ]
 
   return (
-    <div className={cn(
-      "flex flex-col h-full fixed left-16 top-0 bottom-0 bg-background border-r border-border z-30 transition-all duration-300",
-      collapsed ? "w-16" : "w-64"
-    )}>
+    <div className="flex flex-col h-full fixed left-16 top-16 bottom-0 w-64 bg-background border-r border-border z-30">
       {/* Header */}
       <div className="p-4 border-b border-border">
-        <div className="flex items-center justify-between">
-          {!collapsed && (
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">C</span>
-              </div>
-              <span className="font-semibold text-foreground">Cadet</span>
-            </div>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggle}
-            className="h-6 w-6 p-0"
-          >
-            {collapsed ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
-          </Button>
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full flex items-center justify-center">
+            <span className="text-white text-sm font-bold">C</span>
+          </div>
+          <span className="font-semibold text-foreground">Cadet</span>
         </div>
       </div>
 
@@ -143,20 +124,16 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
             key={item.id}
             variant={currentView === item.id ? "default" : "ghost"}
             className={cn(
-              "w-full justify-start",
-              collapsed ? "px-2" : "px-3",
+              "w-full justify-start px-3",
               currentView === item.id && "bg-accent text-accent-foreground"
             )}
             onClick={() => onViewChange(item.id)}
-            title={collapsed ? item.label : undefined}
           >
             <item.icon className="h-4 w-4" />
-            {!collapsed && (
-              <div className="ml-3 text-left">
-                <div className="font-medium">{item.label}</div>
-                <div className="text-xs text-muted-foreground">{item.description}</div>
-              </div>
-            )}
+            <div className="ml-3 text-left">
+              <div className="font-medium">{item.label}</div>
+              <div className="text-xs text-muted-foreground">{item.description}</div>
+            </div>
           </Button>
         ))}
       </div>
@@ -166,56 +143,41 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
       {currentView === 'history' && (
         <div className="flex-1 overflow-hidden">
           <div className="p-4">
-            {!collapsed && (
-              <h3 className="text-sm font-semibold text-foreground mb-3">Recent Chats</h3>
-            )}
+            <h3 className="text-sm font-semibold text-foreground mb-3">Recent Chats</h3>
           </div>
           <ScrollArea className="flex-1 px-4">
             <div className="space-y-2">
               {chatThreads.map((thread) => (
                 <div
                   key={thread.id}
-                  className={cn(
-                    "group p-3 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors",
-                    collapsed && "p-2"
-                  )}
-                  title={collapsed ? thread.title : undefined}
+                  className="group p-3 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      {!collapsed && (
-                        <>
-                          <h4 className="font-medium text-sm truncate">{thread.title}</h4>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {thread.preview}
-                          </p>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-xs text-muted-foreground">
-                              {formatTimeAgo(thread.timestamp)}
-                            </span>
-                            <span className="text-xs text-muted-foreground">
-                              {thread.messageCount} messages
-                            </span>
-                          </div>
-                        </>
-                      )}
-                      {collapsed && (
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      )}
+                      <h4 className="font-medium text-sm truncate">{thread.title}</h4>
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                        {thread.preview}
+                      </p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-muted-foreground">
+                          {formatTimeAgo(thread.timestamp)}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {thread.messageCount} messages
+                        </span>
+                      </div>
                     </div>
-                    {!collapsed && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeleteChat(thread.id)
-                        }}
-                        className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
-                      >
-                        <TrashIcon className="h-3 w-3" />
-                      </Button>
-                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteChat(thread.id)
+                      }}
+                      className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
+                    >
+                      <TrashIcon className="h-3 w-3" />
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -228,21 +190,15 @@ export function ChatSidebar({ collapsed, onToggle, currentView, onViewChange }: 
       {currentView === 'uploads' && (
         <div className="flex-1 overflow-hidden">
           <div className="p-4">
-            {!collapsed && (
-              <h3 className="text-sm font-semibold text-foreground mb-3">Your Files</h3>
-            )}
+            <h3 className="text-sm font-semibold text-foreground mb-3">Your Files</h3>
           </div>
           <ScrollArea className="flex-1 px-4">
             <div className="text-center py-8">
               <UploadIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              {!collapsed && (
-                <>
-                  <p className="text-sm text-muted-foreground mb-2">No files uploaded yet</p>
-                  <p className="text-xs text-muted-foreground">
-                    Upload documents, images, and files to chat with Cadet
-                  </p>
-                </>
-              )}
+              <p className="text-sm text-muted-foreground mb-2">No files uploaded yet</p>
+              <p className="text-xs text-muted-foreground">
+                Upload documents, images, and files to chat with Cadet
+              </p>
             </div>
           </ScrollArea>
         </div>

@@ -89,7 +89,7 @@ export function AppSidebar() {
 
   const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
-  const collapsedItemClasses = !shouldShowExpanded ? "justify-center h-12 w-12 p-0" : ""
+  const collapsedItemClasses = !shouldShowExpanded ? "justify-center items-center h-12 w-12 p-0" : ""
 
   const handleCardAction = (href: string, event: React.MouseEvent) => {
     const buttonRect = event.currentTarget.getBoundingClientRect()
@@ -148,15 +148,15 @@ export function AppSidebar() {
         }}
       >
         {isMobile ? (
-          <HamburgerMenuIcon className="w-6 h-6" />
+          <HamburgerMenuIcon className="w-4 h-4" />
         ) : (
-          isCollapsed ? <ChevronRightIcon className="w-6 h-6" /> : <ChevronLeftIcon className="w-6 h-6" />
+          isCollapsed ? <ChevronRightIcon className="w-4 h-4" /> : <ChevronLeftIcon className="w-4 h-4" />
         )}
       </Button>
 
       {/* Logo */}
       <div className="flex items-center justify-center p-4 border-b border-border">
-        <Logo variant="icon" size={40} className="flex-shrink-0" />
+        <Logo variant="icon" size={24} className="flex-shrink-0" />
         {shouldShowExpanded && (
           <span className="ml-3 text-lg font-semibold text-foreground">CadetAI</span>
         )}
@@ -189,7 +189,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                    <item.icon className="w-6 h-6" />
+                    <item.icon className="w-4 h-4" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -225,7 +225,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-6 h-6" />
+                  <item.icon className="w-4 h-4" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -280,7 +280,7 @@ export function AppSidebar() {
                     className={commonClassName}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-6 h-6" />
+                           <item.icon className="w-4 h-4" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -314,7 +314,7 @@ export function AppSidebar() {
                   className={commonClassName}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-6 h-6" />
+                           <item.icon className="w-4 h-4" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -370,7 +370,7 @@ export function AppSidebar() {
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-6 h-6" />
+                           <item.icon className="w-4 h-4" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -406,7 +406,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-6 h-6" />
+                           <item.icon className="w-4 h-4" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
