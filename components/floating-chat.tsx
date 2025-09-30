@@ -17,6 +17,7 @@ import {
   DotsHorizontalIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
+import { MobileRightMenu } from "@/components/mobile-right-menu"
 
 interface Message {
   id: string
@@ -139,19 +140,12 @@ export function FloatingChat() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      {/* Mobile Right Menu Button - Only show on mobile */}
+      {/* Mobile Right Menu Button - Only show on mobile, positioned near chat */}
       {isMobile && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsRightMenuOpen(!isRightMenuOpen)}
-          className="fixed bottom-6 right-6 z-50 h-12 w-12 p-0 bg-black rounded-full shadow-lg hover:bg-gray-800"
-        >
-          <DotsHorizontalIcon className="w-6 h-6 text-white" />
-        </Button>
+        <MobileRightMenu anchorClassName="fixed bottom-[calc(24px+0px)] left-[calc(50%+340px)] -translate-x-1/2 z-50" />
       )}
 
-      {/* Glassmorphic Floating Chat Interface */}
+      {/* Glassmorphic Floating Chat Interface */
       <div className={cn(
         "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
         isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"

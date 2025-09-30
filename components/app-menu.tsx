@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -24,54 +25,60 @@ interface AppMenuProps {
   onAppChange: (appId: string) => void
 }
 
-const apps: App[] = [
+const initialVisibleApps: App[] = [
   {
-    id: "apdgpt",
-    name: "APD GPT",
+    id: "adpgpt",
+    name: "ADP GPT",
     lightIcon: "/app-icons/light-folder.png",
     darkIcon: "/app-icons/dark-folder.png",
     href: "/app",
     isActive: true
   },
   {
-    id: "security",
-    name: "Security",
-    lightIcon: "/app-icons/light-fingerprint.png",
-    darkIcon: "/app-icons/dark-fingerprint.png",
-    href: "/app/security"
+    id: "rfpgpt",
+    name: "RFP GPT",
+    lightIcon: "/app-icons/light-grid.png",
+    darkIcon: "/app-icons/dark-grid.png",
+    href: "/app/rfp-gpt"
   },
   {
-    id: "wallet",
-    name: "Wallet",
-    lightIcon: "/app-icons/light-wallet.png",
-    darkIcon: "/app-icons/dark-wallet.png",
-    href: "/app/wallet"
+    id: "responsenow",
+    name: "Response Now",
+    lightIcon: "/app-icons/light-new-doc.png",
+    darkIcon: "/app-icons/dark-new-doc.png",
+    href: "/app/response-now"
+  }
+]
+
+const initialAvailableApps: App[] = [
+  {
+    id: "statusai",
+    name: "StatusAI",
+    lightIcon: "/app-icons/light-search.png",
+    darkIcon: "/app-icons/dark-search.png",
+    href: "/app/statusai"
   },
   {
-    id: "windows",
-    name: "Windows",
-    lightIcon: "/app-icons/light-windows.png",
-    darkIcon: "/app-icons/dark-windows.png",
-    href: "/app/windows"
+    id: "forecost",
+    name: "ForeCost",
+    lightIcon: "/app-icons/light-pricing.png",
+    darkIcon: "/app-icons/dark-pricing.png",
+    href: "/app/forecost"
   },
   {
-    id: "files",
-    name: "Files",
-    lightIcon: "/app-icons/light-folder.png",
-    darkIcon: "/app-icons/dark-folder.png",
-    href: "/app/files"
-  },
-  {
-    id: "keys",
-    name: "Keys",
-    lightIcon: "/app-icons/light-key.png",
-    darkIcon: "/app-icons/dark-key.png",
-    href: "/app/keys"
+    id: "commander",
+    name: "Commander",
+    lightIcon: "/app-icons/light-cards.png",
+    darkIcon: "/app-icons/dark-cards.png",
+    href: "/app/commander"
   }
 ]
 
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   const { theme } = useTheme()
+  const [visibleApps, setVisibleApps] = useState<App[]>(initialVisibleApps)
+  const [availableApps, setAvailableApps] = useState<App[]>(initialAvailableApps)
+  const [showAddMenu, setShowAddMenu] = useState(false)
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
@@ -85,7 +92,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto flex items-center justify-center">
         <div className="space-y-1 px-1">
-          {apps.map((app) => {
+          {visibleApps.slice(0, 3).map((app) => {
             const isActive = currentApp === app.id
             const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
 
@@ -130,12 +137,45 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
         <Button
           variant="ghost"
           size="sm"
-          className="w-full h-10 p-0"
+          className="w-full h-10 p-0 relative"
+          onClick={() => setShowAddMenu((prev) => !prev)}
         >
           <div className="relative w-8 h-8 flex items-center justify-center">
             <PlusIcon className="w-8 h-8 opacity-60 hover:opacity-100 transition-opacity" />
           </div>
         </Button>
+
+        {showAddMenu && (
+          <div className="absolute bottom-14 left-2 z-50 bg-popover text-popover-foreground border border-border rounded-md shadow-md w-56 p-2">
+            <p className="text-xs px-2 py-1 text-muted-foreground">Add to menu</p>
+            <div className="space-y-1 max-h-60 overflow-auto">
+              {availableApps.map((app) => {
+                const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
+                return (
+                  <Button
+                    key={app.id}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start h-9 px-2"
+                    onClick={() => {
+                      setVisibleApps((prev) => [...prev, app])
+                      setAvailableApps((prev) => prev.filter((a) => a.id !== app.id))
+                      setShowAddMenu(false)
+                    }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Image src={iconSrc} alt={app.name} width={20} height={20} />
+                      <span className="text-sm">{app.name}</span>
+                    </div>
+                  </Button>
+                )
+              })}
+              {availableApps.length === 0 && (
+                <div className="px-2 py-1 text-xs text-muted-foreground">No more apps</div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

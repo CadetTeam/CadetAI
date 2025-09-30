@@ -107,7 +107,11 @@ const mockActivities: Activity[] = [
   }
 ]
 
-export function MobileRightMenu() {
+interface MobileRightMenuProps {
+  anchorClassName?: string
+}
+
+export function MobileRightMenu({ anchorClassName }: MobileRightMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const getActivityIcon = (type: string) => {
@@ -126,14 +130,16 @@ export function MobileRightMenu() {
   return (
     <>
       {/* 9-Dot Grid Button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 h-12 w-12 p-0 bg-black rounded-full shadow-lg hover:bg-gray-800"
-      >
-        <DotsHorizontalIcon className="w-6 h-6 text-white" />
-      </Button>
+      <div className={anchorClassName ?? "fixed bottom-6 right-6 z-50"}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsOpen(!isOpen)}
+          className="h-12 w-12 p-0 bg-black rounded-full shadow-lg hover:bg-gray-800"
+        >
+          <DotsHorizontalIcon className="w-6 h-6 text-white" />
+        </Button>
+      </div>
 
       {/* Floating Bottom-Up Menu */}
       {isOpen && (

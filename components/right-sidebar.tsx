@@ -27,12 +27,14 @@ export function RightSidebar() {
       <div className="relative z-10 p-6 space-y-4">
         {/* Call Prep Section */}
         <div className={cn(
-          "space-y-4 transition-all duration-300",
+          "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <h3 className="text-sm font-semibold text-foreground">Call Prep</h3>
-          <div className="text-sm text-muted-foreground">
-            No call preparation items available.
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4 space-y-3">
+            <h3 className="text-sm font-semibold text-foreground">Call Prep</h3>
+            <div className="text-sm text-muted-foreground">
+              No call preparation items available.
+            </div>
           </div>
         </div>
 
@@ -41,7 +43,9 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <VendorComponent />
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4">
+            <VendorComponent />
+          </div>
         </div>
 
         {/* Collaborators Component */}
@@ -49,7 +53,9 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <CollaboratorsComponent />
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4">
+            <CollaboratorsComponent />
+          </div>
         </div>
 
         {/* Recent Activity Component */}
@@ -57,7 +63,9 @@ export function RightSidebar() {
           "transition-all duration-300",
           shouldMinimize && "opacity-80 scale-90"
         )}>
-          <RecentActivityComponent />
+          <div className="bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4">
+            <RecentActivityComponent />
+          </div>
         </div>
       </div>
     </div>

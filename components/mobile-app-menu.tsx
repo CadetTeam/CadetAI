@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -73,6 +74,7 @@ const apps: App[] = [
 
 export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const { theme } = useTheme()
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
@@ -83,15 +85,17 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
 
   return (
     <>
-      {/* Floating Menu Button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-full border border-white/20 dark:border-white/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20"
-      >
-        <HamburgerMenuIcon className="w-5 h-5" />
-      </Button>
+      {/* Floating Menu Button - placed below header */}
+      <div className="fixed left-4 top-[72px] z-50">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsOpen(!isOpen)}
+          className="h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-full border border-white/20 dark:border-white/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20"
+        >
+          <HamburgerMenuIcon className="w-5 h-5" />
+        </Button>
+      </div>
 
       {/* Glassmorphic Dropdown Menu */}
       {isOpen && (
@@ -101,7 +105,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
               <h3 className="text-sm font-semibold text-foreground mb-3 px-2">Apps</h3>
               {apps.map((app) => {
                 const isActive = currentApp === app.id
-                const iconSrc = app.lightIcon // Use light icons for better contrast on glassmorphic background
+                const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
 
                 return (
                   <Button

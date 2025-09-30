@@ -89,6 +89,7 @@ export function AppSidebar() {
 
   const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
+  const collapsedItemClasses = !shouldShowExpanded ? "justify-center h-10 w-10 p-0" : ""
 
   const handleCardAction = (href: string, event: React.MouseEvent) => {
     const buttonRect = event.currentTarget.getBoundingClientRect()
@@ -184,11 +185,11 @@ export function AppSidebar() {
                       "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
                       "hover:bg-accent hover:text-accent-foreground",
                       isActive && "bg-accent text-accent-foreground",
-                      !shouldShowExpanded && "justify-center"
+                      collapsedItemClasses
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-5 h-5" />
+                    <item.icon className={cn("w-5 h-5", !shouldShowExpanded && "w-6 h-6") } />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -220,11 +221,11 @@ export function AppSidebar() {
                     "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative",
                     "hover:bg-accent hover:text-accent-foreground",
                     isActive && "bg-accent text-accent-foreground",
-                    !shouldShowExpanded && "justify-center"
+                    collapsedItemClasses
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-5 h-5" />
+                  <item.icon className={cn("w-5 h-5", !shouldShowExpanded && "w-6 h-6") } />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
