@@ -182,7 +182,7 @@ export default function AppDashboard() {
       {apdFiles.length > 0 ? (
         <CardSlider
           title="Recent APD Files"
-          seeAllHref="/app/apd-gpt/history"
+          seeAllHref="/app/apdgpt/history"
           cards={apdFiles.map(file => ({
             id: file.id,
             title: file.title,
@@ -203,7 +203,7 @@ export default function AppDashboard() {
           description="No APD documents found. Create your first document to get started."
           icon={FileTextIcon}
           actionText="Create APD Document"
-          actionHref="/app/apd-gpt/engine"
+          actionHref="/app/apdgpt/engine"
           isLoading={isLoading}
         />
       )}
@@ -212,7 +212,7 @@ export default function AppDashboard() {
       {templates.length > 0 ? (
         <CardSlider
           title="New Templates"
-          seeAllHref="/app/apd-gpt/templates"
+          seeAllHref="/app/apdgpt/templates"
           cards={templates.map(template => ({
             id: template.id,
             title: template.title,
@@ -231,7 +231,7 @@ export default function AppDashboard() {
           description="No templates found. Create templates to streamline your APD processes."
           icon={FileTextIcon}
           actionText="Create Template"
-          actionHref="/app/apd-gpt/templates"
+          actionHref="/app/apdgpt/templates"
           isLoading={isLoading}
         />
       )}
@@ -240,7 +240,7 @@ export default function AppDashboard() {
       {projects.length > 0 ? (
         <CardSlider
           title="Shared Projects"
-          seeAllHref="/app/apd-gpt/projects"
+          seeAllHref="/app/apdgpt/projects"
           cards={projects.map(project => ({
             id: project.id,
             title: project.title,
@@ -259,7 +259,7 @@ export default function AppDashboard() {
           description="No shared projects found. Start collaborating with your team."
           icon={PersonIcon}
           actionText="Create Project"
-          actionHref="/app/apd-gpt/projects"
+          actionHref="/app/apdgpt/projects"
           isLoading={isLoading}
         />
       )}

@@ -29,21 +29,21 @@ import { Logo } from "@/components/Logo"
 
 const mainNavItems = [
   { href: "/app", label: "Home", icon: HomeIcon, shortcut: "⌘H" },
-  { href: "/app/apd-gpt/engine", label: "APD Engine", icon: FileTextIcon, shortcut: "⌘B" },
-  { href: "/app/apd-gpt/history", label: "History", icon: ClockIcon, shortcut: "⌘S" },
-  { href: "/app/apd-gpt/performance", label: "Performance", icon: BarChartIcon, shortcut: "⌘K" },
+  { href: "/app/apdgpt/engine", label: "APD Engine", icon: FileTextIcon, shortcut: "⌘B" },
+  { href: "/app/apdgpt/history", label: "History", icon: ClockIcon, shortcut: "⌘S" },
+  { href: "/app/apdgpt/performance", label: "Performance", icon: BarChartIcon, shortcut: "⌘K" },
 ]
 
 const peopleNavItems = [
-  { href: "/app/apd-gpt/teams/new", label: "New Team", icon: PlusIcon, shortcut: "⌘T", isModal: true },
-  { href: "/app/apd-gpt/teams", label: "Teams", icon: AvatarIcon },
-  { href: "/app/apd-gpt/teams/invite", label: "Invite users", icon: PersonIcon, arrow: true, isModal: true },
-  { href: "/app/apd-gpt/settings", label: "Settings", icon: GearIcon, shortcut: "⌘S" },
+  { href: "/app/apdgpt/teams/new", label: "New Team", icon: PlusIcon, shortcut: "⌘T", isModal: true },
+  { href: "/app/apdgpt/teams", label: "Teams", icon: AvatarIcon },
+  { href: "/app/apdgpt/teams/invite", label: "Invite users", icon: PersonIcon, arrow: true, isModal: true },
+  { href: "/app/apdgpt/settings", label: "Settings", icon: GearIcon, shortcut: "⌘S" },
 ]
 
 const utilitiesNavItems = [
-  { href: "/app/apd-gpt/integrations", label: "Integrations", icon: LinkBreak1Icon },
-  { href: "/app/apd-gpt/api", label: "API", icon: CodeIcon },
+  { href: "/app/apdgpt/integrations", label: "Integrations", icon: LinkBreak1Icon },
+  { href: "/app/apdgpt/api", label: "API", icon: CodeIcon },
   { href: "/app/logout", label: "Log out", icon: ExitIcon, shortcut: "⌘⇧Q" },
 ]
 
@@ -69,7 +69,7 @@ export function AppSidebar() {
 
     // Auto-collapse sidebar on History and APD Engine pages, but keep expanded on home page
     const isHomePage = pathname === '/app'
-    const shouldAutoCollapse = (pathname.includes('/apd-gpt/history') || pathname.includes('/apd-gpt/engine')) && !isHomePage
+    const shouldAutoCollapse = (pathname.includes('/apdgpt/history') || pathname.includes('/apdgpt/engine')) && !isHomePage
     
     if (shouldAutoCollapse) {
       setIsCollapsed(true)
@@ -97,10 +97,10 @@ export function AppSidebar() {
     }
     setCardPosition(position)
     
-    if (href === "/app/apd-gpt/teams/new") {
+    if (href === "/app/apdgpt/teams/new") {
       setIsNewTeamCardOpen(true)
       setIsInviteUsersCardOpen(false)
-    } else if (href === "/app/apd-gpt/teams/invite") {
+    } else if (href === "/app/apdgpt/teams/invite") {
       setIsInviteUsersCardOpen(true)
       setIsNewTeamCardOpen(false)
     }
@@ -111,7 +111,7 @@ export function AppSidebar() {
     setIsCollapsed(true)
     setIsExpanded(false)
     // Navigate to APD Engine page
-    window.location.href = "/app/apd-gpt/engine"
+    window.location.href = "/app/apdgpt/engine"
   }
 
   const handleLogout = async () => {
@@ -172,7 +172,7 @@ export function AppSidebar() {
           <nav className="space-y-1">
             {mainNavItems.map((item) => {
               const isActive = pathname === item.href
-              const isAPDEngine = item.href === "/app/apd-gpt/engine"
+              const isAPDEngine = item.href === "/app/apdgpt/engine"
               
               if (isAPDEngine) {
                 return (

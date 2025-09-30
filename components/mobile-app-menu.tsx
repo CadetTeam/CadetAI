@@ -28,8 +28,8 @@ interface MobileAppMenuProps {
 
 const initialVisibleApps: App[] = [
   { id: "adpgpt", name: "ADP GPT", lightIcon: "/app-icons/light-folder.png", darkIcon: "/app-icons/dark-folder.png", href: "/app", isActive: true },
-  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfp-gpt" },
-  { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/light-new-doc.png", darkIcon: "/app-icons/dark-new-doc.png", href: "/app/response-now" },
+  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfpgpt" },
+  { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/light-new-doc.png", darkIcon: "/app-icons/dark-new-doc.png", href: "/app/responsenow" },
 ]
 
 const initialAvailableApps: App[] = [

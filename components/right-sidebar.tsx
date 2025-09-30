@@ -12,7 +12,7 @@ export function RightSidebar() {
   const [isHovered, setIsHovered] = useState(false)
   
   // Check if we're on the APD Engine page
-  const isAPDEngine = pathname.includes('/apd-gpt/engine')
+  const isAPDEngine = pathname.includes('/apdgpt/engine')
   
   // Determine if components should be minimized
   const shouldMinimize = isAPDEngine && !isHovered

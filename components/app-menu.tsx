@@ -40,14 +40,14 @@ const initialVisibleApps: App[] = [
     name: "RFP GPT",
     lightIcon: "/app-icons/light-grid.png",
     darkIcon: "/app-icons/dark-grid.png",
-    href: "/app/rfp-gpt"
+    href: "/app/rfpgpt"
   },
   {
     id: "responsenow",
     name: "Response Now",
     lightIcon: "/app-icons/light-new-doc.png",
     darkIcon: "/app-icons/dark-new-doc.png",
-    href: "/app/response-now"
+    href: "/app/responsenow"
   }
 ]
 

@@ -32,7 +32,7 @@ interface RecentActivityComponentProps {
 
 // Mock data based on current page context
 const getMockActivities = (pathname: string): ActivityItem[] => {
-  if (pathname.includes('/apd-gpt/engine')) {
+  if (pathname.includes('/apdgpt/engine')) {
     return [
       {
         id: "1",
@@ -62,7 +62,7 @@ const getMockActivities = (pathname: string): ActivityItem[] => {
         status: 'completed'
       }
     ]
-  } else if (pathname.includes('/apd-gpt/history')) {
+  } else if (pathname.includes('/apdgpt/history')) {
     return [
       {
         id: "1",
