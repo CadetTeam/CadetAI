@@ -148,15 +148,15 @@ export function AppSidebar() {
         }}
       >
         {isMobile ? (
-          <HamburgerMenuIcon className="w-4 h-4" />
+          <HamburgerMenuIcon className="w-6 h-6" />
         ) : (
-          isCollapsed ? <ChevronRightIcon className="w-4 h-4" /> : <ChevronLeftIcon className="w-4 h-4" />
+          isCollapsed ? <ChevronRightIcon className="w-6 h-6" /> : <ChevronLeftIcon className="w-6 h-6" />
         )}
       </Button>
 
       {/* Logo */}
       <div className="flex items-center justify-center p-4 border-b border-border">
-        <Logo variant="icon" size={shouldShowExpanded ? 32 : 40} className="flex-shrink-0" />
+        <Logo variant="icon" size={40} className="flex-shrink-0" />
         {shouldShowExpanded && (
           <span className="ml-3 text-lg font-semibold text-foreground">CadetAI</span>
         )}
