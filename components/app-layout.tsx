@@ -8,6 +8,7 @@ import { RightSidebar } from "./right-sidebar"
 import { FloatingChat } from "./floating-chat"
 import { AppMenu } from "./app-menu"
 import { MobileAppMenu } from "./mobile-app-menu"
+import { LoadingSkeleton } from "./loading-skeleton"
 import { useState, useEffect } from "react"
 
 interface AppLayoutProps {
@@ -15,10 +16,11 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const { isSignedIn } = useAuth()
+  const { isSignedIn, isLoaded } = useAuth()
   const pathname = usePathname()
   const [currentApp, setCurrentApp] = useState("apdgpt")
   const [isMobile, setIsMobile] = useState(false)
+  const [isLayoutReady, setIsLayoutReady] = useState(false)
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -31,8 +33,15 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // Mark layout as ready once auth is loaded
+  useEffect(() => {
+    if (isLoaded) {
+      setIsLayoutReady(true)
+    }
+  }, [isLoaded])
+
   // Show marketing page for unauthenticated users, auth pages, or landing page
-  if (!isSignedIn || pathname.startsWith('/auth') || pathname === '/') {
+  if (!isLoaded || !isSignedIn || pathname.startsWith('/auth') || pathname === '/') {
     return <>{children}</>
   }
 
@@ -74,15 +83,15 @@ export function AppLayout({ children }: AppLayoutProps) {
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden z-20">
-        {/* Header */}
+        {/* Header - Always render first */}
         <div className="z-30">
           <AppHeader />
         </div>
         
-        {/* Main Content */}
+        {/* Main Content - Render after layout is ready */}
         <div className="flex-1 flex overflow-hidden">
           <main className="flex-1 overflow-auto">
-            {children}
+            {isLayoutReady ? children : <LoadingSkeleton />}
           </main>
           
           {/* Desktop Right Sidebar - Only show for APDGPT app pages on desktop */}
