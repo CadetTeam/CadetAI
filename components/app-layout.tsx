@@ -31,8 +31,8 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Show marketing page for unauthenticated users or auth pages
-  if (!isSignedIn || pathname.startsWith('/auth')) {
+  // Show marketing page for unauthenticated users, auth pages, or landing page
+  if (!isSignedIn || pathname.startsWith('/auth') || pathname === '/') {
     return <>{children}</>
   }
 

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/Logo";
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 function ClerkAuthButtons() {
@@ -42,12 +44,26 @@ function FallbackAuthButtons() {
 
 export default function Home() {
   const [hasClerkKey, setHasClerkKey] = useState(false);
+  const { isSignedIn, isLoaded } = useAuth();
+  const router = useRouter();
+  
+  // Redirect logged-in users to /app
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.push('/app');
+    }
+  }, [isLoaded, isSignedIn, router]);
   
   // Check if Clerk is available
   useEffect(() => {
     const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
     setHasClerkKey(!!clerkKey && !clerkKey.includes('placeholder'));
   }, []);
+  
+  // Don't show landing page content if user is signed in
+  if (isLoaded && isSignedIn) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useTheme } from "next-themes"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -76,14 +77,14 @@ const initialAvailableApps: App[] = [
 
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   const { theme } = useTheme()
+  const router = useRouter()
   const [visibleApps, setVisibleApps] = useState<App[]>(initialVisibleApps)
   const [availableApps, setAvailableApps] = useState<App[]>(initialAvailableApps)
   const [showAddMenu, setShowAddMenu] = useState(false)
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
-    // In a real implementation, you would navigate to the app
-    console.log(`Switching to ${app.name} app`)
+    router.push(app.href)
   }
 
   return (
@@ -148,7 +149,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
         </Button>
 
         {showAddMenu && (
-          <div className="absolute bottom-14 left-2 z-50 bg-popover text-popover-foreground border border-border rounded-md shadow-md w-56 p-2">
+          <div className="fixed bottom-20 left-4 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-56 p-2">
             <p className="text-xs px-2 py-1 text-muted-foreground">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {
