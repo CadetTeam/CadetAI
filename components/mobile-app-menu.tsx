@@ -117,13 +117,13 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                     )}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="relative w-6 h-6 flex items-center justify-center flex-shrink-0">
+                      <div className="relative w-6 h-6 flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded border border-white/20 dark:border-white/10">
                         <Image
                           src={iconSrc}
                           alt={app.name}
                           width={24}
                           height={24}
-                          className="object-contain"
+                          className="object-contain p-0.5"
                           unoptimized
                           priority
                         />
@@ -154,7 +154,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                   </div>
                 </Button>
                 {showAddMenu && (
-                  <div className="absolute left-4 mt-2 z-50 bg-popover text-popover-foreground border border-border rounded-md shadow-md w-64 p-2">
+                  <div className="absolute left-4 mt-2 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-64 p-2">
                     <div className="space-y-1 max-h-60 overflow-auto">
                       {availableApps.map((app) => {
                         const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
@@ -167,7 +167,9 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                             onClick={() => handleAddApp(app)}
                           >
                             <div className="flex items-center space-x-2">
-                              <Image src={iconSrc} alt={app.name} width={20} height={20} />
+                              <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded border border-white/20 dark:border-white/10">
+                                <Image src={iconSrc} alt={app.name} width={20} height={20} className="object-contain p-0.5" />
+                              </div>
                               <span className="text-sm">{app.name}</span>
                             </div>
                           </Button>

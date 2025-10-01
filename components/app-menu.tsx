@@ -138,13 +138,13 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     isActive && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-lg border border-white/20 dark:border-white/10 shadow-sm">
                     <Image
                       src={iconSrc}
                       alt={app.name}
                       width={32}
                       height={32}
-                      className="object-contain"
+                      className="object-contain p-1"
                       unoptimized
                       priority
                     />
@@ -193,7 +193,9 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     onClick={() => handleAddApp(app)}
                   >
                     <div className="flex items-center space-x-2">
-                      <Image src={iconSrc} alt={app.name} width={20} height={20} />
+                      <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded border border-white/20 dark:border-white/10">
+                        <Image src={iconSrc} alt={app.name} width={20} height={20} className="object-contain p-0.5" />
+                      </div>
                       <span className="text-sm">{app.name}</span>
                     </div>
                   </Button>
