@@ -167,7 +167,9 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                             onClick={() => handleAddApp(app)}
                           >
                             <div className="flex items-center space-x-2">
-                              <Image src={iconSrc} alt={app.name} width={24} height={24} className="object-contain" unoptimized priority />
+                              <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
+                                <Image src={iconSrc} alt={app.name} width={24} height={24} className="object-contain" unoptimized priority />
+                              </div>
                               <span className="text-sm">{app.name}</span>
                             </div>
                           </Button>
