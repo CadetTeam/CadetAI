@@ -141,8 +141,9 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
       
       <div 
         className={cn(
-          "flex flex-col border-r border-border transition-all duration-300 overflow-hidden",
+          "flex flex-col border-r border-border transition-all duration-300",
           "bg-white/10 dark:bg-black/10 backdrop-blur-md border-white/20 dark:border-white/10",
+          "overflow-y-auto overflow-x-hidden",
           sidebarWidth,
           isMobile ? "fixed left-0 top-0 bottom-0 z-[101] shadow-2xl" : "relative h-screen z-50"
         )}
@@ -178,7 +179,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
 
       {/* Main Navigation */}
       <div className={cn(
-        "flex-1 overflow-y-auto space-y-4",
+        "flex-1 space-y-4 overflow-y-auto overflow-x-hidden",
         isMobile ? "p-3" : "p-4 space-y-6"
       )}>
         {/* APD GPT Section */}

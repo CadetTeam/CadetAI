@@ -29,8 +29,8 @@ const defaultVisibleApps: App[] = [
   {
     id: "apdgpt",
     name: "APD GPT",
-    lightIcon: "/app-icons/light-folder.png",
-    darkIcon: "/app-icons/dark-folder.png",
+    lightIcon: "/app-icons/lightFolder.png",
+    darkIcon: "/app-icons/darkFolder.png",
     href: "/app",
     isActive: true
   }
@@ -40,36 +40,36 @@ const defaultAvailableApps: App[] = [
   {
     id: "rfpgpt",
     name: "RFP GPT",
-    lightIcon: "/app-icons/light-key.png",
-    darkIcon: "/app-icons/dark-key.png",
+    lightIcon: "/app-icons/lightMagnifier.png",
+    darkIcon: "/app-icons/darkMagnifier.png",
     href: "/app/rfpgpt"
   },
   {
     id: "responsenow",
     name: "Response Now",
-    lightIcon: "/app-icons/light-folder.png",
-    darkIcon: "/app-icons/dark-folder.png",
+    lightIcon: "/app-icons/lightNote.png",
+    darkIcon: "/app-icons/lightNote.png",
     href: "/app/responsenow"
   },
   {
     id: "statusai",
     name: "StatusAI",
-    lightIcon: "/app-icons/light-fingerprint.png",
-    darkIcon: "/app-icons/dark-fingerprint.png",
+    lightIcon: "/app-icons/lightFingerprint.png",
+    darkIcon: "/app-icons/darkFingerprint.png",
     href: "/app/statusai"
   },
   {
     id: "forecost",
     name: "ForeCost",
-    lightIcon: "/app-icons/light-wallet.png",
-    darkIcon: "/app-icons/dark-wallet.png",
+    lightIcon: "/app-icons/lightWallet.png",
+    darkIcon: "/app-icons/darkWallet.png",
     href: "/app/forecost"
   },
   {
     id: "commander",
     name: "Commander",
-    lightIcon: "/app-icons/light-windows.png",
-    darkIcon: "/app-icons/dark-windows.png",
+    lightIcon: "/app-icons/lightLayers.png",
+    darkIcon: "/app-icons/darkLayers.png",
     href: "/app/commander"
   }
 ]
