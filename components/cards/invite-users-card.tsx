@@ -87,7 +87,7 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
       
       {/* Popover */}
       <div 
-        className="fixed z-[103] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
+        className="fixed z-[103] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-border rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
         style={{
           top: position.top,
           left: position.left,
@@ -95,7 +95,7 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-2 sm:p-3 border-b border-white/20 dark:border-white/10">
+        <div className="flex items-center justify-between p-2 sm:p-3 border-b border-border">
           <h3 className="text-sm sm:text-base font-semibold text-foreground">Invite Users</h3>
           <Button
             variant="ghost"
@@ -171,7 +171,7 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
                       return (
                         <div
                           key={invite.id}
-                          className="flex items-center justify-between p-1.5 sm:p-2 rounded-lg border border-white/20 dark:border-white/10 bg-white/5"
+                          className="flex items-center justify-between p-1.5 sm:p-2 rounded-lg border border-border bg-muted/30"
                         >
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-xs truncate">{invite.email}</div>
@@ -203,7 +203,7 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-white/20 dark:border-white/10">
+        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-border">
           <div className="text-[10px] sm:text-xs text-muted-foreground">
             {invites.length} to invite
           </div>

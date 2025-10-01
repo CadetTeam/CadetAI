@@ -71,7 +71,7 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
       
       {/* Popover */}
       <div 
-        className="fixed z-[103] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
+        className="fixed z-[103] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-border rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
         style={{
           top: position.top,
           left: position.left,
@@ -79,7 +79,7 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-2 sm:p-3 border-b border-white/20 dark:border-white/10">
+        <div className="flex items-center justify-between p-2 sm:p-3 border-b border-border">
           <h3 className="text-sm sm:text-base font-semibold text-foreground">New Team</h3>
           <Button
             variant="ghost"
@@ -149,12 +149,12 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
                       "flex items-center justify-between p-1.5 sm:p-2 rounded-lg border cursor-pointer transition-colors",
                       isSelected 
                         ? "border-primary bg-primary/10" 
-                        : "border-white/20 dark:border-white/10 hover:bg-white/5"
+                        : "border-border hover:bg-muted/30"
                     )}
                     onClick={() => handleMemberToggle(member.id)}
                   >
                     <div className="flex items-center space-x-2 min-w-0 flex-1">
-                      <div className="w-6 h-6 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
                         <PersonIcon className="w-3 h-3" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -179,7 +179,7 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-white/20 dark:border-white/10">
+        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-border">
           <div className="text-[10px] sm:text-xs text-muted-foreground">
             {selectedMembers.length} selected
           </div>
