@@ -186,9 +186,13 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                 >
                   <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
                     <img
-                      src={iconSrc}
+                      src={`${iconSrc}?v=2`}
                       alt={app.name}
                       className="w-10 h-10 object-contain"
+                      onError={(e) => {
+                        console.error('Failed to load icon:', iconSrc)
+                        e.currentTarget.style.display = 'none'
+                      }}
                     />
                   </div>
                   
@@ -253,7 +257,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                   >
                     <div className="flex items-center space-x-2">
                       <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-                        <img src={iconSrc} alt={app.name} className="w-6 h-6 object-contain" />
+                        <img src={`${iconSrc}?v=2`} alt={app.name} className="w-6 h-6 object-contain" />
                       </div>
                       <span className="text-sm">{app.name}</span>
                     </div>
