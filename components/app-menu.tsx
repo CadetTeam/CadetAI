@@ -75,7 +75,7 @@ const defaultAvailableApps: App[] = [
 ]
 
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const router = useRouter()
   const [visibleApps, setVisibleApps] = useState<App[]>(defaultVisibleApps)
   const [availableApps, setAvailableApps] = useState<App[]>(defaultAvailableApps)
@@ -165,8 +165,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
           {visibleApps.map((app) => {
             const isActive = currentApp === app.id
             // Dark mode uses dark icons (for dark backgrounds), light mode uses light icons (for light backgrounds)
-            const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
-            console.log(`Loading icon for ${app.name}:`, iconSrc)
+            const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
 
             return (
               <div key={app.id} className="relative">
@@ -247,7 +246,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
             <p className="text-xs px-2 py-1 text-muted-foreground">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {
-                const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
+                const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
                 return (
                   <Button
                     key={app.id}

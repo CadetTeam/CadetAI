@@ -40,7 +40,7 @@ const defaultAvailableApps: App[] = [
 
 export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const router = useRouter()
   const [visibleApps, setVisibleApps] = useState<App[]>(defaultVisibleApps)
   const [availableApps, setAvailableApps] = useState<App[]>(defaultAvailableApps)
@@ -106,7 +106,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
               <h3 className="text-sm font-semibold text-foreground mb-3 px-2">Apps</h3>
               {visibleApps.map((app) => {
                 const isActive = currentApp === app.id
-                const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
+                const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
 
                 return (
                   <Button
@@ -158,7 +158,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                   >
                     <div className="space-y-1 max-h-60 overflow-auto">
                       {availableApps.map((app) => {
-                        const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
+                        const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
                         return (
                           <Button
                             key={app.id}
