@@ -157,7 +157,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   }
 
   return (
-    <div className="h-screen w-16 bg-background border-r border-border flex flex-col relative z-50">
+    <div className="h-screen w-16 bg-background border-r border-border flex flex-col relative z-[60]">
 
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto flex items-center justify-center">

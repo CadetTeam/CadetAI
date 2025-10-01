@@ -285,16 +285,17 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
               PEOPLE
             </h3>
           )}
-          <nav className="space-y-1">
+          <nav className={cn("space-y-1", isMobile && "space-y-0.5")}>
             {peopleNavItems.map((item) => {
               const isActive = pathname === item.href
               const isModalAction = 'isModal' in item && item.isModal
               
               const commonClassName = cn(
-                "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative",
+                "flex items-center rounded-lg font-medium transition-colors group relative",
                 "hover:bg-accent hover:text-accent-foreground",
                 isActive && "bg-accent text-accent-foreground",
-                collapsedItemClasses
+                isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm",
+                !isMobile && collapsedItemClasses
               )
 
               if (isModalAction) {
@@ -305,10 +306,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                     className={commonClassName}
                     title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className={cn("flex-shrink-0", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")} />
                   {(isMobile || shouldShowExpanded) && (
                       <>
-                        <span className="ml-3">{item.label}</span>
+                        <span className={cn(isMobile ? "ml-2" : "ml-3")}>{item.label}</span>
                         {item.arrow && (
                           <span className="ml-auto text-xs text-muted-foreground">→</span>
                         )}
@@ -380,7 +381,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
               UTILITIES
             </h3>
           )}
-          <nav className="space-y-1">
+          <nav className={cn("space-y-1", isMobile && "space-y-0.5")}>
             {utilitiesNavItems.map((item) => {
               const isActive = pathname === item.href
               const isLogout = item.href === "/app/logout"
@@ -391,17 +392,18 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                     key={item.href}
                     onClick={handleLogout}
                     className={cn(
-                      "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
+                      "flex items-center rounded-lg font-medium transition-colors group relative w-full",
                       "hover:bg-accent hover:text-accent-foreground",
                       isActive && "bg-accent text-accent-foreground",
-                      collapsedItemClasses
+                      isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm",
+                      !isMobile && collapsedItemClasses
                     )}
                     title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className={cn("flex-shrink-0", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")} />
                   {(isMobile || shouldShowExpanded) && (
                       <>
-                        <span className="ml-3">{item.label}</span>
+                        <span className={cn(isMobile ? "ml-2" : "ml-3")}>{item.label}</span>
                         {item.shortcut && (
                           <span className="ml-auto text-xs text-muted-foreground">
                             {item.shortcut}
