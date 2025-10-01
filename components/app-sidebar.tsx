@@ -141,9 +141,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
       
       <div 
         className={cn(
-          "flex flex-col bg-background border-r border-border transition-all duration-300 overflow-hidden",
+          "flex flex-col border-r border-border transition-all duration-300 overflow-hidden",
+          "bg-white/10 dark:bg-black/10 backdrop-blur-md border-white/20 dark:border-white/10",
           sidebarWidth,
-          isMobile ? "fixed left-0 top-0 bottom-0 z-[101] shadow-2xl" : "relative h-screen"
+          isMobile ? "fixed left-0 top-0 bottom-0 z-[101] shadow-2xl" : "relative h-screen z-50"
         )}
         onMouseEnter={() => !isMobile && setIsHovered(true)}
         onMouseLeave={() => !isMobile && setIsHovered(false)}

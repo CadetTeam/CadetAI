@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { ReactFlow, 
   MiniMap, 
   Controls, 
@@ -190,6 +190,16 @@ export default function APDEnginePage() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  useEffect(() => {
+    const checkLayout = () => {
+      setIsCollapsed(window.innerWidth < 1280) // Collapse panels on smaller screens
+    }
+    checkLayout()
+    window.addEventListener('resize', checkLayout)
+    return () => window.removeEventListener('resize', checkLayout)
+  }, [])
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -245,99 +255,115 @@ export default function APDEnginePage() {
         />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
-        {/* Legend Panel */}
-        <Panel position="top-left" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 z-20">
-          <div className="space-y-3">
-            <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Legend</h3>
+        {/* Legend Panel - Responsive */}
+        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-20 mt-4 z-10">
+          {!isCollapsed ? (
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">APD Step</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Process</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Decision</span>
+              <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Legend</h3>
+              <div className="space-y-1.5">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">APD Step</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Process</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Decision</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col space-y-1">
+              <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
+              <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
+              <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
+            </div>
+          )}
         </Panel>
 
-        {/* Status Legend */}
-        <Panel position="top-right" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 z-20">
-          <div className="space-y-3">
-            <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Status</h3>
+        {/* Status Legend - Responsive, avoids right sidebar */}
+        <Panel position="top-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 mr-[336px] mt-4 z-10">
+          {!isCollapsed ? (
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Complete</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Pending</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Failed</span>
+              <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Status</h3>
+              <div className="space-y-1.5">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Complete</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Pending</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Failed</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col space-y-1">
+              <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+              <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+              <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+            </div>
+          )}
         </Panel>
 
-        {/* Controls Panel */}
-        <Panel position="bottom-left" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 z-20">
+        {/* Controls Panel - Stays above chat bar */}
+        <Panel position="bottom-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-20 mb-[80px] z-10">
           <div className="flex space-x-2">
-            <Button size="sm" onClick={addNewNode}>
-              <PlusIcon className="w-4 h-4 mr-2" />
-              Add Step
+            <Button size="sm" onClick={addNewNode} className="text-xs h-8">
+              <PlusIcon className="w-3 h-3 mr-1.5" />
+              <span className={isCollapsed ? "hidden" : ""}>Add Step</span>
             </Button>
-            <Button size="sm" variant="outline">
-              <DownloadIcon className="w-4 h-4 mr-2" />
-              Export
+            <Button size="sm" variant="outline" className="text-xs h-8">
+              <DownloadIcon className="w-3 h-3 mr-1.5" />
+              <span className={isCollapsed ? "hidden" : ""}>Export</span>
             </Button>
-            <Button size="sm" variant="outline">
-              <Share1Icon className="w-4 h-4 mr-2" />
-              Share
+            <Button size="sm" variant="outline" className="text-xs h-8">
+              <Share1Icon className="w-3 h-3 mr-1.5" />
+              <span className={isCollapsed ? "hidden" : ""}>Share</span>
             </Button>
           </div>
         </Panel>
 
-        {/* Node Details Panel */}
+        {/* Node Details Panel - Stays above chat bar and avoids right sidebar */}
         {selectedNode && (
-          <Panel position="bottom-right" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 m-4 max-w-sm z-20">
-            <div className="space-y-3">
+          <Panel position="bottom-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 mr-[336px] mb-[80px] max-w-xs z-10">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Node Details</h3>
+                <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Details</h3>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => setSelectedNode(null)}
-                  className="h-6 w-6 p-0"
+                  className="h-5 w-5 p-0 text-xs"
                 >
                   ×
                 </Button>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div>
-                  <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Label</label>
-                  <p className="text-sm text-gray-900 dark:text-gray-100">{selectedNode.data.label as string}</p>
+                  <label className="text-[10px] font-medium text-gray-600 dark:text-gray-400">Label</label>
+                  <p className="text-xs text-gray-900 dark:text-gray-100">{selectedNode.data.label as string}</p>
                 </div>
                 {(selectedNode.data.description as string) && (
                   <div>
-                    <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Description</label>
-                    <p className="text-sm text-gray-900 dark:text-gray-100">{selectedNode.data.description as string}</p>
+                    <label className="text-[10px] font-medium text-gray-600 dark:text-gray-400">Description</label>
+                    <p className="text-xs text-gray-900 dark:text-gray-100">{selectedNode.data.description as string}</p>
                   </div>
                 )}
                 {(selectedNode.data.status as string) && (
                   <div>
-                    <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Status</label>
+                    <label className="text-[10px] font-medium text-gray-600 dark:text-gray-400">Status</label>
                     <Badge className={
-                      selectedNode.data.status === 'complete' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' :
-                      selectedNode.data.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' :
-                      'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+                      selectedNode.data.status === 'complete' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 text-[10px]' :
+                      selectedNode.data.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 text-[10px]' :
+                      'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 text-[10px]'
                     }>
                       {selectedNode.data.status as string}
                     </Badge>
