@@ -36,12 +36,12 @@ export function Logo({ variant = "full", size = 32, className = "" }: LogoProps)
   const getLogoSrc = () => {
     switch (variant) {
       case "icon":
-        return isDark ? "/logos/cadetai-icon-dark.png" : "/logos/cadetai-icon-light.png"
+        return isDark ? "/logos/cdarki.png" : "/logos/clighti.png"
       case "avatar":
         return "/logos/cadetai-logo-avatar.png"
       case "full":
       default:
-        return "/logos/cadetai-logo-main.png"
+        return isDark ? "/logos/cdarkl.png" : "/logos/clightl.png"
     }
   }
 

@@ -21,7 +21,6 @@ const cloudIntegrations = [
   { id: "gcp", name: "Google Cloud Platform", description: "Connect Google Cloud services", logo: "🌩️", category: "Cloud", connected: true },
   { id: "oracle", name: "Oracle Cloud", description: "Integrate Oracle Cloud Infrastructure", logo: "🔴", category: "Cloud", connected: false },
   { id: "ibm", name: "IBM Cloud", description: "Connect IBM Cloud services", logo: "🔵", category: "Cloud", connected: false },
-  { id: "alibaba", name: "Alibaba Cloud", description: "Integrate Alibaba Cloud platform", logo: "🟠", category: "Cloud", connected: false },
 ]
 
 // On-Premise Environments
@@ -124,40 +123,43 @@ export default function IntegrationsPage() {
 
   const renderIntegrationCard = (integration: typeof allIntegrations[0]) => (
     <Card key={integration.id} className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-          <div className="flex items-start space-x-3 flex-1 min-w-0">
-            <div className="text-3xl sm:text-4xl flex-shrink-0">{integration.logo}</div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-base sm:text-lg truncate">{integration.name}</CardTitle>
-              <CardDescription className="text-xs sm:text-sm mt-1 line-clamp-2">
-                {integration.description}
-              </CardDescription>
+      <CardHeader className="p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col gap-2 sm:gap-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+              <div className="text-2xl sm:text-3xl md:text-4xl flex-shrink-0">{integration.logo}</div>
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-sm sm:text-base md:text-lg truncate">{integration.name}</CardTitle>
+                <CardDescription className="text-[10px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 line-clamp-2">
+                  {integration.description}
+                </CardDescription>
+              </div>
             </div>
+            {integration.connected && (
+              <Badge variant="default" className="bg-green-500 flex-shrink-0 text-[10px] sm:text-xs h-5 sm:h-6">
+                <CheckCircledIcon className="w-2 h-2 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
+                <span className="hidden sm:inline">Connected</span>
+                <span className="sm:hidden">✓</span>
+              </Badge>
+            )}
           </div>
-          {integration.connected && (
-            <Badge variant="default" className="bg-green-500 flex-shrink-0 self-start sm:self-auto">
-              <CheckCircledIcon className="w-3 h-3 mr-1" />
-              Connected
-            </Badge>
-          )}
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <Badge variant="outline" className="text-xs">{integration.category}</Badge>
+      <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
+          <Badge variant="outline" className="text-[10px] sm:text-xs">{integration.category}</Badge>
           <Button
             size="sm"
             variant={integration.connected ? "outline" : "default"}
             onClick={() => handleConnect(integration.id)}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9"
           >
             {integration.connected ? (
-              <>Configure</>
+              <span className="text-xs sm:text-sm">Configure</span>
             ) : (
               <>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                Connect
+                <PlusIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">Connect</span>
               </>
             )}
           </Button>
@@ -186,64 +188,64 @@ export default function IntegrationsPage() {
   )
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
+    <div className="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8 space-y-3 sm:space-y-4 md:space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Integrations</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-2">
+      <div className="space-y-1 sm:space-y-2">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">Integrations</h1>
+        <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
           Connect CadetAI with your favorite tools and platforms
         </p>
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="relative w-full">
+        <MagnifyingGlassIcon className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
         <Input
           placeholder="Search integrations..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
+          className="pl-8 sm:pl-10 text-sm"
         />
       </div>
 
       {/* Stats */}
       {isLoading ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           {[1, 2, 3, 4].map((i) => (
             <Card key={i}>
-              <CardHeader className="pb-3">
-                <Skeleton className="h-4 w-24 mb-2" />
-                <Skeleton className="h-8 w-16" />
+              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+                <Skeleton className="h-3 sm:h-4 w-20 sm:w-24 mb-2" />
+                <Skeleton className="h-6 sm:h-8 w-12 sm:w-16" />
               </CardHeader>
             </Card>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs sm:text-sm">Total Integrations</CardDescription>
-              <CardTitle className="text-xl sm:text-2xl">{allIntegrations.length}</CardTitle>
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardDescription className="text-[10px] sm:text-xs md:text-sm">Total Integrations</CardDescription>
+              <CardTitle className="text-lg sm:text-xl md:text-2xl">{allIntegrations.length}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs sm:text-sm">Connected</CardDescription>
-              <CardTitle className="text-xl sm:text-2xl text-green-600">
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardDescription className="text-[10px] sm:text-xs md:text-sm">Connected</CardDescription>
+              <CardTitle className="text-lg sm:text-xl md:text-2xl text-green-600">
                 {allIntegrations.filter(i => i.connected).length}
               </CardTitle>
             </CardHeader>
           </Card>
           <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs sm:text-sm">Cloud Platforms</CardDescription>
-              <CardTitle className="text-xl sm:text-2xl">{cloudIntegrations.length}</CardTitle>
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardDescription className="text-[10px] sm:text-xs md:text-sm">Cloud Platforms</CardDescription>
+              <CardTitle className="text-lg sm:text-xl md:text-2xl">{cloudIntegrations.length}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs sm:text-sm">Enterprise Tools</CardDescription>
-              <CardTitle className="text-xl sm:text-2xl">{enterpriseArchTools.length}</CardTitle>
+            <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+              <CardDescription className="text-[10px] sm:text-xs md:text-sm">Enterprise Tools</CardDescription>
+              <CardTitle className="text-lg sm:text-xl md:text-2xl">{enterpriseArchTools.length}</CardTitle>
             </CardHeader>
           </Card>
         </div>
@@ -251,25 +253,25 @@ export default function IntegrationsPage() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <TabsList className="w-full sm:w-auto inline-flex">
-            <TabsTrigger value="all" className="text-xs sm:text-sm">All</TabsTrigger>
-            <TabsTrigger value="cloud" className="text-xs sm:text-sm">Cloud</TabsTrigger>
-            <TabsTrigger value="onprem" className="text-xs sm:text-sm whitespace-nowrap">On-Premise</TabsTrigger>
-            <TabsTrigger value="mindmapping" className="text-xs sm:text-sm whitespace-nowrap">Mind Map</TabsTrigger>
-            <TabsTrigger value="enterprise" className="text-xs sm:text-sm whitespace-nowrap">Enterprise</TabsTrigger>
+        <div className="overflow-x-auto -mx-3 px-3 sm:-mx-4 sm:px-4 md:mx-0 md:px-0 pb-2">
+          <TabsList className="w-full sm:w-auto inline-flex min-w-max">
+            <TabsTrigger value="all" className="text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">All</TabsTrigger>
+            <TabsTrigger value="cloud" className="text-[10px] sm:text-xs md:text-sm px-2 sm:px-3">Cloud</TabsTrigger>
+            <TabsTrigger value="onprem" className="text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 whitespace-nowrap">On-Premise</TabsTrigger>
+            <TabsTrigger value="mindmapping" className="text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 whitespace-nowrap">Mind Map</TabsTrigger>
+            <TabsTrigger value="enterprise" className="text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 whitespace-nowrap">Enterprise</TabsTrigger>
           </TabsList>
         </div>
 
-        <TabsContent value={activeTab} className="mt-4 sm:mt-6">
+        <TabsContent value={activeTab} className="mt-3 sm:mt-4 md:mt-6">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i}>{renderSkeletonCard()}</div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
               {getTabIntegrations(activeTab).length > 0 ? (
                 getTabIntegrations(activeTab).map(renderIntegrationCard)
               ) : (

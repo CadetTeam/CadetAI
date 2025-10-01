@@ -154,9 +154,10 @@ export function AppSidebar() {
 
       {/* Logo */}
       <div className="flex items-center justify-center p-4 border-b border-border">
-        <Logo variant="icon" size={24} className="flex-shrink-0" />
-        {shouldShowExpanded && (
-          <span className="ml-3 text-lg font-semibold text-foreground">CadetAI</span>
+        {shouldShowExpanded ? (
+          <Logo variant="full" size={120} className="flex-shrink-0" />
+        ) : (
+          <Logo variant="icon" size={24} className="flex-shrink-0" />
         )}
       </div>
 
