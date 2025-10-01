@@ -69,16 +69,12 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Desktop App Menu - Only show on desktop and home page */}
       {!isMobile && isHomePage && (
-        <div className="z-30">
-          <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
-        </div>
+        <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
       )}
       
       {/* Desktop Left Sidebar - Only show for APDGPT app pages on desktop */}
       {!isMobile && isAPDGPTApp && (
-        <div className="z-30">
-          <AppSidebar />
-        </div>
+        <AppSidebar />
       )}
       
       {/* Main Content Area */}

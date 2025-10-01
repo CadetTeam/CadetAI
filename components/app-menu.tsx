@@ -41,15 +41,15 @@ const defaultAvailableApps: App[] = [
   {
     id: "rfpgpt",
     name: "RFP GPT",
-    lightIcon: "/app-icons/light-search-doc.png",
-    darkIcon: "/app-icons/dark-search-doc.png",
+    lightIcon: "/app-icons/light-key.png",
+    darkIcon: "/app-icons/dark-key.png",
     href: "/app/rfpgpt"
   },
   {
     id: "responsenow",
     name: "Response Now",
-    lightIcon: "/app-icons/light-new-doc.png",
-    darkIcon: "/app-icons/dark-new-doc.png",
+    lightIcon: "/app-icons/light-folder.png",
+    darkIcon: "/app-icons/dark-folder.png",
     href: "/app/responsenow"
   },
   {
