@@ -1,8 +1,7 @@
 "use client"
 
-import { MagnifyingGlassIcon, BellIcon, QuestionMarkCircledIcon, HeartIcon, HamburgerMenuIcon } from "@radix-ui/react-icons"
+import { BellIcon, QuestionMarkCircledIcon, HamburgerMenuIcon, Component1Icon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useUser } from "@clerk/nextjs"
@@ -37,24 +36,15 @@ export function AppHeader() {
         </Button>
       )}
       
-      {/* Search Bar */}
-      <div className="flex-1 max-w-md">
-        <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            type="text"
-            placeholder="Explore"
-            className="pl-10 bg-muted border-border focus:bg-background"
-          />
-        </div>
-      </div>
+      {/* Spacer for layout */}
+      <div className="flex-1" />
 
       {/* Right Side Actions */}
       <div className="flex items-center space-x-2">
         <ThemeToggle />
         <Link href="/app/knowledge-base">
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Knowledge Base">
-            <HeartIcon className="w-4 h-4" />
+            <Component1Icon className="w-4 h-4" />
           </Button>
         </Link>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
