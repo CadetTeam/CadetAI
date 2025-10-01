@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { 
   Cross2Icon,
   PaperPlaneIcon,
@@ -28,13 +29,22 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
   const [invites, setInvites] = useState<InviteUser[]>([])
   const [currentEmail, setCurrentEmail] = useState("")
   const [currentRole, setCurrentRole] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const roles = [
-    { value: "admin", label: "Admin", description: "Full access to all features" },
-    { value: "manager", label: "Manager", description: "Manage teams and projects" },
-    { value: "member", label: "Member", description: "Basic access to assigned projects" },
-    { value: "viewer", label: "Viewer", description: "Read-only access" },
+    { value: "admin", label: "Admin", description: "Full access" },
+    { value: "manager", label: "Manager", description: "Manage teams" },
+    { value: "member", label: "Member", description: "Basic access" },
+    { value: "viewer", label: "Viewer", description: "Read-only" },
   ]
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoading(true)
+      const timer = setTimeout(() => setIsLoading(false), 300)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen])
 
   const addInvite = () => {
     if (currentEmail.trim() && currentRole) {
@@ -77,7 +87,7 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
       
       {/* Popover */}
       <div 
-        className="fixed z-[103] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-border rounded-lg shadow-xl w-80 max-h-[600px] overflow-hidden"
+        className="fixed z-[103] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
         style={{
           top: position.top,
           left: position.left,
@@ -85,114 +95,125 @@ export function InviteUsersCard({ isOpen, onClose, position }: InviteUsersCardPr
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="text-lg font-semibold text-foreground">Invite Users</h3>
+        <div className="flex items-center justify-between p-2 sm:p-3 border-b border-white/20 dark:border-white/10">
+          <h3 className="text-sm sm:text-base font-semibold text-foreground">Invite Users</h3>
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="h-6 w-6 p-0"
+            className="h-5 w-5 p-0"
           >
-            <Cross2Icon className="h-4 w-4" />
+            <Cross2Icon className="h-3 w-3" />
           </Button>
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-4 max-h-[500px] overflow-y-auto">
-          {/* Add User Form */}
-          <div className="space-y-3">
+        <div className="p-2 sm:p-3 space-y-2 sm:space-y-3 max-h-[400px] sm:max-h-[500px] overflow-y-auto">
+          {isLoading ? (
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={currentEmail}
-                onChange={(e) => setCurrentEmail(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="user@company.com"
-              />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-7 w-full" />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select value={currentRole} onValueChange={setCurrentRole}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  {roles.map((role) => (
-                    <SelectItem key={role.value} value={role.value}>
-                      <div>
-                        <div className="font-medium">{role.label}</div>
-                        <div className="text-xs text-muted-foreground">{role.description}</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button 
-              onClick={addInvite} 
-              disabled={!currentEmail.trim() || !currentRole}
-              className="w-full"
-            >
-              <PlusIcon className="w-4 h-4 mr-2" />
-              Add to Invite List
-            </Button>
-          </div>
-
-          {/* Invite List */}
-          {invites.length > 0 && (
-            <div className="space-y-2">
-              <Label>Invite List ({invites.length})</Label>
+          ) : (
+            <>
+              {/* Add User Form */}
               <div className="space-y-2">
-                {invites.map((invite) => {
-                  const roleInfo = roles.find(r => r.value === invite.role)
-                  return (
-                    <div
-                      key={invite.id}
-                      className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/50"
-                    >
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">{invite.email}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {roleInfo?.label || invite.role}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">
-                          {roleInfo?.label || invite.role}
-                        </Badge>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeInvite(invite.id)}
-                          className="h-6 w-6 p-0"
-                        >
-                          <Cross2Icon className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  )
-                })}
+                <div className="space-y-1">
+                  <Label htmlFor="email" className="text-xs">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={currentEmail}
+                    onChange={(e) => setCurrentEmail(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="user@company.com"
+                    className="h-8 text-sm"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="role" className="text-xs">Role</Label>
+                  <Select value={currentRole} onValueChange={setCurrentRole}>
+                    <SelectTrigger className="h-8 text-sm">
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roles.map((role) => (
+                        <SelectItem key={role.value} value={role.value} className="text-sm">
+                          <div>
+                            <div className="font-medium text-xs">{role.label}</div>
+                            <div className="text-[10px] text-muted-foreground">{role.description}</div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button 
+                  onClick={addInvite} 
+                  disabled={!currentEmail.trim() || !currentRole}
+                  className="w-full h-7 text-xs"
+                >
+                  <PlusIcon className="w-3 h-3 mr-1" />
+                  Add
+                </Button>
               </div>
-            </div>
+
+              {/* Invite List */}
+              {invites.length > 0 ? (
+                <div className="space-y-1">
+                  <Label className="text-xs">Invite List ({invites.length})</Label>
+                  <div className="space-y-1">
+                    {invites.map((invite) => {
+                      const roleInfo = roles.find(r => r.value === invite.role)
+                      return (
+                        <div
+                          key={invite.id}
+                          className="flex items-center justify-between p-1.5 sm:p-2 rounded-lg border border-white/20 dark:border-white/10 bg-white/5"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-xs truncate">{invite.email}</div>
+                            <div className="text-[10px] text-muted-foreground">
+                              {roleInfo?.label || invite.role}
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-1 flex-shrink-0">
+                            <Badge variant="outline" className="text-[9px] px-1 py-0">
+                              {roleInfo?.label || invite.role}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeInvite(invite.id)}
+                              className="h-5 w-5 p-0"
+                            >
+                              <Cross2Icon className="h-2.5 w-2.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-border">
-          <div className="text-sm text-muted-foreground">
-            {invites.length} user{invites.length !== 1 ? 's' : ''} to invite
+        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-white/20 dark:border-white/10">
+          <div className="text-[10px] sm:text-xs text-muted-foreground">
+            {invites.length} to invite
           </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex space-x-1 sm:space-x-2">
+            <Button variant="outline" onClick={onClose} className="h-7 text-xs px-2">
               Cancel
             </Button>
-            <Button onClick={handleSendInvites} disabled={invites.length === 0}>
-              <PaperPlaneIcon className="w-4 h-4 mr-2" />
-              Send Invites
+            <Button onClick={handleSendInvites} disabled={invites.length === 0} className="h-7 text-xs px-2">
+              <PaperPlaneIcon className="w-3 h-3 mr-1" />
+              Send
             </Button>
           </div>
         </div>
