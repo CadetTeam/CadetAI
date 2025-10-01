@@ -80,6 +80,8 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   const [visibleApps, setVisibleApps] = useState<App[]>(defaultVisibleApps)
   const [availableApps, setAvailableApps] = useState<App[]>(defaultAvailableApps)
   const [showAddMenu, setShowAddMenu] = useState(false)
+  const [showRemoveMenu, setShowRemoveMenu] = useState<string | null>(null)
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null)
 
   // Load persisted app menu state from localStorage
   useEffect(() => {
@@ -104,6 +106,18 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
     }))
   }, [visibleApps, availableApps])
 
+  // Close remove menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowRemoveMenu(null)
+      setShowAddMenu(false)
+    }
+    if (showRemoveMenu || showAddMenu) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [showRemoveMenu, showAddMenu])
+
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
     router.push(app.href)
@@ -114,6 +128,32 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
     setAvailableApps((prev) => prev.filter((a) => a.id !== app.id))
     setShowAddMenu(false)
     handleAppClick(app)
+  }
+
+  const handleRemoveApp = (app: App) => {
+    if (app.id === 'apdgpt') return // Don't allow removing APD GPT
+    setVisibleApps((prev) => prev.filter((a) => a.id !== app.id))
+    setAvailableApps((prev) => [...prev, app])
+    setShowRemoveMenu(null)
+  }
+
+  const handleLongPressStart = (appId: string) => {
+    const timer = setTimeout(() => {
+      setShowRemoveMenu(appId)
+    }, 500) // 500ms long press
+    setLongPressTimer(timer)
+  }
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer)
+      setLongPressTimer(null)
+    }
+  }
+
+  const handleContextMenu = (e: React.MouseEvent, appId: string) => {
+    e.preventDefault()
+    setShowRemoveMenu(appId)
   }
 
   return (
@@ -133,6 +173,12 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleAppClick(app)}
+                  onMouseDown={() => handleLongPressStart(app.id)}
+                  onMouseUp={handleLongPressEnd}
+                  onMouseLeave={handleLongPressEnd}
+                  onContextMenu={(e) => handleContextMenu(e, app.id)}
+                  onTouchStart={() => handleLongPressStart(app.id)}
+                  onTouchEnd={handleLongPressEnd}
                   className={cn(
                     "w-full h-10 p-0 relative group",
                     isActive && "bg-accent text-accent-foreground"
@@ -155,6 +201,20 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     </Badge>
                   )}
                 </Button>
+
+                {/* Remove Popover */}
+                {showRemoveMenu === app.id && app.id !== 'apdgpt' && (
+                  <div className="fixed left-20 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl p-2 w-40">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                      onClick={() => handleRemoveApp(app)}
+                    >
+                      Remove from menu
+                    </Button>
+                  </div>
+                )}
               </div>
             )
           })}
@@ -175,7 +235,10 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
         </Button>
 
         {showAddMenu && (
-          <div className="fixed bottom-20 left-4 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-56 p-2">
+          <div 
+            className="fixed bottom-20 left-4 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-56 p-2"
+            onClick={(e) => e.stopPropagation()}
+          >
             <p className="text-xs px-2 py-1 text-muted-foreground">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {

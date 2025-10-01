@@ -98,7 +98,10 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
       {/* Glassmorphic Dropdown Menu */}
       {isOpen && (
         <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}>
-          <div className="absolute top-16 left-4 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 p-4 min-w-[280px]">
+          <div 
+            className="absolute top-16 left-4 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 p-4 min-w-[280px]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-foreground mb-3 px-2">Apps</h3>
               {visibleApps.map((app) => {
@@ -149,7 +152,10 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                   </div>
                 </Button>
                 {showAddMenu && (
-                  <div className="absolute left-4 mt-2 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-64 p-2">
+                  <div 
+                    className="absolute left-4 mt-2 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-64 p-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <div className="space-y-1 max-h-60 overflow-auto">
                       {availableApps.map((app) => {
                         const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
