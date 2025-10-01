@@ -71,7 +71,7 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
       
       {/* Popover */}
       <div 
-        className="fixed z-[103] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-border rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
+        className="fixed z-[103] bg-background border border-border rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
         style={{
           top: position.top,
           left: position.left,
@@ -149,7 +149,7 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
                       "flex items-center justify-between p-1.5 sm:p-2 rounded-lg border cursor-pointer transition-colors",
                       isSelected 
                         ? "border-primary bg-primary/10" 
-                        : "border-border hover:bg-muted/30"
+                        : "border-border hover:bg-accent/50"
                     )}
                     onClick={() => handleMemberToggle(member.id)}
                   >
