@@ -48,7 +48,7 @@ const defaultAvailableApps: App[] = [
     id: "responsenow",
     name: "Response Now",
     lightIcon: "/app-icons/lightNote.png",
-    darkIcon: "/app-icons/lightNote.png",
+    darkIcon: "/app-icons/darkTag.png",
     href: "/app/responsenow"
   },
   {

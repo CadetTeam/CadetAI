@@ -32,7 +32,7 @@ const defaultVisibleApps: App[] = [
 
 const defaultAvailableApps: App[] = [
   { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/lightMagnifier.png", darkIcon: "/app-icons/darkMagnifier.png", href: "/app/rfpgpt" },
-  { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/lightNote.png", darkIcon: "/app-icons/lightNote.png", href: "/app/responsenow" },
+  { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/lightNote.png", darkIcon: "/app-icons/darkTag.png", href: "/app/responsenow" },
   { id: "statusai", name: "StatusAI", lightIcon: "/app-icons/lightFingerprint.png", darkIcon: "/app-icons/darkFingerprint.png", href: "/app/statusai" },
   { id: "forecost", name: "ForeCost", lightIcon: "/app-icons/lightWallet.png", darkIcon: "/app-icons/darkWallet.png", href: "/app/forecost" },
   { id: "commander", name: "Commander", lightIcon: "/app-icons/lightLayers.png", darkIcon: "/app-icons/darkLayers.png", href: "/app/commander" }
