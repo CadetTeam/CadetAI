@@ -28,11 +28,11 @@ interface MobileAppMenuProps {
 }
 
 const defaultVisibleApps: App[] = [
-  { id: "apdgpt", name: "ADP GPT", lightIcon: "/app-icons/light-folder.png", darkIcon: "/app-icons/dark-folder.png", href: "/app", isActive: true },
-  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfpgpt" }
+  { id: "apdgpt", name: "APD GPT", lightIcon: "/app-icons/light-folder.png", darkIcon: "/app-icons/dark-folder.png", href: "/app", isActive: true }
 ]
 
 const defaultAvailableApps: App[] = [
+  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfpgpt" },
   { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/light-new-doc.png", darkIcon: "/app-icons/dark-new-doc.png", href: "/app/responsenow" },
   { id: "statusai", name: "StatusAI", lightIcon: "/app-icons/light-search.png", darkIcon: "/app-icons/dark-search.png", href: "/app/statusai" },
   { id: "forecost", name: "ForeCost", lightIcon: "/app-icons/light-pricing.png", darkIcon: "/app-icons/dark-pricing.png", href: "/app/forecost" },

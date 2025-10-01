@@ -223,7 +223,7 @@ export function AppSidebar() {
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className="w-4 h-4 flex-shrink-0" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -267,7 +267,7 @@ export function AppSidebar() {
                 "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative",
                 "hover:bg-accent hover:text-accent-foreground",
                 isActive && "bg-accent text-accent-foreground",
-                !shouldShowExpanded && "justify-center"
+                collapsedItemClasses
               )
 
               if (isModalAction) {
@@ -278,7 +278,7 @@ export function AppSidebar() {
                     className={commonClassName}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -312,7 +312,7 @@ export function AppSidebar() {
                   className={commonClassName}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-4 h-4 flex-shrink-0" />
+                  <item.icon className="w-4 h-4 flex-shrink-0" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>
@@ -364,11 +364,11 @@ export function AppSidebar() {
                       "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
                       "hover:bg-accent hover:text-accent-foreground",
                       isActive && "bg-accent text-accent-foreground",
-                      !shouldShowExpanded && "justify-center"
+                      collapsedItemClasses
                     )}
                     title={!shouldShowExpanded ? item.label : undefined}
                   >
-                           <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
                     {shouldShowExpanded && (
                       <>
                         <span className="ml-3">{item.label}</span>
@@ -400,11 +400,11 @@ export function AppSidebar() {
                     "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative",
                     "hover:bg-accent hover:text-accent-foreground",
                     isActive && "bg-accent text-accent-foreground",
-                    !shouldShowExpanded && "justify-center"
+                    collapsedItemClasses
                   )}
                   title={!shouldShowExpanded ? item.label : undefined}
                 >
-                           <item.icon className="w-4 h-4" />
+                  <item.icon className="w-4 h-4 flex-shrink-0" />
                   {shouldShowExpanded && (
                     <>
                       <span className="ml-3">{item.label}</span>

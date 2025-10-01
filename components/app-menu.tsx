@@ -29,22 +29,22 @@ interface AppMenuProps {
 const defaultVisibleApps: App[] = [
   {
     id: "apdgpt",
-    name: "ADP GPT",
+    name: "APD GPT",
     lightIcon: "/app-icons/light-folder.png",
     darkIcon: "/app-icons/dark-folder.png",
     href: "/app",
     isActive: true
-  },
+  }
+]
+
+const defaultAvailableApps: App[] = [
   {
     id: "rfpgpt",
     name: "RFP GPT",
     lightIcon: "/app-icons/light-grid.png",
     darkIcon: "/app-icons/dark-grid.png",
     href: "/app/rfpgpt"
-  }
-]
-
-const defaultAvailableApps: App[] = [
+  },
   {
     id: "responsenow",
     name: "Response Now",
