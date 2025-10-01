@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
 import { 
   HamburgerMenuIcon,
   PlusIcon
@@ -118,14 +117,10 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                   >
                     <div className="flex items-center space-x-3">
                       <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
-                        <Image
+                        <img
                           src={iconSrc}
                           alt={app.name}
-                          width={32}
-                          height={32}
-                          className="object-contain"
-                          unoptimized
-                          priority
+                          className="w-8 h-8 object-contain"
                         />
                       </div>
                       <span className="text-sm font-medium">{app.name}</span>
@@ -168,7 +163,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                           >
                             <div className="flex items-center space-x-2">
                               <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-                                <Image src={iconSrc} alt={app.name} width={24} height={24} className="object-contain" unoptimized priority />
+                                <img src={iconSrc} alt={app.name} className="w-6 h-6 object-contain" />
                               </div>
                               <span className="text-sm">{app.name}</span>
                             </div>

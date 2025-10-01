@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
 import { 
   PlusIcon
 } from "@radix-ui/react-icons"
@@ -125,6 +124,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
         <div className="space-y-1 px-1">
           {visibleApps.map((app) => {
             const isActive = currentApp === app.id
+            // Dark mode uses dark icons (for dark backgrounds), light mode uses light icons (for light backgrounds)
             const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
 
             return (
@@ -139,14 +139,10 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                   )}
                 >
                   <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
-                    <Image
+                    <img
                       src={iconSrc}
                       alt={app.name}
-                      width={40}
-                      height={40}
-                      className="object-contain"
-                      unoptimized
-                      priority
+                      className="w-10 h-10 object-contain"
                     />
                   </div>
                   
@@ -194,7 +190,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                   >
                     <div className="flex items-center space-x-2">
                       <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-                        <Image src={iconSrc} alt={app.name} width={24} height={24} className="object-contain" unoptimized priority />
+                        <img src={iconSrc} alt={app.name} className="w-6 h-6 object-contain" />
                       </div>
                       <span className="text-sm">{app.name}</span>
                     </div>
