@@ -32,11 +32,11 @@ const defaultVisibleApps: App[] = [
 ]
 
 const defaultAvailableApps: App[] = [
-  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfpgpt" },
+  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-search-doc.png", darkIcon: "/app-icons/dark-search-doc.png", href: "/app/rfpgpt" },
   { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/light-new-doc.png", darkIcon: "/app-icons/dark-new-doc.png", href: "/app/responsenow" },
-  { id: "statusai", name: "StatusAI", lightIcon: "/app-icons/light-search.png", darkIcon: "/app-icons/dark-search.png", href: "/app/statusai" },
-  { id: "forecost", name: "ForeCost", lightIcon: "/app-icons/light-pricing.png", darkIcon: "/app-icons/dark-pricing.png", href: "/app/forecost" },
-  { id: "commander", name: "Commander", lightIcon: "/app-icons/light-cards.png", darkIcon: "/app-icons/dark-cards.png", href: "/app/commander" }
+  { id: "statusai", name: "StatusAI", lightIcon: "/app-icons/light-fingerprint.png", darkIcon: "/app-icons/dark-fingerprint.png", href: "/app/statusai" },
+  { id: "forecost", name: "ForeCost", lightIcon: "/app-icons/light-wallet.png", darkIcon: "/app-icons/dark-wallet.png", href: "/app/forecost" },
+  { id: "commander", name: "Commander", lightIcon: "/app-icons/light-windows.png", darkIcon: "/app-icons/dark-windows.png", href: "/app/commander" }
 ]
 
 export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {

@@ -41,8 +41,8 @@ const defaultAvailableApps: App[] = [
   {
     id: "rfpgpt",
     name: "RFP GPT",
-    lightIcon: "/app-icons/light-grid.png",
-    darkIcon: "/app-icons/dark-grid.png",
+    lightIcon: "/app-icons/light-search-doc.png",
+    darkIcon: "/app-icons/dark-search-doc.png",
     href: "/app/rfpgpt"
   },
   {
@@ -55,22 +55,22 @@ const defaultAvailableApps: App[] = [
   {
     id: "statusai",
     name: "StatusAI",
-    lightIcon: "/app-icons/light-search.png",
-    darkIcon: "/app-icons/dark-search.png",
+    lightIcon: "/app-icons/light-fingerprint.png",
+    darkIcon: "/app-icons/dark-fingerprint.png",
     href: "/app/statusai"
   },
   {
     id: "forecost",
     name: "ForeCost",
-    lightIcon: "/app-icons/light-pricing.png",
-    darkIcon: "/app-icons/dark-pricing.png",
+    lightIcon: "/app-icons/light-wallet.png",
+    darkIcon: "/app-icons/dark-wallet.png",
     href: "/app/forecost"
   },
   {
     id: "commander",
     name: "Commander",
-    lightIcon: "/app-icons/light-cards.png",
-    darkIcon: "/app-icons/dark-cards.png",
+    lightIcon: "/app-icons/light-windows.png",
+    darkIcon: "/app-icons/dark-windows.png",
     href: "/app/commander"
   }
 ]
@@ -118,7 +118,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   }
 
   return (
-    <div className="h-screen w-16 bg-background border-r border-border flex flex-col">
+    <div className="h-screen w-16 bg-background border-r border-border flex flex-col relative z-50">
 
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto flex items-center justify-center">
