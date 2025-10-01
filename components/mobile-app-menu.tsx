@@ -117,13 +117,13 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                     )}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="relative w-6 h-6 flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded border border-white/20 dark:border-white/10">
+                      <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
                         <Image
                           src={iconSrc}
                           alt={app.name}
-                          width={24}
-                          height={24}
-                          className="object-contain p-0.5"
+                          width={32}
+                          height={32}
+                          className="object-contain"
                           unoptimized
                           priority
                         />
@@ -167,9 +167,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                             onClick={() => handleAddApp(app)}
                           >
                             <div className="flex items-center space-x-2">
-                              <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded border border-white/20 dark:border-white/10">
-                                <Image src={iconSrc} alt={app.name} width={20} height={20} className="object-contain p-0.5" />
-                              </div>
+                              <Image src={iconSrc} alt={app.name} width={24} height={24} className="object-contain" unoptimized priority />
                               <span className="text-sm">{app.name}</span>
                             </div>
                           </Button>
