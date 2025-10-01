@@ -131,19 +131,19 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
 
   return (
     <>
-      {/* Mobile Backdrop */}
+      {/* Mobile Backdrop - covers everything including chat */}
       {isMobile && isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 bg-black/50 z-[100]"
           onClick={onMobileMenuClose}
         />
       )}
       
       <div 
         className={cn(
-          "flex flex-col bg-background border-r border-border transition-all duration-300 relative h-screen",
+          "flex flex-col bg-background border-r border-border transition-all duration-300 overflow-hidden",
           sidebarWidth,
-          isMobile && "fixed left-0 top-0 z-50 shadow-2xl"
+          isMobile ? "fixed left-0 top-0 bottom-0 z-[101] shadow-2xl" : "relative h-screen"
         )}
         onMouseEnter={() => !isMobile && setIsHovered(true)}
         onMouseLeave={() => !isMobile && setIsHovered(false)}
@@ -164,24 +164,33 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
       )}
 
       {/* Logo */}
-      <div className="flex items-center justify-center p-4 border-b border-border">
+      <div className={cn(
+        "flex items-center justify-center border-b border-border flex-shrink-0",
+        isMobile ? "p-2 py-3" : "p-4"
+      )}>
         {isMobile || shouldShowExpanded ? (
-          <Logo variant="full" size={120} className="flex-shrink-0" />
+          <Logo variant="full" size={isMobile ? 100 : 120} className="flex-shrink-0" />
         ) : (
           <Logo variant="icon" size={24} className="flex-shrink-0" />
         )}
       </div>
 
       {/* Main Navigation */}
-      <div className="flex-1 p-4 space-y-6 overflow-y-auto">
+      <div className={cn(
+        "flex-1 overflow-y-auto space-y-4",
+        isMobile ? "p-3" : "p-4 space-y-6"
+      )}>
         {/* APD GPT Section */}
-        <div className="space-y-2">
+        <div className={cn("space-y-2", isMobile && "space-y-1")}>
           {(isMobile || shouldShowExpanded) && (
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <h3 className={cn(
+              "text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+              isMobile && "text-[10px]"
+            )}>
               APD GPT
             </h3>
           )}
-          <nav className="space-y-1">
+          <nav className={cn("space-y-1", isMobile && "space-y-0.5")}>
             {mainNavItems.map((item) => {
               const isActive = pathname === item.href
               const isAPDEngine = item.href === "/app/apdgpt/engine"
@@ -192,17 +201,18 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                     key={item.href}
                     onClick={handleAPDEngineClick}
                     className={cn(
-                      "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
+                      "flex items-center rounded-lg font-medium transition-colors group relative w-full",
                       "hover:bg-accent hover:text-accent-foreground",
                       isActive && "bg-accent text-accent-foreground",
+                      isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm",
                       !isMobile && collapsedItemClasses
                     )}
                     title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className={cn("flex-shrink-0", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")} />
                     {(isMobile || shouldShowExpanded) && (
                       <>
-                        <span className="ml-3">{item.label}</span>
+                        <span className={cn(isMobile ? "ml-2" : "ml-3")}>{item.label}</span>
                         {item.shortcut && (
                           <span className="ml-auto text-xs text-muted-foreground">
                             {item.shortcut}
@@ -228,17 +238,18 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative",
+                    "flex items-center rounded-lg font-medium transition-colors group relative",
                     "hover:bg-accent hover:text-accent-foreground",
                     isActive && "bg-accent text-accent-foreground",
-                    collapsedItemClasses
+                    isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm",
+                    !isMobile && collapsedItemClasses
                   )}
                     title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className={cn("flex-shrink-0", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")} />
                   {(isMobile || shouldShowExpanded) && (
                     <>
-                      <span className="ml-3">{item.label}</span>
+                      <span className={cn(isMobile ? "ml-2" : "ml-3")}>{item.label}</span>
                       {item.shortcut && (
                         <span className="ml-auto text-xs text-muted-foreground">
                           {item.shortcut}
@@ -264,9 +275,12 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
         <Separator />
 
         {/* People Section */}
-        <div className="space-y-2">
+        <div className={cn("space-y-2", isMobile && "space-y-1")}>
           {(isMobile || shouldShowExpanded) && (
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <h3 className={cn(
+              "text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+              isMobile && "text-[10px]"
+            )}>
               PEOPLE
             </h3>
           )}
@@ -356,9 +370,12 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
         <Separator />
 
         {/* Utilities Section */}
-        <div className="space-y-2">
+        <div className={cn("space-y-2", isMobile && "space-y-1")}>
           {(isMobile || shouldShowExpanded) && (
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <h3 className={cn(
+              "text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+              isMobile && "text-[10px]"
+            )}>
               UTILITIES
             </h3>
           )}
@@ -409,17 +426,18 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative",
+                    "flex items-center rounded-lg font-medium transition-colors group relative",
                     "hover:bg-accent hover:text-accent-foreground",
                     isActive && "bg-accent text-accent-foreground",
-                    collapsedItemClasses
+                    isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm",
+                    !isMobile && collapsedItemClasses
                   )}
                     title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <item.icon className={cn("flex-shrink-0", isMobile ? "w-3.5 h-3.5" : "w-4 h-4")} />
                   {(isMobile || shouldShowExpanded) && (
                     <>
-                      <span className="ml-3">{item.label}</span>
+                      <span className={cn(isMobile ? "ml-2" : "ml-3")}>{item.label}</span>
                       {item.shortcut && (
                         <span className="ml-auto text-xs text-muted-foreground">
                           {item.shortcut}
