@@ -1,6 +1,6 @@
 "use client"
 
-import { BellIcon, QuestionMarkCircledIcon, HamburgerMenuIcon, Component1Icon } from "@radix-ui/react-icons"
+import { BellIcon, QuestionMarkCircledIcon, Component1Icon, DropdownMenuIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -8,7 +8,11 @@ import { useUser } from "@clerk/nextjs"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 
-export function AppHeader() {
+interface AppHeaderProps {
+  onMobileMenuToggle?: () => void
+}
+
+export function AppHeader({ onMobileMenuToggle }: AppHeaderProps = {}) {
   const { user } = useUser()
   const [isMobile, setIsMobile] = useState(false)
 
@@ -31,8 +35,9 @@ export function AppHeader() {
           size="sm"
           className="h-8 w-8 p-0"
           title="Menu"
+          onClick={onMobileMenuToggle}
         >
-          <HamburgerMenuIcon className="w-5 h-5" />
+          <DropdownMenuIcon className="w-5 h-5" />
         </Button>
       )}
       

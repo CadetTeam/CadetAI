@@ -21,6 +21,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [currentApp, setCurrentApp] = useState("apdgpt")
   const [isMobile, setIsMobile] = useState(false)
   const [isLayoutReady, setIsLayoutReady] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -72,16 +73,19 @@ export function AppLayout({ children }: AppLayoutProps) {
         <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
       )}
       
-      {/* Desktop Left Sidebar - Only show for APDGPT app pages on desktop */}
-      {!isMobile && isAPDGPTApp && (
-        <AppSidebar />
+      {/* Left Sidebar - Show for APDGPT app pages (desktop always, mobile when open) */}
+      {isAPDGPTApp && (
+        <AppSidebar 
+          isMobileMenuOpen={isMobileMenuOpen}
+          onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+        />
       )}
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden z-20">
         {/* Header - Always render first */}
         <div className="z-30">
-          <AppHeader />
+          <AppHeader onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
         </div>
         
         {/* Main Content - Render after layout is ready */}

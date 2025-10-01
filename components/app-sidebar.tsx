@@ -47,7 +47,12 @@ const utilitiesNavItems = [
   { href: "/app/logout", label: "Log out", icon: ExitIcon, shortcut: "⌘⇧Q" },
 ]
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  isMobileMenuOpen?: boolean
+  onMobileMenuClose?: () => void
+}
+
+export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppSidebarProps = {}) {
   const pathname = usePathname()
   const { signOut } = useClerk()
   const [isCollapsed, setIsCollapsed] = useState(false) // Default to expanded
@@ -85,8 +90,9 @@ export function AppSidebar() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [pathname])
 
-  const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
-  const sidebarWidth = isMobile ? (isExpanded ? "w-64" : "w-16") : (shouldShowExpanded ? "w-64" : "w-16")
+  // On mobile, show/hide based on prop; on desktop, show based on hover/expanded
+  const shouldShowExpanded = isMobile ? isMobileMenuOpen : (isHovered || isExpanded)
+  const sidebarWidth = isMobile ? (isMobileMenuOpen ? "w-64" : "w-0") : (shouldShowExpanded ? "w-64" : "w-16")
   const collapsedItemClasses = !shouldShowExpanded ? "justify-center items-center h-12 w-12 p-0" : ""
 
   const handleCardAction = (href: string, event: React.MouseEvent) => {
@@ -123,14 +129,24 @@ export function AppSidebar() {
   }
 
   return (
-    <div 
-      className={cn(
-        "flex flex-col bg-sidebar border-r border-border transition-all duration-300 relative h-screen",
-        sidebarWidth
+    <>
+      {/* Mobile Backdrop */}
+      {isMobile && isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={onMobileMenuClose}
+        />
       )}
-      onMouseEnter={() => !isMobile && setIsHovered(true)}
-      onMouseLeave={() => !isMobile && setIsHovered(false)}
-    >
+      
+      <div 
+        className={cn(
+          "flex flex-col bg-sidebar border-r border-border transition-all duration-300 relative h-screen",
+          sidebarWidth,
+          isMobile && "fixed left-0 top-0 z-50"
+        )}
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
+        onMouseLeave={() => !isMobile && setIsHovered(false)}
+      >
       {/* Toggle Button */}
       <Button
         variant="ghost"
@@ -443,6 +459,7 @@ export function AppSidebar() {
         onClose={() => setIsInviteUsersCardOpen(false)}
         position={cardPosition}
       />
-    </div>
+      </div>
+    </>
   )
 }
