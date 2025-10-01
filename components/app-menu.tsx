@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -26,9 +26,9 @@ interface AppMenuProps {
   onAppChange: (appId: string) => void
 }
 
-const initialVisibleApps: App[] = [
+const defaultVisibleApps: App[] = [
   {
-    id: "adpgpt",
+    id: "apdgpt",
     name: "ADP GPT",
     lightIcon: "/app-icons/light-folder.png",
     darkIcon: "/app-icons/dark-folder.png",
@@ -41,17 +41,17 @@ const initialVisibleApps: App[] = [
     lightIcon: "/app-icons/light-grid.png",
     darkIcon: "/app-icons/dark-grid.png",
     href: "/app/rfpgpt"
-  },
+  }
+]
+
+const defaultAvailableApps: App[] = [
   {
     id: "responsenow",
     name: "Response Now",
     lightIcon: "/app-icons/light-new-doc.png",
     darkIcon: "/app-icons/dark-new-doc.png",
     href: "/app/responsenow"
-  }
-]
-
-const initialAvailableApps: App[] = [
+  },
   {
     id: "statusai",
     name: "StatusAI",
@@ -78,13 +78,43 @@ const initialAvailableApps: App[] = [
 export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
   const { theme } = useTheme()
   const router = useRouter()
-  const [visibleApps, setVisibleApps] = useState<App[]>(initialVisibleApps)
-  const [availableApps, setAvailableApps] = useState<App[]>(initialAvailableApps)
+  const [visibleApps, setVisibleApps] = useState<App[]>(defaultVisibleApps)
+  const [availableApps, setAvailableApps] = useState<App[]>(defaultAvailableApps)
   const [showAddMenu, setShowAddMenu] = useState(false)
+
+  // Load persisted app menu state from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('appMenuState')
+    if (stored) {
+      try {
+        const { visible, available } = JSON.parse(stored)
+        setVisibleApps(visible)
+        setAvailableApps(available)
+      } catch (e) {
+        // If parsing fails, use defaults
+        console.error('Failed to load app menu state:', e)
+      }
+    }
+  }, [])
+
+  // Persist app menu state to localStorage
+  useEffect(() => {
+    localStorage.setItem('appMenuState', JSON.stringify({
+      visible: visibleApps,
+      available: availableApps
+    }))
+  }, [visibleApps, availableApps])
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
     router.push(app.href)
+  }
+
+  const handleAddApp = (app: App) => {
+    setVisibleApps((prev) => [...prev, app])
+    setAvailableApps((prev) => prev.filter((a) => a.id !== app.id))
+    setShowAddMenu(false)
+    handleAppClick(app)
   }
 
   return (
@@ -93,7 +123,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
       {/* App Icons */}
       <div className="flex-1 overflow-y-auto flex items-center justify-center">
         <div className="space-y-1 px-1">
-          {visibleApps.slice(0, 3).map((app) => {
+          {visibleApps.map((app) => {
             const isActive = currentApp === app.id
             const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
 
@@ -160,11 +190,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     variant="ghost"
                     size="sm"
                     className="w-full justify-start h-9 px-2"
-                    onClick={() => {
-                      setVisibleApps((prev) => [...prev, app])
-                      setAvailableApps((prev) => prev.filter((a) => a.id !== app.id))
-                      setShowAddMenu(false)
-                    }}
+                    onClick={() => handleAddApp(app)}
                   >
                     <div className="flex items-center space-x-2">
                       <Image src={iconSrc} alt={app.name} width={20} height={20} />

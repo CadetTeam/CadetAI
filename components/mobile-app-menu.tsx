@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -26,30 +27,59 @@ interface MobileAppMenuProps {
   onAppChange: (appId: string) => void
 }
 
-const initialVisibleApps: App[] = [
-  { id: "adpgpt", name: "ADP GPT", lightIcon: "/app-icons/light-folder.png", darkIcon: "/app-icons/dark-folder.png", href: "/app", isActive: true },
-  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfpgpt" },
-  { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/light-new-doc.png", darkIcon: "/app-icons/dark-new-doc.png", href: "/app/responsenow" },
+const defaultVisibleApps: App[] = [
+  { id: "apdgpt", name: "ADP GPT", lightIcon: "/app-icons/light-folder.png", darkIcon: "/app-icons/dark-folder.png", href: "/app", isActive: true },
+  { id: "rfpgpt", name: "RFP GPT", lightIcon: "/app-icons/light-grid.png", darkIcon: "/app-icons/dark-grid.png", href: "/app/rfpgpt" }
 ]
 
-const initialAvailableApps: App[] = [
+const defaultAvailableApps: App[] = [
+  { id: "responsenow", name: "Response Now", lightIcon: "/app-icons/light-new-doc.png", darkIcon: "/app-icons/dark-new-doc.png", href: "/app/responsenow" },
   { id: "statusai", name: "StatusAI", lightIcon: "/app-icons/light-search.png", darkIcon: "/app-icons/dark-search.png", href: "/app/statusai" },
   { id: "forecost", name: "ForeCost", lightIcon: "/app-icons/light-pricing.png", darkIcon: "/app-icons/dark-pricing.png", href: "/app/forecost" },
-  { id: "commander", name: "Commander", lightIcon: "/app-icons/light-cards.png", darkIcon: "/app-icons/dark-cards.png", href: "/app/commander" },
+  { id: "commander", name: "Commander", lightIcon: "/app-icons/light-cards.png", darkIcon: "/app-icons/dark-cards.png", href: "/app/commander" }
 ]
 
 export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { theme } = useTheme()
-  const [visibleApps, setVisibleApps] = useState<App[]>(initialVisibleApps)
-  const [availableApps, setAvailableApps] = useState<App[]>(initialAvailableApps)
+  const router = useRouter()
+  const [visibleApps, setVisibleApps] = useState<App[]>(defaultVisibleApps)
+  const [availableApps, setAvailableApps] = useState<App[]>(defaultAvailableApps)
   const [showAddMenu, setShowAddMenu] = useState(false)
+
+  // Load persisted app menu state from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('appMenuState')
+    if (stored) {
+      try {
+        const { visible, available } = JSON.parse(stored)
+        setVisibleApps(visible)
+        setAvailableApps(available)
+      } catch (e) {
+        console.error('Failed to load app menu state:', e)
+      }
+    }
+  }, [])
+
+  // Persist app menu state to localStorage
+  useEffect(() => {
+    localStorage.setItem('appMenuState', JSON.stringify({
+      visible: visibleApps,
+      available: availableApps
+    }))
+  }, [visibleApps, availableApps])
 
   const handleAppClick = (app: App) => {
     onAppChange(app.id)
     setIsOpen(false)
-    // In a real implementation, you would navigate to the app
-    console.log(`Switching to ${app.name} app`)
+    router.push(app.href)
+  }
+
+  const handleAddApp = (app: App) => {
+    setVisibleApps((prev) => [...prev, app])
+    setAvailableApps((prev) => prev.filter((a) => a.id !== app.id))
+    setShowAddMenu(false)
+    handleAppClick(app)
   }
 
   return (
@@ -72,7 +102,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
           <div className="absolute top-16 left-4 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 p-4 min-w-[280px]">
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-foreground mb-3 px-2">Apps</h3>
-              {visibleApps.slice(0, 3).map((app) => {
+              {visibleApps.map((app) => {
                 const isActive = currentApp === app.id
                 const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
 
@@ -134,11 +164,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                             variant="ghost"
                             size="sm"
                             className="w-full justify-start h-9 px-2"
-                            onClick={() => {
-                              setVisibleApps((prev) => [...prev, app])
-                              setAvailableApps((prev) => prev.filter((a) => a.id !== app.id))
-                              setShowAddMenu(false)
-                            }}
+                            onClick={() => handleAddApp(app)}
                           >
                             <div className="flex items-center space-x-2">
                               <Image src={iconSrc} alt={app.name} width={20} height={20} />
