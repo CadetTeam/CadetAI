@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Skeleton } from "@/components/ui/skeleton"
 import { 
   ChatBubbleIcon,
   UploadIcon,
@@ -64,7 +65,17 @@ const mockChatThreads: ChatThread[] = [
 ]
 
 export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
-  const [chatThreads, setChatThreads] = useState<ChatThread[]>(mockChatThreads)
+  const [chatThreads, setChatThreads] = useState<ChatThread[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setChatThreads(mockChatThreads)
+      setIsLoading(false)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date()
@@ -141,48 +152,92 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
 
       {/* Chat History */}
       {currentView === 'history' && (
-        <div className="flex-1 overflow-hidden">
-          <div className="p-4">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Recent Chats</h3>
-          </div>
-          <ScrollArea className="flex-1 px-4">
-            <div className="space-y-2">
-              {chatThreads.map((thread) => (
-                <div
-                  key={thread.id}
-                  className="group p-3 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm truncate">{thread.title}</h4>
-                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                        {thread.preview}
-                      </p>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">
-                          {formatTimeAgo(thread.timestamp)}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {thread.messageCount} messages
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDeleteChat(thread.id)
-                      }}
-                      className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
-                    >
-                      <TrashIcon className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Fixed Title with fade overlay */}
+          <div className="relative z-10">
+            <div className="px-4 py-3 bg-background">
+              <h3 className="text-sm font-semibold text-foreground">Recent Chats</h3>
             </div>
-          </ScrollArea>
+            {/* Fade overlay - starts 10px below title */}
+            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto px-4 pb-2">
+            {isLoading ? (
+              // Loading State
+              <div className="space-y-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="p-3 rounded-lg border border-border">
+                    <Skeleton className="h-4 w-3/4 mb-2" />
+                    <Skeleton className="h-3 w-full mb-1" />
+                    <Skeleton className="h-3 w-4/5 mb-2" />
+                    <div className="flex justify-between">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : chatThreads.length === 0 ? (
+              // Empty State
+              <div className="text-center py-12">
+                <ClockIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-sm text-muted-foreground mb-2">No chat history yet</p>
+                <p className="text-xs text-muted-foreground">
+                  Your conversations will appear here
+                </p>
+              </div>
+            ) : (
+              // Chat List
+              <div className="space-y-2 pb-2">
+                {chatThreads.map((thread) => (
+                  <div
+                    key={thread.id}
+                    className="group p-3 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-sm truncate">{thread.title}</h4>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          {thread.preview}
+                        </p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-xs text-muted-foreground">
+                            {formatTimeAgo(thread.timestamp)}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {thread.messageCount} messages
+                          </span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteChat(thread.id)
+                        }}
+                        className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
+                      >
+                        <TrashIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-border bg-background p-3">
+            <div className="flex items-center justify-center space-x-4">
+              {/* Placeholder for future icons */}
+              <div className="h-8 flex items-center justify-center text-xs text-muted-foreground">
+                {/* Icons will be added here */}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
