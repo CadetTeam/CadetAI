@@ -19,7 +19,6 @@ import {
   CodeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  HamburgerMenuIcon,
   AvatarIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
@@ -90,10 +89,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
     return () => window.removeEventListener('resize', checkMobile)
   }, [pathname])
 
-  // On mobile, show/hide based on prop; on desktop, show based on hover/expanded
-  const shouldShowExpanded = isMobile ? isMobileMenuOpen : (isHovered || isExpanded)
-  const sidebarWidth = isMobile ? (isMobileMenuOpen ? "w-64" : "w-0") : (shouldShowExpanded ? "w-64" : "w-16")
+  const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
+  const sidebarWidth = isMobile ? "w-64" : (shouldShowExpanded ? "w-64" : "w-16")
   const collapsedItemClasses = !shouldShowExpanded ? "justify-center items-center h-12 w-12 p-0" : ""
+  const isVisible = isMobile ? isMobileMenuOpen : true
 
   const handleCardAction = (href: string, event: React.MouseEvent) => {
     const buttonRect = event.currentTarget.getBoundingClientRect()
@@ -128,6 +127,8 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
     }
   }
 
+  if (!isVisible) return null
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -140,37 +141,31 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
       
       <div 
         className={cn(
-          "flex flex-col bg-sidebar border-r border-border transition-all duration-300 relative h-screen",
+          "flex flex-col bg-background border-r border-border transition-all duration-300 relative h-screen",
           sidebarWidth,
-          isMobile && "fixed left-0 top-0 z-50"
+          isMobile && "fixed left-0 top-0 z-50 shadow-2xl"
         )}
         onMouseEnter={() => !isMobile && setIsHovered(true)}
         onMouseLeave={() => !isMobile && setIsHovered(false)}
       >
-      {/* Toggle Button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="absolute -right-3 top-4 z-10 h-6 w-6 rounded-full bg-sidebar border border-border hover:bg-accent"
-        onClick={() => {
-          if (isMobile) {
-            setIsExpanded(!isExpanded)
-          } else {
+      {/* Toggle Button - Desktop only */}
+      {!isMobile && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="absolute -right-3 top-4 z-10 h-6 w-6 rounded-full bg-background border border-border hover:bg-accent"
+          onClick={() => {
             setIsCollapsed(!isCollapsed)
             setIsExpanded(!isExpanded)
-          }
-        }}
-      >
-        {isMobile ? (
-          <HamburgerMenuIcon className="w-4 h-4" />
-        ) : (
-          isCollapsed ? <ChevronRightIcon className="w-4 h-4" /> : <ChevronLeftIcon className="w-4 h-4" />
-        )}
-      </Button>
+          }}
+        >
+          {isCollapsed ? <ChevronRightIcon className="w-4 h-4" /> : <ChevronLeftIcon className="w-4 h-4" />}
+        </Button>
+      )}
 
       {/* Logo */}
       <div className="flex items-center justify-center p-4 border-b border-border">
-        {shouldShowExpanded ? (
+        {isMobile || shouldShowExpanded ? (
           <Logo variant="full" size={120} className="flex-shrink-0" />
         ) : (
           <Logo variant="icon" size={24} className="flex-shrink-0" />
@@ -181,7 +176,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
       <div className="flex-1 p-4 space-y-6 overflow-y-auto">
         {/* APD GPT Section */}
         <div className="space-y-2">
-          {shouldShowExpanded && (
+          {(isMobile || shouldShowExpanded) && (
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               APD GPT
             </h3>
@@ -200,12 +195,12 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                       "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative w-full",
                       "hover:bg-accent hover:text-accent-foreground",
                       isActive && "bg-accent text-accent-foreground",
-                      collapsedItemClasses
+                      !isMobile && collapsedItemClasses
                     )}
-                    title={!shouldShowExpanded ? item.label : undefined}
+                    title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
                     <item.icon className="w-4 h-4 flex-shrink-0" />
-                    {shouldShowExpanded && (
+                    {(isMobile || shouldShowExpanded) && (
                       <>
                         <span className="ml-3">{item.label}</span>
                         {item.shortcut && (
@@ -238,10 +233,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                     isActive && "bg-accent text-accent-foreground",
                     collapsedItemClasses
                   )}
-                  title={!shouldShowExpanded ? item.label : undefined}
-                >
-                  <item.icon className="w-4 h-4 flex-shrink-0" />
-                  {shouldShowExpanded && (
+                    title={!shouldShowExpanded && !isMobile ? item.label : undefined}
+                  >
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                  {(isMobile || shouldShowExpanded) && (
                     <>
                       <span className="ml-3">{item.label}</span>
                       {item.shortcut && (
@@ -270,7 +265,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
 
         {/* People Section */}
         <div className="space-y-2">
-          {shouldShowExpanded && (
+          {(isMobile || shouldShowExpanded) && (
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               PEOPLE
             </h3>
@@ -293,10 +288,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                     key={item.href}
                     onClick={(e) => handleCardAction(item.href, e)}
                     className={commonClassName}
-                    title={!shouldShowExpanded ? item.label : undefined}
+                    title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
                     <item.icon className="w-4 h-4 flex-shrink-0" />
-                    {shouldShowExpanded && (
+                  {(isMobile || shouldShowExpanded) && (
                       <>
                         <span className="ml-3">{item.label}</span>
                         {item.arrow && (
@@ -327,10 +322,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                   key={item.href}
                   href={item.href}
                   className={commonClassName}
-                  title={!shouldShowExpanded ? item.label : undefined}
-                >
-                  <item.icon className="w-4 h-4 flex-shrink-0" />
-                  {shouldShowExpanded && (
+                    title={!shouldShowExpanded && !isMobile ? item.label : undefined}
+                  >
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                  {(isMobile || shouldShowExpanded) && (
                     <>
                       <span className="ml-3">{item.label}</span>
                       {item.arrow && (
@@ -362,7 +357,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
 
         {/* Utilities Section */}
         <div className="space-y-2">
-          {shouldShowExpanded && (
+          {(isMobile || shouldShowExpanded) && (
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               UTILITIES
             </h3>
@@ -383,10 +378,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                       isActive && "bg-accent text-accent-foreground",
                       collapsedItemClasses
                     )}
-                    title={!shouldShowExpanded ? item.label : undefined}
+                    title={!shouldShowExpanded && !isMobile ? item.label : undefined}
                   >
                     <item.icon className="w-4 h-4 flex-shrink-0" />
-                    {shouldShowExpanded && (
+                  {(isMobile || shouldShowExpanded) && (
                       <>
                         <span className="ml-3">{item.label}</span>
                         {item.shortcut && (
@@ -419,10 +414,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
                     isActive && "bg-accent text-accent-foreground",
                     collapsedItemClasses
                   )}
-                  title={!shouldShowExpanded ? item.label : undefined}
-                >
-                  <item.icon className="w-4 h-4 flex-shrink-0" />
-                  {shouldShowExpanded && (
+                    title={!shouldShowExpanded && !isMobile ? item.label : undefined}
+                  >
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                  {(isMobile || shouldShowExpanded) && (
                     <>
                       <span className="ml-3">{item.label}</span>
                       {item.shortcut && (
