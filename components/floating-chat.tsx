@@ -141,14 +141,23 @@ export function FloatingChat() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       {/* Mobile Right Menu Button - Only show on mobile, positioned above chat */}
       {isMobile && (
-        <MobileRightMenu anchorClassName="fixed bottom-[120px] right-6 z-50" />
+        <MobileRightMenu 
+          anchorClassName="fixed z-50" 
+          chatContainerClassName={cn(
+            "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
+            isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"
+          )}
+        />
       )}
 
       {/* Glassmorphic Floating Chat Interface */}
-      <div className={cn(
-        "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
-        isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"
-      )}>
+      <div 
+        id="chat-container"
+        className={cn(
+          "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
+          isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"
+        )}
+      >
         {/* Messages Area */}
         {messages.length > 0 && (
           <ScrollArea className="max-h-[400px] p-4">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -109,10 +109,39 @@ const mockActivities: Activity[] = [
 
 interface MobileRightMenuProps {
   anchorClassName?: string
+  chatContainerClassName?: string
 }
 
-export function MobileRightMenu({ anchorClassName }: MobileRightMenuProps) {
+export function MobileRightMenu({}: MobileRightMenuProps = {}) {
   const [isOpen, setIsOpen] = useState(false)
+  const [buttonPosition, setButtonPosition] = useState({ bottom: '130px', right: '24px' })
+
+  // Calculate button position based on chat container
+  useEffect(() => {
+    const updatePosition = () => {
+      const chatContainer = document.getElementById('chat-container')
+      if (chatContainer) {
+        const rect = chatContainer.getBoundingClientRect()
+        const windowHeight = window.innerHeight
+        const bottomOffset = windowHeight - rect.top + 10 // 10px above chat top
+        const rightAlign = window.innerWidth - rect.right // Align with right edge of chat
+        setButtonPosition({
+          bottom: `${bottomOffset}px`,
+          right: `${rightAlign}px`
+        })
+      }
+    }
+
+    // Update on mount and when chat might resize
+    updatePosition()
+    window.addEventListener('resize', updatePosition)
+    const timer = setInterval(updatePosition, 100) // Check periodically
+
+    return () => {
+      window.removeEventListener('resize', updatePosition)
+      clearInterval(timer)
+    }
+  }, [])
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -129,17 +158,19 @@ export function MobileRightMenu({ anchorClassName }: MobileRightMenuProps) {
 
   return (
     <>
-      {/* 9-Dot Grid Button */}
-      <div className={anchorClassName ?? "fixed bottom-6 right-6 z-50"}>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(!isOpen)}
-          className="h-12 w-12 p-0 bg-black rounded-full shadow-lg hover:bg-gray-800"
-        >
-          <DotsHorizontalIcon className="w-6 h-6 text-white" />
-        </Button>
-      </div>
+      {/* Menu Button - Glassmorphic square with rounded corners */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed h-12 w-12 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20 z-50"
+        style={{
+          bottom: buttonPosition.bottom,
+          right: buttonPosition.right
+        }}
+      >
+        <DotsHorizontalIcon className="w-6 h-6" />
+      </Button>
 
       {/* Floating Bottom-Up Menu */}
       {isOpen && (
