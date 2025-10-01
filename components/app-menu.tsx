@@ -166,6 +166,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
             const isActive = currentApp === app.id
             // Dark mode uses dark icons (for dark backgrounds), light mode uses light icons (for light backgrounds)
             const iconSrc = theme === 'dark' ? app.darkIcon : app.lightIcon
+            console.log(`Loading icon for ${app.name}:`, iconSrc)
 
             return (
               <div key={app.id} className="relative">
