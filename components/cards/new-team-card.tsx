@@ -65,15 +65,15 @@ export function NewTeamCard({ isOpen, onClose, position }: NewTeamCardProps) {
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 z-[102] bg-black/20 backdrop-blur-sm"
+        className="fixed inset-0 z-[102]"
         onClick={onClose}
       />
       
       {/* Popover */}
       <div 
-        className="fixed z-[103] bg-background border border-border rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
+        className="fixed z-[103] bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-border rounded-xl shadow-2xl w-72 sm:w-80 max-h-[500px] sm:max-h-[600px] overflow-hidden"
         style={{
-          top: position.top,
+          top: `${position.top + 8}px`,
           left: position.left,
         }}
         onClick={(e) => e.stopPropagation()}
