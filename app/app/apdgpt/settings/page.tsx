@@ -254,7 +254,6 @@ export default function SettingsPage() {
         visibleCountDesktop={6}
       />
       {/* Content is provided by each tab via ResponsiveTabs */}
-      </div>
     </div>
   )
 }
