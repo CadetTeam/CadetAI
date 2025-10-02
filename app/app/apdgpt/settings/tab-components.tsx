@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
@@ -193,15 +194,15 @@ export function DataPrivacySettings() {
 }
 
 function MembersAdminPanel() {
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
-  const [members, setMembers] = React.useState<Array<{id:string; userId?: string; name?: string; email?: string; role: string; imageUrl?: string;}>>([])
-  const [currentUserId, setCurrentUserId] = React.useState<string | null>(null)
-  const [inviteEmail, setInviteEmail] = React.useState("")
-  const [updating, setUpdating] = React.useState<string | null>(null)
-  const [transferring, setTransferring] = React.useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [members, setMembers] = useState<Array<{id:string; userId?: string; name?: string; email?: string; role: string; imageUrl?: string;}>>([])
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [updating, setUpdating] = useState<string | null>(null)
+  const [transferring, setTransferring] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       try {
         setLoading(true)
