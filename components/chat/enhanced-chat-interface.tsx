@@ -16,20 +16,18 @@ import {
   ReloadIcon,
   Cross2Icon,
   EyeOpenIcon,
-  LinkBreak2Icon,
   FileTextIcon,
   GlobeIcon,
   CheckIcon,
-  AlertTriangleIcon,
   DownloadIcon,
   ExternalLinkIcon,
   BookmarkIcon,
-  ShareIcon,
+  Share2Icon,
   PlusIcon,
   MagnifyingGlassIcon,
   TrashIcon,
   ArchiveIcon,
-  MicIcon,
+  SpeakerLoudIcon,
   Cross1Icon
 } from "@radix-ui/react-icons"
 import { Bot } from "lucide-react"
@@ -37,7 +35,6 @@ import { cn } from "@/lib/utils"
 import libreChatClient, { Conversation, ChatMessage } from "@/lib/librechat"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import remarkBreaks from "remark-breaks"
 
 interface FileAttachment {
   id: string
@@ -477,13 +474,13 @@ export function EnhancedChatInterface({
               </div>
             ) : message.error ? (
               <div className="flex items-center space-x-2 text-red-600">
-                <AlertTriangleIcon className="h-4 w-4" />
+                <CheckIcon className="h-4 w-4" />
                 <span className="text-sm">{message.error}</span>
               </div>
             ) : (
               <div className="prose prose-sm max-w-none">
-                <ReactMarkdown 
-                  remarkPlugins={[remarkGfm, remarkBreaks]}
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
                   components={{
                     a: ({ href, children }) => (
                       <a 
@@ -540,7 +537,7 @@ export function EnhancedChatInterface({
                 className="h-6 w-6 p-0"
                 title="Share message"
               >
-                <ShareIcon className="h-3 w-3" />
+                <Share2Icon className="h-3 w-3" />
               </Button>
             </div>
           )}
@@ -767,7 +764,7 @@ export function EnhancedChatInterface({
                       {isRecording ? (
                         <Cross1Icon className="h-3 w-3 text-red-500" />
                       ) : (
-                        <MicIcon className="h-3 w-3" />
+                        <SpeakerLoudIcon className="h-3 w-3" />
                       )}
                     </Button>
                   </div>
