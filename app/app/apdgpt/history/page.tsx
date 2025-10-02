@@ -3,14 +3,13 @@
 import { useState } from "react"
 import { ChatSidebar } from "@/components/chat/chat-sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { 
   FileTextIcon,
   ClockIcon,
-  SearchIcon
+  MagnifyingGlassIcon
 } from "@radix-ui/react-icons"
 import { Input } from "@/components/ui/input"
 
@@ -71,7 +70,7 @@ export default function HistoryPage() {
           
           {/* Search */}
           <div className="relative max-w-md">
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Search conversations..."
               value={searchQuery}
