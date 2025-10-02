@@ -114,34 +114,6 @@ interface MobileRightMenuProps {
 
 export function MobileRightMenu({}: MobileRightMenuProps = {}) {
   const [isOpen, setIsOpen] = useState(false)
-  const [buttonPosition, setButtonPosition] = useState({ bottom: '130px', right: '24px' })
-
-  // Calculate button position based on chat container
-  useEffect(() => {
-    const updatePosition = () => {
-      const chatContainer = document.getElementById('chat-container')
-      if (chatContainer) {
-        const rect = chatContainer.getBoundingClientRect()
-        const windowHeight = window.innerHeight
-        const bottomOffset = windowHeight - rect.top + 10 // 10px above chat top
-        const rightAlign = window.innerWidth - rect.right // Align with right edge of chat
-        setButtonPosition({
-          bottom: `${bottomOffset}px`,
-          right: `${rightAlign}px`
-        })
-      }
-    }
-
-    // Update on mount and when chat might resize
-    updatePosition()
-    window.addEventListener('resize', updatePosition)
-    const timer = setInterval(updatePosition, 100) // Check periodically
-
-    return () => {
-      window.removeEventListener('resize', updatePosition)
-      clearInterval(timer)
-    }
-  }, [])
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -158,125 +130,115 @@ export function MobileRightMenu({}: MobileRightMenuProps = {}) {
 
   return (
     <>
-      {/* Menu Button - Glassmorphic square with rounded corners */}
+      {/* Menu Button - Fixed position for mobile */}
       <Button
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed h-12 w-12 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20 z-50"
-        style={{
-          bottom: buttonPosition.bottom,
-          right: buttonPosition.right
-        }}
+        className="fixed bottom-32 right-4 h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20 z-50"
       >
-        <DotsHorizontalIcon className="w-6 h-6" />
+        <DotsHorizontalIcon className="w-5 h-5 text-gray-600 dark:text-white" />
       </Button>
 
-      {/* Floating Bottom-Up Menu */}
+      {/* Mobile-Friendly Glassmorphic Menu */}
       {isOpen && (
         <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}>
-          <div className="absolute bottom-20 right-6 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 min-w-[320px] max-w-[90vw] max-h-[70vh] overflow-y-auto">
+          <div className="absolute bottom-24 right-4 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 p-3 w-80 max-w-[90vw] max-h-[60vh] overflow-y-auto">
             
             {/* Contractors Section */}
-            <Card className="mb-4">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Contractors</CardTitle>
-                <CardDescription className="text-xs">Organizations with access</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-2">
-                  {mockContractors.map((contractor) => (
-                    <div key={contractor.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="text-xs bg-blue-500 text-white">
-                            {contractor.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">{contractor.name}</p>
-                          <p className="text-xs text-muted-foreground">{contractor.lastActivity}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                          <PersonIcon className="h-3 w-3" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                          <EyeOpenIcon className="h-3 w-3" />
-                        </Button>
+            <div className="mb-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-white">Contractors</h3>
+                <span className="text-xs text-white/70">{mockContractors.length}</span>
+              </div>
+              <div className="space-y-1">
+                {mockContractors.map((contractor) => (
+                  <div key={contractor.id} className="flex items-center justify-between p-2 bg-white/5 dark:bg-black/5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10">
+                    <div className="flex items-center space-x-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="text-xs bg-blue-500 text-white">
+                          {contractor.avatar}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-xs font-medium text-white truncate">{contractor.name}</p>
+                        <p className="text-xs text-white/70">{contractor.lastActivity}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="flex items-center space-x-1">
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-white/70 hover:text-white hover:bg-white/10">
+                        <PersonIcon className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-white/70 hover:text-white hover:bg-white/10">
+                        <EyeOpenIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Collaborators Section */}
-            <Card className="mb-4">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Collaborators</CardTitle>
-                <CardDescription className="text-xs">Team members and users</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-2">
-                  {mockCollaborators.map((collaborator) => (
-                    <div key={collaborator.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="text-xs bg-green-500 text-white">
-                            {collaborator.avatar}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">{collaborator.name}</p>
-                          <p className="text-xs text-muted-foreground">{collaborator.role}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                          <PersonIcon className="h-3 w-3" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                          <EyeOpenIcon className="h-3 w-3" />
-                        </Button>
+            <div className="mb-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-white">Collaborators</h3>
+                <span className="text-xs text-white/70">{mockCollaborators.length}</span>
+              </div>
+              <div className="space-y-1">
+                {mockCollaborators.map((collaborator) => (
+                  <div key={collaborator.id} className="flex items-center justify-between p-2 bg-white/5 dark:bg-black/5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10">
+                    <div className="flex items-center space-x-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="text-xs bg-green-500 text-white">
+                          {collaborator.avatar}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-xs font-medium text-white truncate">{collaborator.name}</p>
+                        <p className="text-xs text-white/70">{collaborator.role}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="flex items-center space-x-1">
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-white/70 hover:text-white hover:bg-white/10">
+                        <PersonIcon className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-white/70 hover:text-white hover:bg-white/10">
+                        <EyeOpenIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Recent Activity Section */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Recent Activity</CardTitle>
-                <CardDescription className="text-xs">Latest updates</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  {mockActivities.map((activity) => (
-                    <div key={activity.id} className="flex items-start space-x-3 p-2">
-                      <div className="flex-shrink-0 mt-1">
-                        {getActivityIcon(activity.type)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-foreground">{activity.description}</p>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <p className="text-xs text-muted-foreground">{activity.timestamp}</p>
-                          {activity.user && (
-                            <>
-                              <span className="text-xs text-muted-foreground">•</span>
-                              <p className="text-xs text-muted-foreground">by {activity.user}</p>
-                            </>
-                          )}
-                        </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-white">Recent Activity</h3>
+                <span className="text-xs text-white/70">{mockActivities.length}</span>
+              </div>
+              <div className="space-y-2">
+                {mockActivities.map((activity) => (
+                  <div key={activity.id} className="flex items-start space-x-2 p-2 bg-white/5 dark:bg-black/5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10">
+                    <div className="flex-shrink-0 mt-0.5">
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-white line-clamp-2">{activity.description}</p>
+                      <div className="flex items-center space-x-1 mt-1">
+                        <p className="text-xs text-white/70">{activity.timestamp}</p>
+                        {activity.user && (
+                          <>
+                            <span className="text-xs text-white/70">•</span>
+                            <p className="text-xs text-white/70">by {activity.user}</p>
+                          </>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
