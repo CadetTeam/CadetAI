@@ -158,49 +158,50 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
   if (currentView === 'ask' && messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8">
-        {/* Compact Chat Input */}
-        <div className="w-full max-w-2xl">
-          <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
-            {/* Attachment Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 flex-shrink-0 mr-3"
-              title="Upload files"
-            >
-              <UploadIcon className="h-4 w-4" />
-            </Button>
-            
-            {/* Growing Textarea */}
-            <Textarea
-              ref={textareaRef}
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value)
-                const target = e.target as HTMLTextAreaElement;
-                target.style.height = 'auto';
-                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
-              }}
-              onKeyPress={handleKeyPress}
-              placeholder="Ask Cadet anything..."
-              className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-              disabled={isLoading}
-              style={{ 
-                height: 'auto',
-                overflow: 'hidden'
-              }}
-            />
-            
-            {/* Send Button */}
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3"
-            >
-              <PaperPlaneIcon className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+              {/* Compact Chat Input */}
+              <div className="w-full max-w-2xl">
+                <div className="relative flex items-center bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 h-14">
+                  {/* Attachment Button */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 flex-shrink-0 mr-3 text-white hover:bg-white/10"
+                    title="Upload files"
+                    onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
+                  >
+                    <UploadIcon className="h-4 w-4 text-white" />
+                  </Button>
+                  
+                  {/* Growing Textarea */}
+                  <Textarea
+                    ref={textareaRef}
+                    value={inputValue}
+                    onChange={(e) => {
+                      setInputValue(e.target.value)
+                      const target = e.target as HTMLTextAreaElement;
+                      target.style.height = 'auto';
+                      target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                    }}
+                    onKeyPress={handleKeyPress}
+                    placeholder="How can Cadet help?"
+                    className="flex-1 min-h-[32px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder-gray-300"
+                    disabled={isLoading}
+                    style={{ 
+                      height: '32px',
+                      overflow: 'hidden'
+                    }}
+                  />
+                  
+                  {/* Send Button */}
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputValue.trim() || isLoading}
+                    className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3"
+                  >
+                    <PaperPlaneIcon className="h-4 w-4 text-white" />
+                  </Button>
+                </div>
+              </div>
       </div>
     )
   }
@@ -338,55 +339,59 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
       <div className="border-t border-border p-4">
         <div className="max-w-4xl mx-auto">
           <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
-            {/* Attachment Button with Popover */}
-            <div className="relative">
-              <Button
-                ref={attachmentRef}
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0 flex-shrink-0 mr-3"
-                title="Upload files"
-                onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
-              >
-                <UploadIcon className="h-4 w-4" />
-              </Button>
+              {/* Attachment Button with Popover */}
+              <div className="relative">
+                <Button
+                  ref={attachmentRef}
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 flex-shrink-0 mr-3 text-white hover:bg-white/10"
+                  title="Upload files"
+                  onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
+                >
+                  <UploadIcon className="h-4 w-4 text-white" />
+                </Button>
 
-              {/* Attachment Popover */}
+              {/* Attachment Menu Popover */}
               {showAttachmentPopover && (
                 <Card 
                   ref={popoverRef}
-                  className="absolute bottom-full left-0 mb-2 w-80 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl z-50"
+                  className="absolute bottom-full left-0 mb-2 w-56 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl z-50"
                 >
-                  <CardContent className="p-3">
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold mb-3">Recent Uploads</h3>
-                      <ScrollArea className="h-64">
-                        <div className="space-y-2">
-                          {[
-                            { id: "1", name: "Screenshot 2025-09-23 at 1.50...", type: "image", size: "2.3 MB" },
-                            { id: "2", name: "Screenshot 2025-09-23 at 1.49...", type: "image", size: "1.8 MB" },
-                            { id: "3", name: "PitchGEN 1.png", type: "image", size: "3.1 MB" },
-                            { id: "4", name: "PitchGEN 2.png", type: "image", size: "2.9 MB" },
-                            { id: "5", name: "PitchGEN 3.png", type: "image", size: "3.2 MB" }
-                          ].map((file) => (
-                            <Button
-                              key={file.id}
-                              variant="ghost"
-                              className="w-full justify-start h-auto p-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg"
-                            >
-                              <div className="flex items-center space-x-3 w-full">
-                                <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
-                                  <FileTextIcon className="w-4 h-4" />
-                                </div>
-                                <div className="flex-1 min-w-0 text-left">
-                                  <p className="text-sm font-medium truncate">{file.name}</p>
-                                  <p className="text-xs text-muted-foreground">{file.size}</p>
-                                </div>
-                              </div>
-                            </Button>
-                          ))}
+                  <CardContent className="p-2">
+                    <div className="space-y-1">
+                      {/* Upload File */}
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                      >
+                        <div className="flex items-center space-x-3 w-full">
+                          <UploadIcon className="h-4 w-4 text-white" />
+                          <span className="text-sm font-medium">Upload any file</span>
                         </div>
-                      </ScrollArea>
+                      </Button>
+
+                      {/* Import File */}
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                      >
+                        <div className="flex items-center space-x-3 w-full">
+                          <FileTextIcon className="h-4 w-4 text-white" />
+                          <span className="text-sm font-medium">Import any file</span>
+                        </div>
+                      </Button>
+
+                      {/* View Recent */}
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                      >
+                        <div className="flex items-center space-x-3 w-full">
+                          <FileTextIcon className="h-4 w-4 text-white" />
+                          <span className="text-sm font-medium">View Recent</span>
+                        </div>
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -404,11 +409,11 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                 target.style.height = Math.min(target.scrollHeight, 120) + 'px';
               }}
               onKeyPress={handleKeyPress}
-              placeholder="Message Cadet..."
-              className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              placeholder="How can Cadet help?"
+              className="flex-1 min-h-[32px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder-gray-300"
               disabled={isLoading}
               style={{ 
-                height: 'auto',
+                height: '32px',
                 overflow: 'hidden'
               }}
             />
@@ -419,7 +424,7 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
               disabled={!inputValue.trim() || isLoading}
               className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3"
             >
-              <PaperPlaneIcon className="h-4 w-4" />
+              <PaperPlaneIcon className="h-4 w-4 text-white" />
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2">

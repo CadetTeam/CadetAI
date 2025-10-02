@@ -25,6 +25,7 @@ interface RecentFile {
 export function FloatingChat() {
   const [isMobile, setIsMobile] = useState(false)
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
+  const [showRecentPopover, setShowRecentPopover] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [browsingLinks, setBrowsingLinks] = useState<string[]>([])
   const [recentFiles] = useState<RecentFile[]>([
@@ -89,6 +90,7 @@ export function FloatingChat() {
         !attachmentRef.current.contains(event.target as Node)
       ) {
         setShowAttachmentPopover(false)
+        setShowRecentPopover(false)
       }
     }
 
@@ -157,47 +159,96 @@ export function FloatingChat() {
 
       {/* Enhanced Compact Floating Chat Bar */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
-        <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 max-w-2xl w-full mx-4">
+        <div className="relative flex items-center bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 max-w-2xl w-full mx-4 h-14">
           {/* Attachment Button with Popover */}
           <div className="relative">
             <Button
               ref={attachmentRef}
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 flex-shrink-0 mr-3 pointer-events-auto"
+              className="h-8 w-8 p-0 flex-shrink-0 mr-3 pointer-events-auto text-white hover:bg-white/10"
               onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
             >
-              <UploadIcon className="h-4 w-4" />
+              <UploadIcon className="h-4 w-4 text-white" />
             </Button>
 
-            {/* Attachment Popover */}
+            {/* Attachment Menu Popover */}
             {showAttachmentPopover && (
               <Card 
                 ref={popoverRef}
-                className="absolute bottom-full left-0 mb-2 w-80 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl pointer-events-auto"
+                className="absolute bottom-full left-0 mb-2 w-56 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl pointer-events-auto"
               >
-                <CardContent className="p-3">
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold mb-3">Recent Uploads</h3>
-                    <ScrollArea className="h-64">
-                      <div className="space-y-2">
-                        {recentFiles.map((file) => (
-                          <Button
-                            key={file.id}
-                            variant="ghost"
-                            className="w-full justify-start h-auto p-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg"
-                          >
-                            <div className="flex items-center space-x-3 w-full">
-                              {getFileThumbnail(file)}
-                              <div className="flex-1 min-w-0 text-left">
-                                <p className="text-sm font-medium truncate">{file.name}</p>
-                                <p className="text-xs text-muted-foreground">{file.size}</p>
-                              </div>
-                            </div>
-                          </Button>
-                        ))}
+                <CardContent className="p-2">
+                  <div className="space-y-1">
+                    {/* Upload File */}
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                    >
+                      <div className="flex items-center space-x-3 w-full">
+                        <UploadIcon className="h-4 w-4 text-white" />
+                        <span className="text-sm font-medium">Upload any file</span>
                       </div>
-                    </ScrollArea>
+                    </Button>
+
+                    {/* Import File */}
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                    >
+                      <div className="flex items-center space-x-3 w-full">
+                        <FileTextIcon className="h-4 w-4 text-white" />
+                        <span className="text-sm font-medium">Import any file</span>
+                      </div>
+                    </Button>
+
+                    {/* View Recent - with hover submenu */}
+                    <div className="relative">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                        onMouseEnter={() => setShowRecentPopover(true)}
+                        onMouseLeave={() => setShowRecentPopover(false)}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <FileTextIcon className="h-4 w-4 text-white" />
+                          <span className="text-sm font-medium">View Recent</span>
+                        </div>
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Button>
+
+                      {/* Recent Files Hover Submenu */}
+                      {showRecentPopover && (
+                        <Card className="absolute left-full top-0 ml-1 w-72 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl">
+                          <CardContent className="p-3">
+                            <div className="space-y-2">
+                              <h3 className="text-sm font-semibold text-white mb-3">Recent Files</h3>
+                              <ScrollArea className="h-64">
+                                <div className="space-y-2">
+                                  {recentFiles.map((file) => (
+                                    <Button
+                                      key={file.id}
+                                      variant="ghost"
+                                      className="w-full justify-start h-auto p-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                                    >
+                                      <div className="flex items-center space-x-3 w-full">
+                                        {getFileThumbnail(file)}
+                                        <div className="flex-1 min-w-0 text-left">
+                                          <p className="text-sm font-medium truncate">{file.name}</p>
+                                          <p className="text-xs text-gray-400">{file.size}</p>
+                                        </div>
+                                      </div>
+                                    </Button>
+                                  ))}
+                                </div>
+                              </ScrollArea>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -215,9 +266,9 @@ export function FloatingChat() {
             }}
             onKeyPress={handleKeyPress}
             placeholder="How can Cadet help?"
-            className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none text-sm leading-5"
+            className="flex-1 min-h-[32px] max-h-[120px] bg-transparent resize-none text-white placeholder-gray-300 focus:outline-none text-base leading-6 px-3 py-2"
             style={{ 
-              height: 'auto',
+              height: '32px',
               overflow: 'hidden'
             }}
           />
@@ -228,7 +279,7 @@ export function FloatingChat() {
             disabled={!inputValue.trim()}
             className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3 pointer-events-auto"
           >
-            <PaperPlaneIcon className="h-4 w-4" />
+            <PaperPlaneIcon className="h-4 w-4 text-white" />
           </Button>
         </div>
       </div>
