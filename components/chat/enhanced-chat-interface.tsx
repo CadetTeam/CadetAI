@@ -19,19 +19,18 @@ import {
   LinkBreak2Icon,
   FileTextIcon,
   GlobeIcon,
-  SparklesIcon,
   CheckIcon,
   AlertTriangleIcon,
   DownloadIcon,
   ExternalLinkIcon,
   BookmarkIcon,
   ShareIcon,
-  Plus,
-  Search,
-  Trash2,
-  Archive,
-  Mic,
-  MicOff
+  PlusIcon,
+  MagnifyingGlassIcon,
+  TrashIcon,
+  ArchiveIcon,
+  MicIcon,
+  Cross1Icon
 } from "@radix-ui/react-icons"
 import { Bot } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -322,7 +321,7 @@ export function EnhancedChatInterface({
     return (
       <div className="space-y-3 p-4 bg-muted/50 rounded-lg border">
         <div className="flex items-center space-x-2">
-          <SparklesIcon className="h-4 w-4 text-primary animate-pulse" />
+          <CheckIcon className="h-4 w-4 text-primary animate-pulse" />
           <span className="text-sm font-medium">Processing with Perplexity AI</span>
         </div>
         
@@ -376,7 +375,7 @@ export function EnhancedChatInterface({
             )}
             {attachment.analysisStatus === 'analyzing' && (
               <Badge variant="outline" className="text-xs">
-                <SparklesIcon className="h-3 w-3 mr-1 animate-pulse" />
+                <CheckIcon className="h-3 w-3 mr-1 animate-pulse" />
                 Analyzing
               </Badge>
             )}
@@ -415,7 +414,7 @@ export function EnhancedChatInterface({
             )}
             {link.status === 'analyzing' && (
               <Badge variant="outline" className="text-xs">
-                <SparklesIcon className="h-3 w-3 mr-1 animate-pulse" />
+                <CheckIcon className="h-3 w-3 mr-1 animate-pulse" />
                 Analyzing
               </Badge>
             )}
@@ -555,7 +554,7 @@ export function EnhancedChatInterface({
             )}
             {message.analysisType && message.analysisType !== 'standard' && (
               <Badge variant="secondary" className="text-xs">
-                <SparklesIcon className="h-3 w-3 mr-1" />
+                <CheckIcon className="h-3 w-3 mr-1" />
                 {message.analysisType === 'document' ? 'Document Analysis' : 
                  message.analysisType === 'web' ? 'Web Analysis' : 'Perplexity AI'}
               </Badge>
@@ -584,13 +583,13 @@ export function EnhancedChatInterface({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Chat History</h2>
               <Button size="sm" onClick={handleNewConversation}>
-                <Plus className="h-4 w-4" />
+                <PlusIcon className="h-4 w-4" />
               </Button>
             </div>
             
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search conversations..."
                 value={searchQuery}
@@ -645,7 +644,7 @@ export function EnhancedChatInterface({
                           handleDeleteConversation(conversation.id)
                         }}
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <TrashIcon className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
@@ -670,12 +669,12 @@ export function EnhancedChatInterface({
                   </p>
                 </div>
                 <div className="flex space-x-2">
+                    <Button size="sm" variant="outline">
+                      <ArchiveIcon className="h-4 w-4 mr-2" />
+                      Archive
+                    </Button>
                   <Button size="sm" variant="outline">
-                    <Archive className="h-4 w-4 mr-2" />
-                    Archive
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
+                    <DownloadIcon className="h-4 w-4 mr-2" />
                     Export
                   </Button>
                 </div>
@@ -766,9 +765,9 @@ export function EnhancedChatInterface({
                       title="Voice input"
                     >
                       {isRecording ? (
-                        <MicOff className="h-3 w-3 text-red-500" />
+                        <Cross1Icon className="h-3 w-3 text-red-500" />
                       ) : (
-                        <Mic className="h-3 w-3" />
+                        <MicIcon className="h-3 w-3" />
                       )}
                     </Button>
                   </div>
@@ -790,7 +789,7 @@ export function EnhancedChatInterface({
               {/* Quick Actions */}
               <div className="flex space-x-2 mt-3">
                 <Button size="sm" variant="outline" className="text-xs">
-                  <SparklesIcon className="h-3 w-3 mr-1" />
+                  <CheckIcon className="h-3 w-3 mr-1" />
                   Analyze with Perplexity
                 </Button>
                 <Button size="sm" variant="outline" className="text-xs">
