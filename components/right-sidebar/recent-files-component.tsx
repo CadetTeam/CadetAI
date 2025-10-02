@@ -159,7 +159,7 @@ export function RecentFilesComponent({ className }: RecentFilesComponentProps) {
             className="group flex items-start space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors"
           >
             <div className={`flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center ${getFileColor(file.type)}`}>
-              {getFileIcon(file.type)}
+              {getFileIcon()}
             </div>
             <div className="flex-1 min-w-0 space-y-1">
               <p className="text-sm font-medium text-foreground truncate">
