@@ -67,7 +67,7 @@ export function RecentFilesComponent({ className }: RecentFilesComponentProps) {
     return () => clearTimeout(timer)
   }, [])
 
-  const getFileIcon = (type: string) => {
+  const getFileIcon = () => {
     return <FileTextIcon className="h-4 w-4" />
   }
 
