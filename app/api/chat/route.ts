@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, model = 'llama-3.1-sonar-small-128k-online' } = await request.json()
+    const { messages, model = 'sonar' } = await request.json()
 
     const perplexityApiKey = process.env.PERPLEXITY_API_KEY
     if (!perplexityApiKey) {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${perplexityApiKey}`
       },
       body: JSON.stringify({
-        model,
+        model: 'sonar',
         messages,
         temperature: 0.3,
         max_tokens: 2000,

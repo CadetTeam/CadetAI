@@ -196,7 +196,7 @@ class LibreChatClient {
       },
       body: JSON.stringify({
         messages,
-        model: 'llama-3.1-sonar-small-128k-online'
+        model: 'sonar'
       })
     })
 
@@ -207,7 +207,7 @@ class LibreChatClient {
 
     const data = await res.json()
     const content = data?.choices?.[0]?.message?.content ?? ''
-    const model = data?.model ?? 'llama-3.1-sonar-small-128k-online'
+    const model = data?.model ?? 'sonar'
 
     return { content, model }
   }
