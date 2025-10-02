@@ -35,8 +35,7 @@ export function FloatingChat() {
   const [showRecentPopover, setShowRecentPopover] = useState(false)
   const [inputValue, setInputValue] = useState("")
   
-  // Check if we're on the history page
-  const isHistoryPage = pathname === '/app/history'
+  // (removed) const isHistoryPage = pathname === '/app/history'
   const [recentFiles] = useState<RecentFile[]>([
     {
       id: "1",
