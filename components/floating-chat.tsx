@@ -1,11 +1,79 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { MobileRightMenu } from "@/components/mobile-right-menu"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { 
+  UploadIcon,
+  FileTextIcon,
+  Pencil1Icon,
+  LinkBreak1Icon,
+  ChevronRightIcon,
+  PaperPlaneIcon,
+  GlobeIcon,
+  DownloadIcon,
+  PlusIcon
+} from "@radix-ui/react-icons"
+
+interface RecentFile {
+  id: string
+  name: string
+  type: string
+  size: string
+  thumbnail?: string
+  lastAccessed: Date
+}
 
 export function FloatingChat() {
   const [isMobile, setIsMobile] = useState(false)
+  const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
+  const [inputValue, setInputValue] = useState("")
+  const [browsingLinks, setBrowsingLinks] = useState<string[]>([])
+  const [recentFiles, setRecentFiles] = useState<RecentFile[]>([
+    {
+      id: "1",
+      name: "Screenshot 2025-09-23 at 1.50...",
+      type: "image",
+      size: "2.3 MB",
+      lastAccessed: new Date("2025-09-23T01:50:00")
+    },
+    {
+      id: "2", 
+      name: "Screenshot 2025-09-23 at 1.49...",
+      type: "image",
+      size: "1.8 MB",
+      lastAccessed: new Date("2025-09-23T01:49:00")
+    },
+    {
+      id: "3",
+      name: "PitchGEN 1.png",
+      type: "image",
+      size: "3.1 MB",
+      lastAccessed: new Date("2025-09-22T15:30:00")
+    },
+    {
+      id: "4",
+      name: "PitchGEN 2.png", 
+      type: "image",
+      size: "2.9 MB",
+      lastAccessed: new Date("2025-09-22T15:25:00")
+    },
+    {
+      id: "5",
+      name: "PitchGEN 3.png",
+      type: "image", 
+      size: "3.2 MB",
+      lastAccessed: new Date("2025-09-22T15:20:00")
+    }
+  ])
+
+  const popoverRef = useRef<HTMLDivElement>(null)
+  const attachmentRef = useRef<HTMLButtonElement>(null)
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -18,12 +86,75 @@ export function FloatingChat() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // Close popover when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popoverRef.current && 
+        !popoverRef.current.contains(event.target as Node) &&
+        attachmentRef.current &&
+        !attachmentRef.current.contains(event.target as Node)
+      ) {
+        setShowAttachmentPopover(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return
+
+    // Simulate browsing links like Grok
+    const links = [
+      "https://it.nc.gov/resources/statewide-it-procurement/it-procurement-forms-templates",
+      "https://www.dau.edu/sites/default/files/Migrated/CopDocuments/Sample-RFP-Sections-L-M"
+    ]
+    
+    setBrowsingLinks(links)
+    
+    // Simulate browsing time
+    setTimeout(() => {
+      setBrowsingLinks([])
+    }, 3000)
+
+    setInputValue("")
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSendMessage()
+    }
+  }
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'image':
+        return <FileTextIcon className="w-4 h-4" />
+      default:
+        return <FileTextIcon className="w-4 h-4" />
+    }
+  }
+
+  const getFileThumbnail = (file: RecentFile) => {
+    if (file.thumbnail) {
+      return <img src={file.thumbnail} alt={file.name} className="w-8 h-8 rounded object-cover" />
+    }
+    return (
+      <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
+        {getFileIcon(file.type)}
+      </div>
+    )
+  }
+
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      {/* Mobile Right Menu Button - Only show on mobile, positioned above chat */}
+    <div className="fixed inset-0 z-50 pointer-events-none">
+      {/* Mobile Right Menu Button - Only show on mobile */}
       {isMobile && (
         <MobileRightMenu 
-          anchorClassName="fixed z-50" 
+          anchorClassName="fixed z-50 pointer-events-auto" 
           chatContainerClassName={cn(
             "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
             isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"
@@ -31,50 +162,108 @@ export function FloatingChat() {
         />
       )}
 
-      {/* Glassmorphic Floating Chat Interface */}
-      <div 
-        id="chat-container"
-        className={cn(
-          "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
-          isMobile ? "w-[90vw] max-w-[400px] h-[500px]" : "w-[600px] max-w-[90vw] h-[600px]"
-        )}
-      >
-        <div className="h-full flex flex-col items-center justify-center p-4">
-          {/* Compact Floating Chat Bar */}
-          <div className="w-full max-w-2xl">
-            <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
-              {/* Attachment Button */}
-              <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors mr-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                </svg>
-              </button>
-              
-              {/* Growing Textarea */}
-              <textarea
-                placeholder="Ask Cadet anything..."
-                className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none text-sm leading-5"
-                style={{ 
-                  height: 'auto',
-                  overflow: 'hidden'
-                }}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = Math.min(target.scrollHeight, 120) + 'px';
-                }}
-              />
-              
-              {/* Send Button */}
-              <button className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 rounded-lg flex items-center justify-center transition-colors ml-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-              </button>
-            </div>
+      {/* Enhanced Compact Floating Chat Bar */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+        <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 max-w-2xl w-full mx-4">
+          {/* Attachment Button with Popover */}
+          <div className="relative">
+            <Button
+              ref={attachmentRef}
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 flex-shrink-0 mr-3 pointer-events-auto"
+              onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
+            >
+              <UploadIcon className="h-4 w-4" />
+            </Button>
+
+            {/* Attachment Popover */}
+            {showAttachmentPopover && (
+              <Card 
+                ref={popoverRef}
+                className="absolute bottom-full left-0 mb-2 w-80 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl pointer-events-auto"
+              >
+                <CardContent className="p-3">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold mb-3">Recent Uploads</h3>
+                    <ScrollArea className="h-64">
+                      <div className="space-y-2">
+                        {recentFiles.map((file) => (
+                          <Button
+                            key={file.id}
+                            variant="ghost"
+                            className="w-full justify-start h-auto p-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg"
+                          >
+                            <div className="flex items-center space-x-3 w-full">
+                              {getFileThumbnail(file)}
+                              <div className="flex-1 min-w-0 text-left">
+                                <p className="text-sm font-medium truncate">{file.name}</p>
+                                <p className="text-xs text-muted-foreground">{file.size}</p>
+                              </div>
+                            </div>
+                          </Button>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
+          
+          {/* Growing Textarea */}
+          <textarea
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value)
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = 'auto';
+              target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+            }}
+            onKeyPress={handleKeyPress}
+            placeholder="How can Cadet help?"
+            className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none text-sm leading-5"
+            style={{ 
+              height: 'auto',
+              overflow: 'hidden'
+            }}
+          />
+          
+          {/* Send Button */}
+          <Button
+            onClick={handleSendMessage}
+            disabled={!inputValue.trim()}
+            className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3 pointer-events-auto"
+          >
+            <PaperPlaneIcon className="h-4 w-4" />
+          </Button>
         </div>
       </div>
+
+      {/* Browsing Links Display */}
+      {browsingLinks.length > 0 && (
+        <div className="fixed top-4 right-4 z-50 max-w-md pointer-events-auto">
+          <Card className="bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl">
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-semibold">Planning document creation</span>
+                </div>
+                
+                {browsingLinks.map((link, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-2 bg-white/5 dark:bg-black/5 rounded-lg">
+                    <GlobeIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                    <span className="text-xs text-muted-foreground truncate">
+                      Browsing <code className="bg-white/10 dark:bg-black/10 px-1 rounded">{link}</code>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

@@ -5,15 +5,20 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent } from "@/components/ui/card"
 import { UploadsView } from "@/components/chat/uploads-view"
 import { 
   PaperPlaneIcon,
   UploadIcon,
   CopyIcon,
-  ReloadIcon
+  ReloadIcon,
+  FileTextIcon,
+  GlobeIcon
 } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import libreChatClient from "@/lib/librechat"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 interface Message {
   id: string
@@ -22,6 +27,8 @@ interface Message {
   timestamp: Date
   isTyping?: boolean
   attachments?: File[]
+  browsingLinks?: string[]
+  formattedContent?: boolean
 }
 
 interface ChatInterfaceProps {
@@ -34,8 +41,11 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const attachmentRef = useRef<HTMLButtonElement>(null)
+  const popoverRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -44,6 +54,23 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Close popover when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popoverRef.current && 
+        !popoverRef.current.contains(event.target as Node) &&
+        attachmentRef.current &&
+        !attachmentRef.current.contains(event.target as Node)
+      ) {
+        setShowAttachmentPopover(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return
@@ -60,27 +87,50 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
     setIsLoading(true)
     setIsTyping(true)
 
+    // Simulate browsing links like Grok
+    const browsingLinks = [
+      "https://it.nc.gov/resources/statewide-it-procurement/it-procurement-forms-templates",
+      "https://www.dau.edu/sites/default/files/Migrated/CopDocuments/Sample-RFP-Sections-L-M"
+    ]
+
+    const assistantMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      role: 'assistant',
+      content: '',
+      timestamp: new Date(),
+      browsingLinks: browsingLinks,
+      isTyping: true
+    }
+
+    setMessages(prev => [...prev, assistantMessage])
+
     try {
       // Use the real Perplexity integration
       const response = await libreChatClient.sendMessage(userMessage.content)
       
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response.content,
-        timestamp: new Date()
-      }
-      
-      setMessages(prev => [...prev, assistantMessage])
+      // Update the assistant message with the response
+      setMessages(prev => prev.map(msg => 
+        msg.id === assistantMessage.id 
+          ? {
+              ...msg,
+              content: response.content,
+              browsingLinks: undefined,
+              isTyping: false,
+              formattedContent: true
+            }
+          : msg
+      ))
     } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`,
-        timestamp: new Date()
-      }
-      
-      setMessages(prev => [...prev, errorMessage])
+      setMessages(prev => prev.map(msg => 
+        msg.id === assistantMessage.id 
+          ? {
+              ...msg,
+              content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`,
+              browsingLinks: undefined,
+              isTyping: false
+            }
+          : msg
+      ))
     } finally {
       setIsLoading(false)
       setIsTyping(false)
@@ -183,6 +233,24 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                   message.role === 'user' ? "flex flex-col items-end" : ""
                 )}
               >
+                {/* Browsing Links Display */}
+                {message.browsingLinks && message.browsingLinks.length > 0 && (
+                  <div className="mb-3 p-3 bg-white/5 dark:bg-black/5 rounded-lg border border-white/10 dark:border-white/10">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-semibold">Planning document creation</span>
+                    </div>
+                    {message.browsingLinks.map((link, index) => (
+                      <div key={index} className="flex items-center space-x-3 p-2 bg-white/5 dark:bg-black/5 rounded-lg">
+                        <GlobeIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                        <span className="text-xs text-muted-foreground truncate">
+                          Browsing <code className="bg-white/10 dark:bg-black/10 px-1 rounded">{link}</code>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div
                   className={cn(
                     "rounded-lg px-4 py-3 text-sm",
@@ -199,6 +267,12 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                         <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                       <span>Cadet is thinking...</span>
+                    </div>
+                  ) : message.formattedContent ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </ReactMarkdown>
                     </div>
                   ) : (
                     <div className="whitespace-pre-wrap">{message.content}</div>
@@ -264,15 +338,60 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
       <div className="border-t border-border p-4">
         <div className="max-w-4xl mx-auto">
           <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
-            {/* Attachment Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 flex-shrink-0 mr-3"
-              title="Upload files"
-            >
-              <UploadIcon className="h-4 w-4" />
-            </Button>
+            {/* Attachment Button with Popover */}
+            <div className="relative">
+              <Button
+                ref={attachmentRef}
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 flex-shrink-0 mr-3"
+                title="Upload files"
+                onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
+              >
+                <UploadIcon className="h-4 w-4" />
+              </Button>
+
+              {/* Attachment Popover */}
+              {showAttachmentPopover && (
+                <Card 
+                  ref={popoverRef}
+                  className="absolute bottom-full left-0 mb-2 w-80 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl z-50"
+                >
+                  <CardContent className="p-3">
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold mb-3">Recent Uploads</h3>
+                      <ScrollArea className="h-64">
+                        <div className="space-y-2">
+                          {[
+                            { id: "1", name: "Screenshot 2025-09-23 at 1.50...", type: "image", size: "2.3 MB" },
+                            { id: "2", name: "Screenshot 2025-09-23 at 1.49...", type: "image", size: "1.8 MB" },
+                            { id: "3", name: "PitchGEN 1.png", type: "image", size: "3.1 MB" },
+                            { id: "4", name: "PitchGEN 2.png", type: "image", size: "2.9 MB" },
+                            { id: "5", name: "PitchGEN 3.png", type: "image", size: "3.2 MB" }
+                          ].map((file) => (
+                            <Button
+                              key={file.id}
+                              variant="ghost"
+                              className="w-full justify-start h-auto p-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg"
+                            >
+                              <div className="flex items-center space-x-3 w-full">
+                                <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
+                                  <FileTextIcon className="w-4 h-4" />
+                                </div>
+                                <div className="flex-1 min-w-0 text-left">
+                                  <p className="text-sm font-medium truncate">{file.name}</p>
+                                  <p className="text-xs text-muted-foreground">{file.size}</p>
+                                </div>
+                              </div>
+                            </Button>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
             
             {/* Growing Textarea */}
             <Textarea
