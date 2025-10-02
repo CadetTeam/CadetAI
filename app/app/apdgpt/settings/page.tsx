@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ResponsiveTabs } from "@/components/ui/responsive-tabs"
 import { OrganizationSettings, SecuritySettings, BillingSettings, NotificationSettings, IntegrationSettings, DataPrivacySettings } from "./tab-components"
@@ -18,8 +17,6 @@ import {
   Download,
   Upload,
   Save,
-  UserPlus,
-  ArrowRightLeft
 } from "lucide-react"
 
 export default function SettingsPage() {
