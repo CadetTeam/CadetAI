@@ -498,7 +498,6 @@ This document covers the complete architecture planning lifecycle for government
           </Button>
         </div>
       </div>
-
     </div>
   )
 }
