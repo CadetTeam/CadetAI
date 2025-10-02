@@ -71,8 +71,7 @@ interface EnhancedChatInterfaceProps {
 
 export function EnhancedChatInterface({ 
   className, 
-  showSidebar = true, 
-  isFloating = false 
+  showSidebar = true
 }: EnhancedChatInterfaceProps) {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null)
