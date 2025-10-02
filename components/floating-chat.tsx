@@ -6,18 +6,11 @@ import { MobileRightMenu } from "@/components/mobile-right-menu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { 
   UploadIcon,
   FileTextIcon,
-  Pencil1Icon,
-  LinkBreak1Icon,
-  ChevronRightIcon,
   PaperPlaneIcon,
-  GlobeIcon,
-  DownloadIcon,
-  PlusIcon
+  GlobeIcon
 } from "@radix-ui/react-icons"
 
 interface RecentFile {
@@ -34,7 +27,7 @@ export function FloatingChat() {
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [browsingLinks, setBrowsingLinks] = useState<string[]>([])
-  const [recentFiles, setRecentFiles] = useState<RecentFile[]>([
+  const [recentFiles] = useState<RecentFile[]>([
     {
       id: "1",
       name: "Screenshot 2025-09-23 at 1.50...",
