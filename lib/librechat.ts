@@ -116,8 +116,14 @@ class LibreChatClient {
     assistantMessage.isGenerating = true
 
     try {
-      // Call LibreChat-compatible API
-      const response = await this.callLibreChatAPI()
+      // Try LibreChat first, fallback to direct Perplexity API
+      let response
+      try {
+        response = await this.callLibreChatAPI()
+      } catch (libreChatError) {
+        console.log('LibreChat unavailable, using direct Perplexity API')
+        response = await this.callPerplexityAPI()
+      }
       
       // Update assistant message with response
       assistantMessage.content = response.content
@@ -167,6 +173,41 @@ class LibreChatClient {
     const data = await res.json()
     const content = data?.choices?.[0]?.message?.content ?? ''
     const model = data?.model ?? conversation.model ?? this.config.defaultModel
+
+    return { content, model }
+  }
+
+  // Direct Perplexity API call (fallback)
+  private async callPerplexityAPI(): Promise<{content: string, model: string}> {
+    const conversation = this.getCurrentConversation()
+    if (!conversation) throw new Error('No active conversation')
+
+    const messages = conversation.messages
+      .filter(m => m.role !== 'assistant' || !m.isGenerating) // Exclude generating messages
+      .map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messages,
+        model: 'llama-3.1-sonar-small-128k-online'
+      })
+    })
+
+    if (!res.ok) {
+      const errData = await res.json()
+      throw new Error(`Perplexity API request failed: ${res.status} ${errData.error || 'Unknown error'}`)
+    }
+
+    const data = await res.json()
+    const content = data?.choices?.[0]?.message?.content ?? ''
+    const model = data?.model ?? 'llama-3.1-sonar-small-128k-online'
 
     return { content, model }
   }
