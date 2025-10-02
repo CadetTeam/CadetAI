@@ -34,7 +34,6 @@ export function FloatingChat() {
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const [showRecentPopover, setShowRecentPopover] = useState(false)
   const [inputValue, setInputValue] = useState("")
-  const [browsingLinks, setBrowsingLinks] = useState<string[]>([])
   
   // Check if we're on the history page
   const isHistoryPage = pathname === '/app/history'
