@@ -165,11 +165,11 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-8 p-0 flex-shrink-0 mr-3 text-white hover:bg-white/10"
+                    className="h-8 w-8 p-0 flex-shrink-0 mr-3 text-gray-600 dark:text-white hover:bg-white/10 dark:hover:bg-white/10"
                     title="Upload files"
                     onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
                   >
-                    <UploadIcon className="h-4 w-4 text-white" />
+                    <UploadIcon className="h-4 w-4 text-gray-600 dark:text-white" />
                   </Button>
                   
                   {/* Growing Textarea */}
@@ -180,15 +180,25 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       setInputValue(e.target.value)
                       const target = e.target as HTMLTextAreaElement;
                       target.style.height = 'auto';
-                      target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                      // Calculate 60% of viewport height
+                      const maxHeight = window.innerHeight * 0.6;
+                      const newHeight = Math.min(target.scrollHeight, maxHeight);
+                      target.style.height = newHeight + 'px';
+                      
+                      // Show scrollbar if content exceeds max height
+                      if (target.scrollHeight > maxHeight) {
+                        target.style.overflowY = 'auto';
+                      } else {
+                        target.style.overflowY = 'hidden';
+                      }
                     }}
                     onKeyPress={handleKeyPress}
                     placeholder="How can Cadet help?"
-                    className="flex-1 min-h-[32px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder-gray-300"
+                    className="flex-1 min-h-[32px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 ease-in-out"
                     disabled={isLoading}
                     style={{ 
                       height: '32px',
-                      overflow: 'hidden'
+                      overflowY: 'hidden'
                     }}
                   />
                   
@@ -345,11 +355,11 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                   ref={attachmentRef}
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 flex-shrink-0 mr-3 text-white hover:bg-white/10"
+                  className="h-8 w-8 p-0 flex-shrink-0 mr-3 text-gray-600 dark:text-white hover:bg-white/10 dark:hover:bg-white/10"
                   title="Upload files"
                   onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
                 >
-                  <UploadIcon className="h-4 w-4 text-white" />
+                  <UploadIcon className="h-4 w-4 text-gray-600 dark:text-white" />
                 </Button>
 
               {/* Attachment Menu Popover */}
@@ -406,15 +416,25 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                 setInputValue(e.target.value)
                 const target = e.target as HTMLTextAreaElement;
                 target.style.height = 'auto';
-                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                // Calculate 60% of viewport height
+                const maxHeight = window.innerHeight * 0.6;
+                const newHeight = Math.min(target.scrollHeight, maxHeight);
+                target.style.height = newHeight + 'px';
+                
+                // Show scrollbar if content exceeds max height
+                if (target.scrollHeight > maxHeight) {
+                  target.style.overflowY = 'auto';
+                } else {
+                  target.style.overflowY = 'hidden';
+                }
               }}
               onKeyPress={handleKeyPress}
               placeholder="How can Cadet help?"
-              className="flex-1 min-h-[32px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder-gray-300"
+              className="flex-1 min-h-[32px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 ease-in-out"
               disabled={isLoading}
               style={{ 
                 height: '32px',
-                overflow: 'hidden'
+                overflowY: 'hidden'
               }}
             />
             
