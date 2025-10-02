@@ -66,9 +66,9 @@ export default function SettingsPage() {
 
   const renderTabContent = (tabId: string) => {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
           {tabId === "organization" && <OrganizationSettings />}
           {tabId === "security" && <SecuritySettings />}
           {tabId === "billing" && <BillingSettings />}
@@ -78,47 +78,47 @@ export default function SettingsPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-3 sm:space-y-4 md:space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+            <CardHeader className="p-3 sm:p-4">
+              <CardTitle className="text-sm sm:text-base">Quick Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" disabled={isSaving} onClick={handleSave}>
-                <Save className="h-4 w-4 mr-2" />
-                {isSaving ? 'Saving…' : 'Save Changes'}
+            <CardContent className="space-y-2 p-3 sm:p-4 pt-0">
+              <Button variant="outline" size="sm" className="w-full justify-start" disabled={isSaving} onClick={handleSave}>
+                <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">{isSaving ? 'Saving…' : 'Save Changes'}</span>
               </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Download className="h-4 w-4 mr-2" />
-                Export Settings
+              <Button variant="outline" size="sm" className="w-full justify-start">
+                <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">Export Settings</span>
               </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Upload className="h-4 w-4 mr-2" />
-                Import Settings
+              <Button variant="outline" size="sm" className="w-full justify-start">
+                <Upload className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">Import Settings</span>
               </Button>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Compliance Status</CardTitle>
+            <CardHeader className="p-3 sm:p-4">
+              <CardTitle className="text-sm sm:text-base">Compliance Status</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-4 pt-0">
               <div className="flex items-center justify-between">
-                <span className="text-sm">FedRAMP Moderate</span>
-                <Badge variant="default">Compliant</Badge>
+                <span className="text-xs sm:text-sm">FedRAMP Moderate</span>
+                <Badge variant="default" className="text-xs px-1.5 py-0.5">Compliant</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">SOC 2 Type II</span>
-                <Badge variant="default">Compliant</Badge>
+                <span className="text-xs sm:text-sm">SOC 2 Type II</span>
+                <Badge variant="default" className="text-xs px-1.5 py-0.5">Compliant</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">GDPR</span>
-                <Badge variant="default">Compliant</Badge>
+                <span className="text-xs sm:text-sm">GDPR</span>
+                <Badge variant="default" className="text-xs px-1.5 py-0.5">Compliant</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">CCPA</span>
-                <Badge variant="default">Compliant</Badge>
+                <span className="text-xs sm:text-sm">CCPA</span>
+                <Badge variant="default" className="text-xs px-1.5 py-0.5">Compliant</Badge>
               </div>
             </CardContent>
           </Card>
@@ -131,37 +131,37 @@ export default function SettingsPage() {
     { 
       value: "organization", 
       label: "Organization", 
-      icon: <Building className="h-4 w-4" />,
+      icon: <Building className="h-3 w-3 sm:h-4 sm:w-4" />,
       content: renderTabContent("organization")
     },
     { 
       value: "security", 
       label: "Security", 
-      icon: <Shield className="h-4 w-4" />,
+      icon: <Shield className="h-3 w-3 sm:h-4 sm:w-4" />,
       content: renderTabContent("security")
     },
     { 
       value: "billing", 
       label: "Billing", 
-      icon: <CreditCard className="h-4 w-4" />,
+      icon: <CreditCard className="h-3 w-3 sm:h-4 sm:w-4" />,
       content: renderTabContent("billing")
     },
     { 
       value: "notifications", 
       label: "Notifications", 
-      icon: <Bell className="h-4 w-4" />,
+      icon: <Bell className="h-3 w-3 sm:h-4 sm:w-4" />,
       content: renderTabContent("notifications")
     },
     { 
       value: "integrations", 
       label: "Integrations", 
-      icon: <Globe className="h-4 w-4" />,
+      icon: <Globe className="h-3 w-3 sm:h-4 sm:w-4" />,
       content: renderTabContent("integrations")
     },
     { 
       value: "data", 
       label: "Data & Privacy", 
-      icon: <Database className="h-4 w-4" />,
+      icon: <Database className="h-3 w-3 sm:h-4 sm:w-4" />,
       content: renderTabContent("data")
     }
   ]
@@ -222,16 +222,16 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8 space-y-3 sm:space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">Manage your organization settings and preferences</p>
+      <div className="space-y-1 sm:space-y-2">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">Settings</h1>
+        <p className="text-xs sm:text-sm md:text-base text-muted-foreground">Manage your organization settings and preferences</p>
         {loadError && (
-          <p className="text-sm text-red-500">{loadError}</p>
+          <p className="text-xs sm:text-sm text-red-500">{loadError}</p>
         )}
         {saveError && (
-          <p className="text-sm text-red-500">{saveError}</p>
+          <p className="text-xs sm:text-sm text-red-500">{saveError}</p>
         )}
         {savedAt && (
           <p className="text-xs text-muted-foreground">Saved at {savedAt}</p>

@@ -245,119 +245,123 @@ This document covers the complete architecture planning lifecycle for government
         />
       )}
 
-      {/* Messages Waterfall */}
-      {messages.length > 0 && (
-        <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-w-4xl w-full mx-4">
-          <ScrollArea className="max-h-96">
-            <div className="space-y-4 p-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex gap-3 pointer-events-auto",
-                    message.role === 'user' ? "justify-end" : "justify-start"
-                  )}
-                >
-                  {message.role === 'assistant' && (
-                    <Avatar className="h-6 w-6 flex-shrink-0">
-                      <AvatarFallback className="bg-gradient-to-r from-gray-700 to-gray-800 text-white text-xs font-bold">
-                        C
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  
-                  <div className={cn(
-                    "max-w-[80%] space-y-2",
-                    message.role === 'user' ? "flex flex-col items-end" : ""
-                  )}>
-                    {/* Browsing Links Display */}
-                    {message.browsingLinks && message.browsingLinks.length > 0 && (
-                      <Card className="bg-white/5 dark:bg-black/5 backdrop-blur-md border border-white/10 dark:border-white/10">
-                        <CardContent className="p-3">
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                              <span className="text-sm font-semibold">Planning document creation</span>
-                            </div>
-                            {message.browsingLinks.map((link, index) => (
-                              <div key={index} className="flex items-center space-x-3 p-2 bg-white/5 dark:bg-black/5 rounded-lg">
-                                <GlobeIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                                <span className="text-xs text-muted-foreground truncate">
-                                  Browsing <code className="bg-white/10 dark:bg-black/10 px-1 rounded">{link}</code>
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
 
-                    <Card className={cn(
-                      "p-3 text-sm",
-                      message.role === 'user'
-                        ? "bg-gradient-to-r from-gray-700 to-gray-800 text-white"
-                        : "bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10"
-                    )}>
-                      <CardContent className="p-0">
-                        {message.isTyping ? (
-                          <div className="flex items-center space-x-2">
-                            <div className="flex space-x-1">
-                              <div className="w-2 h-2 bg-current rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                            </div>
-                            <span>Cadet is thinking...</span>
-                          </div>
-                        ) : message.formattedContent ? (
-                          <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {message.content}
-                            </ReactMarkdown>
-                          </div>
-                        ) : (
-                          <div className="whitespace-pre-wrap">{message.content}</div>
-                        )}
-                      </CardContent>
-                    </Card>
-
-                    {message.role === 'assistant' && !message.isTyping && (
-                      <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-6 w-6 p-0 pointer-events-auto"
-                          onClick={() => navigator.clipboard.writeText(message.content)}
-                        >
-                          <CopyIcon className="h-3 w-3" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 pointer-events-auto">
-                          <ReloadIcon className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  {message.role === 'user' && (
-                    <Avatar className="h-6 w-6 flex-shrink-0">
-                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                        U
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
-        </div>
-      )}
-
-      {/* Enhanced Compact Floating Chat Bar */}
+      {/* Enhanced Floating Chat Container */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
         <div className={cn(
-          "relative flex items-center bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 mx-4 h-14",
-          isHistoryPage ? "max-w-4xl w-full" : "max-w-2xl w-full"
+          "relative bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl",
+          "mx-4 w-full",
+          isHistoryPage ? "max-w-4xl" : "max-w-2xl",
+          messages.length > 0 ? "max-h-[815px]" : "h-14",
+          "lg:max-w-[960px]"
         )}>
+          {/* Messages Container */}
+          {messages.length > 0 && (
+            <div className="max-h-[815px] overflow-y-auto p-4 border-b border-white/10 dark:border-white/10">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "flex gap-3 pointer-events-auto",
+                      message.role === 'user' ? "justify-end" : "justify-start"
+                    )}
+                  >
+                    {message.role === 'assistant' && (
+                      <Avatar className="h-6 w-6 flex-shrink-0">
+                        <AvatarFallback className="bg-gradient-to-r from-gray-700 to-gray-800 text-white text-xs font-bold">
+                          C
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    
+                    <div className={cn(
+                      "max-w-[80%] space-y-2",
+                      message.role === 'user' ? "flex flex-col items-end" : ""
+                    )}>
+                      {/* Browsing Links Display */}
+                      {message.browsingLinks && message.browsingLinks.length > 0 && (
+                        <Card className="bg-white/5 dark:bg-black/5 backdrop-blur-md border border-white/10 dark:border-white/10">
+                          <CardContent className="p-3">
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <span className="text-sm font-semibold">Planning document creation</span>
+                              </div>
+                              {message.browsingLinks.map((link, index) => (
+                                <div key={index} className="flex items-center space-x-3 p-2 bg-white/5 dark:bg-black/5 rounded-lg">
+                                  <GlobeIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                                  <span className="text-xs text-muted-foreground truncate">
+                                    Browsing <code className="bg-white/10 dark:bg-black/10 px-1 rounded">{link}</code>
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      <Card className={cn(
+                        "p-3 text-sm",
+                        message.role === 'user'
+                          ? "bg-gradient-to-r from-gray-700 to-gray-800 text-white"
+                          : "bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10"
+                      )}>
+                        <CardContent className="p-0">
+                          {message.isTyping ? (
+                            <div className="flex items-center space-x-2">
+                              <div className="flex space-x-1">
+                                <div className="w-2 h-2 bg-current rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              </div>
+                              <span>Cadet is thinking...</span>
+                            </div>
+                          ) : message.formattedContent ? (
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {message.content}
+                              </ReactMarkdown>
+                            </div>
+                          ) : (
+                            <div className="whitespace-pre-wrap">{message.content}</div>
+                          )}
+                        </CardContent>
+                      </Card>
+
+                      {message.role === 'assistant' && !message.isTyping && (
+                        <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0 pointer-events-auto"
+                            onClick={() => navigator.clipboard.writeText(message.content)}
+                          >
+                            <CopyIcon className="h-3 w-3" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0 pointer-events-auto">
+                            <ReloadIcon className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+
+                    {message.role === 'user' && (
+                      <Avatar className="h-6 w-6 flex-shrink-0">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          U
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+          )}
+
+          {/* Input Bar */}
+          <div className="flex items-center p-3 h-14">
           {/* Attachment Button with Popover */}
           <div className="relative">
             <Button
@@ -374,7 +378,7 @@ This document covers the complete architecture planning lifecycle for government
             {showAttachmentPopover && (
               <Card 
                 ref={popoverRef}
-                className="absolute bottom-full left-0 mb-2 w-56 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl pointer-events-auto"
+                className="absolute bottom-full left-0 mb-2 w-56 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl pointer-events-auto z-50"
               >
                 <CardContent className="p-2">
                   <div className="space-y-1">
@@ -419,7 +423,10 @@ This document covers the complete architecture planning lifecycle for government
 
                       {/* Recent Files Hover Submenu */}
                       {showRecentPopover && (
-                        <Card className="absolute left-full top-0 ml-1 w-72 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl">
+                        <Card className={cn(
+                          "absolute w-72 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl z-50",
+                          isMobile ? "left-0 top-full mt-1" : "left-full top-0 ml-1"
+                        )}>
                           <CardContent className="p-3">
                             <div className="space-y-2">
                               <h3 className="text-sm font-semibold text-white mb-3">Recent Files</h3>
