@@ -1,0 +1,82 @@
+# LibreChat configuration for CadetAI
+# Docs: https://github.com/danny-avila/LibreChat
+# This file wires up OpenAI (ChatGPT), Anthropic (Claude), and Perplexity.
+# Ensure the corresponding environment variables are set in your runtime.
+
+version: 1
+
+ui:
+  appName: CadetAI
+  defaultEndpoint: openai
+  defaultModel: gpt-4o-mini
+  allowModelPicker: true
+  allowTemperature: true
+  allowMaxTokens: true
+
+endpoints:
+  - name: openai
+    type: openAI
+    apiKey: ${OPENAI_API_KEY}
+    baseURL: https://api.openai.com/v1
+    models:
+      default: gpt-4o-mini
+      fetch: true
+      # optional explicit allowlist if you prefer to fix the set
+      allow:
+        - gpt-4o-mini
+        - gpt-4o
+        - gpt-4.1-mini
+        - gpt-4.1
+        - gpt-3.5-turbo
+    options:
+      temperature: 0.7
+      maxOutputTokens: 4000
+
+  - name: anthropic
+    type: anthropic
+    apiKey: ${ANTHROPIC_API_KEY}
+    baseURL: https://api.anthropic.com
+    models:
+      default: claude-3-5-sonnet-latest
+      fetch: true
+      allow:
+        - claude-3-5-sonnet-latest
+        - claude-3-5-haiku-latest
+        - claude-3-opus-latest
+        - claude-3-sonnet-20240229
+    options:
+      temperature: 0.7
+      maxOutputTokens: 4000
+
+  - name: perplexity
+    type: perplexity
+    apiKey: ${PERPLEXITY_API_KEY}
+    baseURL: https://api.perplexity.ai
+    models:
+      default: llama-3.1-sonar-small-128k-online
+      fetch: true
+      allow:
+        - llama-3.1-sonar-small-128k-online
+        - llama-3.1-sonar-large-128k-online
+        - llama-3.1-8b-instruct
+        - llama-3.1-70b-instruct
+    options:
+      temperature: 0.3
+      maxOutputTokens: 2000
+
+# Optional routing preferences: pick a preferred provider per capability
+routing:
+  summarize:
+    endpoint: openai
+    model: gpt-4o-mini
+  grounded_browse:
+    endpoint: perplexity
+    model: llama-3.1-sonar-large-128k-online
+  long_form:
+    endpoint: anthropic
+    model: claude-3-5-sonnet-latest
+
+# Enable saving of conversation titles/summaries in LibreChat
+features:
+  titleConvo: true
+  summarize: true

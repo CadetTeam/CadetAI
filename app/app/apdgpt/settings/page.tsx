@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
-// removed unused: Label, Textarea, Switch, Separator
 import { Badge } from "@/components/ui/badge"
+import { ResponsiveTabs } from "@/components/ui/responsive-tabs"
+import { OrganizationSettings, SecuritySettings, BillingSettings, NotificationSettings, IntegrationSettings, DataPrivacySettings } from "./tab-components"
 import { 
   Shield, 
   CreditCard, 
@@ -68,13 +69,106 @@ export default function SettingsPage() {
     }
   }
 
+  const renderTabContent = (tabId: string) => {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {tabId === "organization" && <OrganizationSettings />}
+          {tabId === "security" && <SecuritySettings />}
+          {tabId === "billing" && <BillingSettings />}
+          {tabId === "notifications" && <NotificationSettings />}
+          {tabId === "integrations" && <IntegrationSettings />}
+          {tabId === "data" && <DataPrivacySettings />}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button variant="outline" className="w-full justify-start" disabled={isSaving} onClick={handleSave}>
+                <Save className="h-4 w-4 mr-2" />
+                {isSaving ? 'Saving…' : 'Save Changes'}
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <Download className="h-4 w-4 mr-2" />
+                Export Settings
+              </Button>
+              <Button variant="outline" className="w-full justify-start">
+                <Upload className="h-4 w-4 mr-2" />
+                Import Settings
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Compliance Status</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">FedRAMP Moderate</span>
+                <Badge variant="default">Compliant</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">SOC 2 Type II</span>
+                <Badge variant="default">Compliant</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">GDPR</span>
+                <Badge variant="default">Compliant</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">CCPA</span>
+                <Badge variant="default">Compliant</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   const tabs = [
-    { id: "organization", label: "Organization", icon: Building },
-    { id: "security", label: "Security", icon: Shield },
-    { id: "billing", label: "Billing", icon: CreditCard },
-    { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "integrations", label: "Integrations", icon: Globe },
-    { id: "data", label: "Data & Privacy", icon: Database }
+    { 
+      value: "organization", 
+      label: "Organization", 
+      icon: <Building className="h-4 w-4" />,
+      content: renderTabContent("organization")
+    },
+    { 
+      value: "security", 
+      label: "Security", 
+      icon: <Shield className="h-4 w-4" />,
+      content: renderTabContent("security")
+    },
+    { 
+      value: "billing", 
+      label: "Billing", 
+      icon: <CreditCard className="h-4 w-4" />,
+      content: renderTabContent("billing")
+    },
+    { 
+      value: "notifications", 
+      label: "Notifications", 
+      icon: <Bell className="h-4 w-4" />,
+      content: renderTabContent("notifications")
+    },
+    { 
+      value: "integrations", 
+      label: "Integrations", 
+      icon: <Globe className="h-4 w-4" />,
+      content: renderTabContent("integrations")
+    },
+    { 
+      value: "data", 
+      label: "Data & Privacy", 
+      icon: <Database className="h-4 w-4" />,
+      content: renderTabContent("data")
+    }
   ]
 
   if (isLoading) {
@@ -149,243 +243,17 @@ export default function SettingsPage() {
         )}
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
-        {tabs.map((tab) => (
-          <Button
-            key={tab.id}
-            variant={activeTab === tab.id ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setActiveTab(tab.id)}
-            className="flex items-center space-x-2"
-          >
-            <tab.icon className="h-4 w-4" />
-            <span>{tab.label}</span>
-          </Button>
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          {/* Organization Settings - Placeholder skeletons */}
-          {activeTab === "organization" && (
-            <>
-              {[...Array(2)].map((_, idx) => (
-                <Card key={idx}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      {idx === 0 ? <Building className="h-5 w-5" /> : <Users className="h-5 w-5" />}
-                      <span>{idx === 0 ? 'Organization Information' : 'Team Management'}</span>
-                    </CardTitle>
-                    <CardDescription>
-                      {idx === 0 ? 'Update your organization details and contact information' : 'Configure team settings and user permissions'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {[...Array(4)].map((__, j) => (
-                      <div key={j} className="space-y-2">
-                        <Skeleton className="h-4 w-40" />
-                        <Skeleton className="h-10 w-full" />
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
-
-              {/* Team Management (Admin) */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Users className="h-5 w-5" />
-                    <span>Team Management</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Add, remove, and change roles for members in your organization
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Members List */}
-                  <MembersAdminPanel />
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Security Settings */}
-          {activeTab === "security" && (
-            <>
-              {[...Array(2)].map((_, idx) => (
-                <Card key={idx}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      {idx === 0 ? <Shield className="h-5 w-5" /> : <Lock className="h-5 w-5" />}
-                      <span>{idx === 0 ? 'Security Policies' : 'Password Policy'}</span>
-                    </CardTitle>
-                    <CardDescription>
-                      {idx === 0 ? 'Configure security settings and compliance requirements' : 'Set password requirements and rotation policies'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {[...Array(4)].map((__, j) => (
-                      <div key={j} className="space-y-2">
-                        <Skeleton className="h-4 w-48" />
-                        <Skeleton className="h-10 w-full" />
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
-            </>
-          )}
-
-          {/* Billing Settings */}
-          {activeTab === "billing" && (
-            <>
-              {[...Array(2)].map((_, idx) => (
-                <Card key={idx}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      {idx === 0 ? <CreditCard className="h-5 w-5" /> : <CreditCard className="h-5 w-5" />}
-                      <span>{idx === 0 ? 'Billing Information' : 'Usage & Limits'}</span>
-                    </CardTitle>
-                    <CardDescription>
-                      {idx === 0 ? 'Manage your subscription and payment methods' : 'Monitor your current usage and plan limits'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {[...Array(4)].map((__, j) => (
-                      <div key={j} className="space-y-2">
-                        <Skeleton className="h-4 w-56" />
-                        <Skeleton className="h-10 w-full" />
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
-            </>
-          )}
-
-          {/* Notifications Settings */}
-          {activeTab === "notifications" && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Bell className="h-5 w-5" />
-                  <span>Notification Preferences</span>
-                </CardTitle>
-                <CardDescription>
-                  Configure how you receive notifications
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[...Array(4)].map((_, j) => (
-                  <div key={j} className="space-y-2">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Integrations Settings */}
-          {activeTab === "integrations" && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Globe className="h-5 w-5" />
-                  <span>Third-party Integrations</span>
-                </CardTitle>
-                <CardDescription>
-                  Connect with external services and tools
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[...Array(3)].map((_, j) => (
-                  <div key={j} className="p-4 border rounded-lg space-y-2">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-8 w-full" />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Data & Privacy Settings */}
-          {activeTab === "data" && (
-            <>
-              {[...Array(2)].map((_, idx) => (
-                <Card key={idx}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      {idx === 0 ? <Database className="h-5 w-5" /> : <Database className="h-5 w-5" />}
-                      <span>{idx === 0 ? 'Data Management' : 'Data Export & Deletion'}</span>
-                    </CardTitle>
-                    <CardDescription>
-                      {idx === 0 ? 'Control your data retention and export settings' : 'Export your data or request account deletion'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {[...Array(4)].map((__, j) => (
-                      <div key={j} className="space-y-2">
-                        <Skeleton className="h-4 w-48" />
-                        <Skeleton className="h-10 w-full" />
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
-            </>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" disabled={isSaving} onClick={handleSave}>
-                <Save className="h-4 w-4 mr-2" />
-                {isSaving ? 'Saving…' : 'Save Changes'}
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Download className="h-4 w-4 mr-2" />
-                Export Settings
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Upload className="h-4 w-4 mr-2" />
-                Import Settings
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Compliance Status</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">FedRAMP Moderate</span>
-                <Badge variant="default">Compliant</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">SOC 2 Type II</span>
-                <Badge variant="default">Compliant</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">GDPR</span>
-                <Badge variant="default">Compliant</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">CCPA</span>
-                <Badge variant="default">Compliant</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Responsive Tabs */}
+      <ResponsiveTabs
+        tabs={tabs}
+        defaultValue="organization"
+        value={activeTab}
+        onValueChange={setActiveTab}
+        visibleCountMobile={2}
+        visibleCountTablet={4}
+        visibleCountDesktop={6}
+      />
+      {/* Content is provided by each tab via ResponsiveTabs */}
       </div>
     </div>
   )

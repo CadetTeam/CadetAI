@@ -116,7 +116,7 @@ class LibreChatClient {
     assistantMessage.isGenerating = true
 
     try {
-      // Simulate API call to LibreChat
+      // Call LibreChat-compatible API
       const response = await this.callLibreChatAPI()
       
       // Update assistant message with response
@@ -132,27 +132,48 @@ class LibreChatClient {
     }
   }
 
-  // Simulate LibreChat API call
+  // LibreChat/OpenAI-compatible API call
   private async callLibreChatAPI(): Promise<{content: string, model: string}> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
+    const conversation = this.getCurrentConversation()
+    if (!conversation) throw new Error('No active conversation')
 
-    // Simulate AI responses based on content
-    const responses = [
-      "I understand you're working on APD generation. Let me help you create a comprehensive Advanced Planning Document.",
-      "Based on your requirements, I'll structure the document with the following sections: Executive Summary, Stakeholder Analysis, Technical Requirements, and Implementation Timeline.",
-      "For government compliance, we need to ensure adherence to OMB A-130 guidelines and include proper risk assessment frameworks.",
-      "I've generated a template that includes all necessary compliance sections. Would you like me to elaborate on any specific area?",
-      "The document now includes proper stakeholder mapping and technical architecture diagrams. Shall we proceed with the implementation timeline?",
-      "I've added the required security and compliance sections. The APD is now ready for review and approval."
-    ]
+    const messages = conversation.messages.map(m => ({
+      role: m.role,
+      content: m.content
+    }))
 
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)]
-    
-    return {
-      content: randomResponse,
-      model: this.config.defaultModel
+    const url = this.normalizeEndpoint(this.config.apiEndpoint) + '/v1/chat/completions'
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(this.config.apiKey ? { 'Authorization': `Bearer ${this.config.apiKey}` } : {})
+      },
+      body: JSON.stringify({
+        model: conversation.model || this.config.defaultModel,
+        messages,
+        temperature: this.config.temperature ?? 0.7,
+        max_tokens: this.config.maxTokens ?? 4000,
+        stream: false
+      })
+    })
+
+    if (!res.ok) {
+      const errText = await res.text()
+      throw new Error(`LibreChat request failed: ${res.status} ${errText}`)
     }
+
+    const data = await res.json()
+    const content = data?.choices?.[0]?.message?.content ?? ''
+    const model = data?.model ?? conversation.model ?? this.config.defaultModel
+
+    return { content, model }
+  }
+
+  private normalizeEndpoint(endpoint: string): string {
+    if (!endpoint) return ''
+    return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint
   }
 
   // Delete conversation
@@ -213,7 +234,7 @@ class LibreChatClient {
 // Create singleton instance
 const libreChatClient = new LibreChatClient({
   apiEndpoint: process.env.NEXT_PUBLIC_LIBRECHAT_API_ENDPOINT || '/api/librechat',
-  defaultModel: 'gpt-4',
+  defaultModel: 'gpt-4o-mini',
   maxTokens: 4000,
   temperature: 0.7
 })
