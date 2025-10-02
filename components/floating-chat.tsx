@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { MobileRightMenu } from "@/components/mobile-right-menu"
 import { Button } from "@/components/ui/button"
@@ -29,7 +28,6 @@ interface RecentFile {
 }
 
 export function FloatingChat() {
-  const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const [showRecentPopover, setShowRecentPopover] = useState(false)
