@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { EnhancedChatInterface } from "@/components/chat/enhanced-chat-interface"
 import { cn } from "@/lib/utils"
 import { MobileRightMenu } from "@/components/mobile-right-menu"
 
