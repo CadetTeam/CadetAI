@@ -29,8 +29,8 @@ const defaultVisibleApps: App[] = [
   {
     id: "apdgpt",
     name: "APD GPT",
-    lightIcon: "/app-icons/lightFolder.png",
-    darkIcon: "/app-icons/darkFolder.png",
+    lightIcon: "/app-icons/light-folder.png",
+    darkIcon: "/app-icons/dark-folder.png",
     href: "/app",
     isActive: true
   }
@@ -40,36 +40,36 @@ const defaultAvailableApps: App[] = [
   {
     id: "rfpgpt",
     name: "RFP GPT",
-    lightIcon: "/app-icons/lightMagnifier.png",
-    darkIcon: "/app-icons/darkMagnifier.png",
+    lightIcon: "/app-icons/light-search.png",
+    darkIcon: "/app-icons/dark-search.png",
     href: "/app/rfpgpt"
   },
   {
     id: "responsenow",
     name: "Response Now",
-    lightIcon: "/app-icons/lightNote.png",
-    darkIcon: "/app-icons/darkTag.png",
+    lightIcon: "/app-icons/light-note.png",
+    darkIcon: "/app-icons/dark-new-doc.png",
     href: "/app/responsenow"
   },
   {
     id: "statusai",
     name: "StatusAI",
-    lightIcon: "/app-icons/lightFingerprint.png",
-    darkIcon: "/app-icons/darkFingerprint.png",
+    lightIcon: "/app-icons/light-fingerprint.png",
+    darkIcon: "/app-icons/dark-fingerprint.png",
     href: "/app/statusai"
   },
   {
     id: "forecost",
     name: "ForeCost",
-    lightIcon: "/app-icons/lightWallet.png",
-    darkIcon: "/app-icons/darkWallet.png",
+    lightIcon: "/app-icons/light-wallet.png",
+    darkIcon: "/app-icons/dark-wallet.png",
     href: "/app/forecost"
   },
   {
     id: "commander",
     name: "Commander",
-    lightIcon: "/app-icons/lightLayers.png",
-    darkIcon: "/app-icons/darkLayers.png",
+    lightIcon: "/app-icons/light-grid.png",
+    darkIcon: "/app-icons/dark-grid.png",
     href: "/app/commander"
   }
 ]
@@ -208,11 +208,11 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
 
                 {/* Remove Popover */}
                 {showRemoveMenu === app.id && app.id !== 'apdgpt' && (
-                  <div className="fixed left-20 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl p-2 w-40">
+                  <div className="fixed left-20 z-[9999] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-2 w-40">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                      className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 dark:hover:bg-red-500/10 rounded-lg"
                       onClick={() => handleRemoveApp(app)}
                     >
                       Remove from menu
@@ -240,10 +240,10 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
 
         {showAddMenu && (
           <div 
-            className="fixed bottom-20 left-4 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-56 p-2"
+            className="fixed bottom-20 left-4 z-[9999] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl w-56 p-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-xs px-2 py-1 text-muted-foreground">Add to menu</p>
+            <p className="text-xs px-2 py-1 text-white/70 mb-2">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {
                 const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
@@ -252,12 +252,20 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     key={app.id}
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start h-9 px-2"
+                    className="w-full justify-start h-9 px-2 text-white hover:bg-white/10 dark:hover:bg-black/10 rounded-lg"
                     onClick={() => handleAddApp(app)}
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-                        <img src={`${iconSrc}?v=2`} alt={app.name} className="w-6 h-6 object-contain" />
+                        <img 
+                          src={`${iconSrc}?v=2`} 
+                          alt={app.name} 
+                          className="w-6 h-6 object-contain"
+                          onError={(e) => {
+                            console.error('Failed to load icon:', iconSrc)
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
                       </div>
                       <span className="text-sm">{app.name}</span>
                     </div>
@@ -265,7 +273,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                 )
               })}
               {availableApps.length === 0 && (
-                <div className="px-2 py-1 text-xs text-muted-foreground">No more apps</div>
+                <div className="px-2 py-1 text-xs text-white/70">No more apps</div>
               )}
             </div>
           </div>
