@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { MobileRightMenu } from "@/components/mobile-right-menu"
 import { Button } from "@/components/ui/button"
@@ -23,11 +24,15 @@ interface RecentFile {
 }
 
 export function FloatingChat() {
+  const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const [showRecentPopover, setShowRecentPopover] = useState(false)
   const [inputValue, setInputValue] = useState("")
   const [browsingLinks, setBrowsingLinks] = useState<string[]>([])
+  
+  // Check if we're on the history page
+  const isHistoryPage = pathname === '/app/history'
   const [recentFiles] = useState<RecentFile[]>([
     {
       id: "1",
@@ -159,7 +164,10 @@ export function FloatingChat() {
 
       {/* Enhanced Compact Floating Chat Bar */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
-        <div className="relative flex items-center bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 max-w-2xl w-full mx-4 h-14">
+        <div className={cn(
+          "relative flex items-center bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 mx-4 h-14",
+          isHistoryPage ? "max-w-4xl w-full" : "max-w-2xl w-full"
+        )}>
           {/* Attachment Button with Popover */}
           <div className="relative">
             <Button
