@@ -251,9 +251,9 @@ This document covers the complete architecture planning lifecycle for government
         <div className={cn(
           "relative bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl",
           "mx-4 w-full",
-          isHistoryPage ? "max-w-4xl" : "max-w-2xl",
+          "max-w-[960px]",
           messages.length > 0 ? "max-h-[815px]" : "h-14",
-          "lg:max-w-[960px]"
+          "text-[0.9rem] sm:text-base"
         )}>
           {/* Messages Container */}
           {messages.length > 0 && (
@@ -378,7 +378,7 @@ This document covers the complete architecture planning lifecycle for government
             {showAttachmentPopover && (
               <Card 
                 ref={popoverRef}
-                className="absolute bottom-full left-0 mb-2 w-56 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl pointer-events-auto z-50"
+                className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-gray-900 border border-white/30 dark:border-white/10 shadow-2xl pointer-events-auto z-50"
               >
                 <CardContent className="p-2">
                   <div className="space-y-1">
@@ -424,7 +424,7 @@ This document covers the complete architecture planning lifecycle for government
                       {/* Recent Files Hover Submenu */}
                       {showRecentPopover && (
                         <Card className={cn(
-                          "absolute w-72 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl z-50",
+                          "absolute w-72 bg-white dark:bg-gray-900 border border-white/30 dark:border-white/10 shadow-2xl z-50",
                           isMobile ? "left-0 top-full mt-1" : "left-full top-0 ml-1"
                         )}>
                           <CardContent className="p-3">

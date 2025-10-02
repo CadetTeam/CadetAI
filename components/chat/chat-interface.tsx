@@ -284,6 +284,17 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {message.content}
                       </ReactMarkdown>
+                      <div className="mt-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => window.location.href = '/app/history'}
+                          title="Show more in history"
+                        >
+                          Show more
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <div className="whitespace-pre-wrap">{message.content}</div>
@@ -347,8 +358,8 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
 
       {/* Input Area */}
       <div className="border-t border-border p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
+        <div className="max-w-[960px] mx-auto">
+          <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3 text-[0.9rem] sm:text-base">
               {/* Attachment Button with Popover */}
               <div className="relative">
                 <Button
