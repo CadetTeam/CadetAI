@@ -113,81 +113,49 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
   // Empty state for Ask view
   if (currentView === 'ask' && messages.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        {/* Cadet Logo and Branding */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-gray-700 to-gray-800 rounded-2xl mb-6 shadow-lg">
-            <span className="text-white text-2xl font-bold">C</span>
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Cadet
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-            Your AI assistant for APD documents and compliance
-          </p>
-          <div className="flex items-center justify-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-            <Badge variant="outline" className="flex items-center space-x-1">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <span>Online</span>
-            </Badge>
-            <Badge variant="outline">AI Assistant</Badge>
-          </div>
-        </div>
-
-        {/* Chat Input - Centered */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8">
+        {/* Compact Chat Input */}
         <div className="w-full max-w-2xl">
-          <div className="relative">
+          <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
+            {/* Attachment Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 flex-shrink-0 mr-3"
+              title="Upload files"
+            >
+              <UploadIcon className="h-4 w-4" />
+            </Button>
+            
+            {/* Growing Textarea */}
             <Textarea
               ref={textareaRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                setInputValue(e.target.value)
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+              }}
               onKeyPress={handleKeyPress}
-              placeholder="What do you want to know about your APD documents?"
-              className="min-h-[60px] resize-none pr-12 text-base"
+              placeholder="Ask Cadet anything..."
+              className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
               disabled={isLoading}
+              style={{ 
+                height: 'auto',
+                overflow: 'hidden'
+              }}
             />
-            <div className="absolute bottom-3 right-3 flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0"
-                title="Upload files"
-              >
-                <UploadIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim() || isLoading}
-                className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
-              >
-                <PaperPlaneIcon className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-            Press Enter to send, Shift+Enter for new line
-          </p>
-        </div>
-
-        {/* Suggested Prompts */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
-          {[
-            "Analyze this compliance document",
-            "Help me set up team permissions",
-            "Review this APD workflow",
-            "Explain security best practices"
-          ].map((prompt, index) => (
+            
+            {/* Send Button */}
             <Button
-              key={index}
-              variant="outline"
-              className="h-auto p-4 text-left justify-start hover:bg-accent"
-              onClick={() => setInputValue(prompt)}
+              onClick={handleSendMessage}
+              disabled={!inputValue.trim() || isLoading}
+              className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3"
             >
-              <div>
-                <div className="font-medium">{prompt}</div>
-              </div>
+              <PaperPlaneIcon className="h-4 w-4" />
             </Button>
-          ))}
+          </div>
         </div>
       </div>
     )
@@ -301,44 +269,45 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
       {/* Input Area */}
       <div className="border-t border-border p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="relative">
+          <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
+            {/* Attachment Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 flex-shrink-0 mr-3"
+              title="Upload files"
+            >
+              <UploadIcon className="h-4 w-4" />
+            </Button>
+            
+            {/* Growing Textarea */}
             <Textarea
               ref={textareaRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                setInputValue(e.target.value)
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+              }}
               onKeyPress={handleKeyPress}
               placeholder="Message Cadet..."
-              className="min-h-[60px] resize-none pr-24 text-base"
+              className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-base border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
               disabled={isLoading}
+              style={{ 
+                height: 'auto',
+                overflow: 'hidden'
+              }}
             />
-            <div className="absolute bottom-3 right-3 flex items-center space-x-2">
-              {isLoading && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleStopGeneration}
-                  className="h-8 w-8 p-0"
-                  title="Stop generation"
-                >
-                  <StopIcon className="h-4 w-4" />
-                </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0"
-                title="Upload files"
-              >
-                <UploadIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim() || isLoading}
-                className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
-              >
-                <PaperPlaneIcon className="h-4 w-4" />
-              </Button>
-            </div>
+            
+            {/* Send Button */}
+            <Button
+              onClick={handleSendMessage}
+              disabled={!inputValue.trim() || isLoading}
+              className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3"
+            >
+              <PaperPlaneIcon className="h-4 w-4" />
+            </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
             Cadet can make mistakes. Check important information.

@@ -39,39 +39,38 @@ export function FloatingChat() {
           isMobile ? "w-[90vw] max-w-[400px] h-[500px]" : "w-[600px] max-w-[90vw] h-[600px]"
         )}
       >
-        <div className="h-full flex flex-col">
-          {/* Simple Chat Interface */}
-          <div className="flex-1 flex flex-col items-center justify-center p-6">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-gray-700 to-gray-800 rounded-2xl mb-4 shadow-lg">
-                <span className="text-white text-xl font-bold">C</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Cadet
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Your AI assistant for APD documents
-              </p>
-            </div>
-            
-            {/* Simple Input */}
-            <div className="w-full max-w-md">
-              <div className="relative">
-                <textarea
-                  placeholder="Ask Cadet anything..."
-                  className="w-full min-h-[50px] px-4 py-3 pr-12 bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/20 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-white/30 dark:focus:ring-white/20"
-                  style={{ 
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                  }}
-                />
-                <button className="absolute bottom-2 right-2 w-8 h-8 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 rounded-lg flex items-center justify-center transition-colors">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                  </svg>
-                </button>
-              </div>
+        <div className="h-full flex flex-col items-center justify-center p-4">
+          {/* Compact Floating Chat Bar */}
+          <div className="w-full max-w-2xl">
+            <div className="relative flex items-end bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-3">
+              {/* Attachment Button */}
+              <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors mr-3">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+              </button>
+              
+              {/* Growing Textarea */}
+              <textarea
+                placeholder="Ask Cadet anything..."
+                className="flex-1 min-h-[20px] max-h-[120px] bg-transparent resize-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none text-sm leading-5"
+                style={{ 
+                  height: 'auto',
+                  overflow: 'hidden'
+                }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                }}
+              />
+              
+              {/* Send Button */}
+              <button className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 rounded-lg flex items-center justify-center transition-colors ml-3">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
