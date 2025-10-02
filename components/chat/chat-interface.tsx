@@ -4,13 +4,11 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { UploadsView } from "@/components/chat/uploads-view"
 import { 
   PaperPlaneIcon,
   UploadIcon,
-  StopIcon,
   CopyIcon,
   ReloadIcon
 } from "@radix-ui/react-icons"
@@ -96,10 +94,6 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
     }
   }
 
-  const handleStopGeneration = () => {
-    setIsLoading(false)
-    setIsTyping(false)
-  }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
