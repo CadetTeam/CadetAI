@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, model = 'sonar' } = await request.json()
+    const { messages } = await request.json()
 
     const perplexityApiKey = process.env.PERPLEXITY_API_KEY
     if (!perplexityApiKey) {

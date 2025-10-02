@@ -15,7 +15,6 @@ import {
   CopyIcon,
   ReloadIcon,
   Cross2Icon,
-  EyeOpenIcon,
   FileTextIcon,
   GlobeIcon,
   CheckIcon,
@@ -81,10 +80,8 @@ export function EnhancedChatInterface({
   const [inputValue, setInputValue] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [attachments, setAttachments] = useState<FileAttachment[]>([])
-  const [showFilePreview, setShowFilePreview] = useState<FileAttachment | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [isRecording, setIsRecording] = useState(false)
-  const [selectedModel, setSelectedModel] = useState('gpt-4o-mini')
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -812,7 +809,7 @@ export function EnhancedChatInterface({
                 Select a conversation from the sidebar or create a new one
               </p>
               <Button onClick={handleNewConversation}>
-                <Plus className="h-4 w-4 mr-2" />
+                <PlusIcon className="h-4 w-4 mr-2" />
                 New Conversation
               </Button>
             </div>

@@ -120,7 +120,7 @@ class LibreChatClient {
       let response
       try {
         response = await this.callLibreChatAPI()
-      } catch (libreChatError) {
+      } catch {
         console.log('LibreChat unavailable, using direct Perplexity API')
         response = await this.callPerplexityAPI()
       }
