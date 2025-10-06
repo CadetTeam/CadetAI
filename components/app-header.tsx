@@ -18,14 +18,11 @@ interface AppHeaderProps {
 
 export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeaderProps = {}) {
   const { user } = useUser()
-  const [isMobile, setIsMobile] = useState(false)
   const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
       setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
     }
     
