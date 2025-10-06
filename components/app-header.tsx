@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { useUser } from "@clerk/nextjs"
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 interface AppHeaderProps {
   onMobileMenuToggle?: () => void
@@ -18,12 +19,14 @@ interface AppHeaderProps {
 export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeaderProps = {}) {
   const { user } = useUser()
   const [isMobile, setIsMobile] = useState(false)
+  const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
+      setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
     }
     
     checkMobile()
@@ -32,9 +35,12 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
   }, [])
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-background">
-      {/* Mobile Menu Button - Only show on mobile */}
-      {isMobile && (
+    <header className={cn(
+      "flex items-center justify-between border-b border-border bg-background",
+      isTabletOrBelow ? "px-4 py-3" : "px-6 py-4"
+    )}>
+      {/* Mobile Menu Button - Show on tablet and below */}
+      {isTabletOrBelow && (
         <Button
           variant="ghost"
           size="sm"
@@ -56,7 +62,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 hidden md:inline-flex"
+          className="h-8 w-8 p-0 hidden xl:inline-flex"
           title="Toggle right panel"
           onClick={onRightSidebarToggle}
         >

@@ -10,6 +10,7 @@ import { AppMenu } from "./app-menu"
 import { MobileAppMenu } from "./mobile-app-menu"
 import { LoadingSkeleton } from "./loading-skeleton"
 import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -29,9 +30,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
-      setIsTabletOrBelow(window.innerWidth < 1024)
+      setIsTabletOrBelow(window.innerWidth < 1200) // Increased breakpoint for better mobile experience
       // Auto-manage right sidebar visibility by breakpoint
-      if (window.innerWidth >= 1024) {
+      if (window.innerWidth >= 1200) { // Increased breakpoint
         setShowRightSidebar(true)
       } else {
         setShowRightSidebar(false)
@@ -77,12 +78,12 @@ export function AppLayout({ children }: AppLayoutProps) {
         <MobileAppMenu currentApp={currentApp} onAppChange={handleAppChange} />
       )}
 
-      {/* Desktop App Menu - Only show on desktop and home page */}
-      {!isMobile && isHomePage && (
+      {/* Desktop App Menu - Only show on desktop (>=1200px) and home page */}
+      {!isTabletOrBelow && isHomePage && (
         <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
       )}
       
-      {/* Left Sidebar - Show for APDGPT app pages (desktop always, mobile when open) */}
+      {/* Left Sidebar - Show for APDGPT app pages (desktop always, tablet/mobile when open) */}
       {isAPDGPTApp && (
         <AppSidebar 
           isMobileMenuOpen={isMobileMenuOpen}
@@ -102,7 +103,10 @@ export function AppLayout({ children }: AppLayoutProps) {
         
         {/* Main Content - Render after layout is ready */}
         <div className="flex-1 flex overflow-hidden">
-          <main className="flex-1 overflow-auto">
+          <main className={cn(
+            "flex-1 overflow-auto",
+            isTabletOrBelow ? "px-4 py-2" : "px-6 py-4"
+          )}>
             {isLayoutReady ? children : <LoadingSkeleton />}
           </main>
           

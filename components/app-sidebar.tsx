@@ -56,6 +56,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
   const { signOut } = useClerk()
   const [isCollapsed, setIsCollapsed] = useState(false) // Default to expanded
   const [isMobile, setIsMobile] = useState(false)
+  const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
   const [isNewTeamCardOpen, setIsNewTeamCardOpen] = useState(false)
@@ -66,6 +67,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
+      setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
       if (window.innerWidth < 768) {
         setIsCollapsed(true)
       }
@@ -89,10 +91,10 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
     return () => window.removeEventListener('resize', checkMobile)
   }, [pathname])
 
-  const shouldShowExpanded = !isMobile && (isHovered || isExpanded)
+  const shouldShowExpanded = !isTabletOrBelow && (isHovered || isExpanded)
   const sidebarWidth = isMobile ? "w-64" : (shouldShowExpanded ? "w-64" : "w-16")
   const collapsedItemClasses = !shouldShowExpanded ? "justify-center items-center h-12 w-12 p-0" : ""
-  const isVisible = isMobile ? isMobileMenuOpen : true
+  const isVisible = isTabletOrBelow ? isMobileMenuOpen : true
 
   const handleCardAction = (href: string, event: React.MouseEvent) => {
     const buttonRect = event.currentTarget.getBoundingClientRect()
@@ -131,8 +133,8 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
 
   return (
     <>
-      {/* Mobile Backdrop - covers everything including chat */}
-      {isMobile && isMobileMenuOpen && (
+      {/* Mobile/Tablet Backdrop - covers everything including chat */}
+      {isTabletOrBelow && isMobileMenuOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-[100]"
           onClick={onMobileMenuClose}
