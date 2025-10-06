@@ -75,7 +75,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
             variant="ghost" 
             size="sm" 
             className="h-8 w-8 p-0"
-            onClick={(e) => {
+            onClick={() => {
               setShowNotifications((prev) => !prev)
             }}
             title="Notifications"
