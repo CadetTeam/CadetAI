@@ -31,6 +31,7 @@ export function FloatingChat() {
   const [isMobile, setIsMobile] = useState(false)
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const [showRecentPopover, setShowRecentPopover] = useState(false)
+  const [recentPosition, setRecentPosition] = useState<{ left: number; top: number } | null>(null)
   const [inputValue, setInputValue] = useState("")
   
   // (removed) const isHistoryPage = pathname === '/app/history'
@@ -74,6 +75,8 @@ export function FloatingChat() {
 
   const popoverRef = useRef<HTMLDivElement>(null)
   const attachmentRef = useRef<HTMLButtonElement>(null)
+  const recentTriggerRef = useRef<HTMLDivElement>(null)
+  const recentPopoverRef = useRef<HTMLDivElement>(null)
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -103,6 +106,22 @@ export function FloatingChat() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  // Adjust Recent submenu position to keep within viewport
+  useEffect(() => {
+    if (!showRecentPopover) return
+    const trigger = recentTriggerRef.current
+    if (!trigger) return
+    const rect = trigger.getBoundingClientRect()
+    const submenuWidth = 288 // approximate w-72
+    const gap = 8
+    let left = rect.right + gap
+    if (left + submenuWidth > window.innerWidth - 4) {
+      left = Math.max(4, rect.left - gap - submenuWidth)
+    }
+    const top = Math.max(4, Math.min(window.innerHeight - 4 - 400, rect.top)) // clamp with approx height
+    setRecentPosition({ left, top })
+  }, [showRecentPopover])
 
   const [messages, setMessages] = useState<Array<{
     id: string
@@ -375,17 +394,17 @@ This document covers the complete architecture planning lifecycle for government
             {showAttachmentPopover && (
               <Card 
                 ref={popoverRef}
-                className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-gray-900 border border-white/30 dark:border-white/10 shadow-2xl pointer-events-auto z-50"
+                className="absolute bottom-full left-0 mb-2 w-56 bg-popover text-popover-foreground border border-border shadow-2xl pointer-events-auto z-50"
               >
                 <CardContent className="p-2">
                   <div className="space-y-1">
                     {/* Upload File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <UploadIcon className="h-4 w-4 text-white" />
+                        <UploadIcon className="h-4 w-4" />
                         <span className="text-sm font-medium">Upload any file</span>
                       </div>
                     </Button>
@@ -393,53 +412,53 @@ This document covers the complete architecture planning lifecycle for government
                     {/* Import File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <FileTextIcon className="h-4 w-4 text-white" />
+                        <FileTextIcon className="h-4 w-4" />
                         <span className="text-sm font-medium">Import any file</span>
                       </div>
                     </Button>
 
                     {/* View Recent - with hover submenu */}
-                    <div className="relative">
+                    <div className="relative" ref={recentTriggerRef}
+                      onMouseEnter={() => setShowRecentPopover(true)}
+                      onMouseLeave={() => setShowRecentPopover(false)}
+                    >
                       <Button
                         variant="ghost"
-                        className="w-full justify-between h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
-                        onMouseEnter={() => setShowRecentPopover(true)}
-                        onMouseLeave={() => setShowRecentPopover(false)}
+                        className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-foreground"
                       >
                         <div className="flex items-center space-x-3">
-                          <FileTextIcon className="h-4 w-4 text-white" />
+                          <FileTextIcon className="h-4 w-4" />
                           <span className="text-sm font-medium">View Recent</span>
                         </div>
-                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </Button>
 
                       {/* Recent Files Hover Submenu */}
-                      {showRecentPopover && (
-                        <Card className={cn(
-                          "absolute w-72 bg-white dark:bg-gray-900 border border-white/30 dark:border-white/10 shadow-2xl z-50",
-                          isMobile ? "left-0 top-full mt-1" : "left-full top-0 ml-1"
-                        )}>
+                      {showRecentPopover && recentPosition && (
+                        <Card ref={recentPopoverRef} className={cn(
+                          "fixed w-72 bg-popover text-popover-foreground border border-border shadow-2xl z-50"
+                        )} style={{ left: recentPosition.left, top: recentPosition.top }}>
                           <CardContent className="p-3">
                             <div className="space-y-2">
-                              <h3 className="text-sm font-semibold text-white mb-3">Recent Files</h3>
+                              <h3 className="text-sm font-semibold mb-3">Recent Files</h3>
                               <ScrollArea className="h-64">
                                 <div className="space-y-2">
                                   {recentFiles.map((file) => (
                                     <Button
                                       key={file.id}
                                       variant="ghost"
-                                      className="w-full justify-start h-auto p-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                                      className="w-full justify-start h-auto p-2 hover:bg-accent rounded-lg text-foreground"
                                     >
                                       <div className="flex items-center space-x-3 w-full">
                                         {getFileThumbnail(file)}
                                         <div className="flex-1 min-w-0 text-left">
                                           <p className="text-sm font-medium truncate">{file.name}</p>
-                                          <p className="text-xs text-gray-400">{file.size}</p>
+                                          <p className="text-xs text-muted-foreground">{file.size}</p>
                                         </div>
                                       </div>
                                     </Button>

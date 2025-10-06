@@ -377,17 +377,17 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
               {showAttachmentPopover && (
                 <Card 
                   ref={popoverRef}
-                  className="absolute bottom-full left-0 mb-2 w-56 bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl z-50"
+                  className="absolute bottom-full left-0 mb-2 w-56 bg-popover text-popover-foreground border border-border shadow-2xl z-50"
                 >
                   <CardContent className="p-2">
                     <div className="space-y-1">
                       {/* Upload File */}
                       <Button
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
                       >
                         <div className="flex items-center space-x-3 w-full">
-                          <UploadIcon className="h-4 w-4 text-white" />
+                          <UploadIcon className="h-4 w-4" />
                           <span className="text-sm font-medium">Upload any file</span>
                         </div>
                       </Button>
@@ -395,10 +395,10 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       {/* Import File */}
                       <Button
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
                       >
                         <div className="flex items-center space-x-3 w-full">
-                          <FileTextIcon className="h-4 w-4 text-white" />
+                          <FileTextIcon className="h-4 w-4" />
                           <span className="text-sm font-medium">Import any file</span>
                         </div>
                       </Button>
@@ -406,10 +406,10 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       {/* View Recent */}
                       <Button
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg text-white"
+                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
                       >
                         <div className="flex items-center space-x-3 w-full">
-                          <FileTextIcon className="h-4 w-4 text-white" />
+                          <FileTextIcon className="h-4 w-4" />
                           <span className="text-sm font-medium">View Recent</span>
                         </div>
                       </Button>

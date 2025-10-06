@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { 
   Shield, 
   CreditCard, 
@@ -17,13 +18,14 @@ import {
   ArrowRightLeft,
   UserPlus
 } from "lucide-react"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 
 export function OrganizationSettings() {
   return (
     <>
       {/* Organization information (placeholder) */}
       <Card>
-        <CardHeader>
+        <CardHeader className="p-3 sm:p-4">
           <CardTitle className="flex items-center space-x-2">
             <Building className="h-5 w-5" />
             <span>Organization Information</span>
@@ -32,7 +34,7 @@ export function OrganizationSettings() {
             Update your organization details and contact information
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
           {[...Array(4)].map((__, j) => (
             <div key={j} className="space-y-2">
               <Skeleton className="h-4 w-40" />
@@ -44,7 +46,7 @@ export function OrganizationSettings() {
 
       {/* Team management (functional) */}
       <Card>
-        <CardHeader>
+        <CardHeader className="p-3 sm:p-4">
           <CardTitle className="flex items-center space-x-2">
             <Users className="h-5 w-5" />
             <span>Team Management</span>
@@ -53,7 +55,7 @@ export function OrganizationSettings() {
             Add, remove, and change roles for members in your organization
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
           <MembersAdminPanel />
         </CardContent>
       </Card>
@@ -66,7 +68,7 @@ export function SecuritySettings() {
     <>
       {[...Array(2)].map((_, idx) => (
         <Card key={idx}>
-          <CardHeader>
+        <CardHeader className="p-3 sm:p-4">
             <CardTitle className="flex items-center space-x-2">
               {idx === 0 ? <Shield className="h-5 w-5" /> : <Lock className="h-5 w-5" />}
               <span>{idx === 0 ? 'Security Policies' : 'Password Policy'}</span>
@@ -75,7 +77,7 @@ export function SecuritySettings() {
               {idx === 0 ? 'Configure security settings and compliance requirements' : 'Set password requirements and rotation policies'}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
             {[...Array(4)].map((__, j) => (
               <div key={j} className="space-y-2">
                 <Skeleton className="h-4 w-48" />
@@ -94,7 +96,7 @@ export function BillingSettings() {
     <>
       {[...Array(2)].map((_, idx) => (
         <Card key={idx}>
-          <CardHeader>
+        <CardHeader className="p-3 sm:p-4">
             <CardTitle className="flex items-center space-x-2">
               <CreditCard className="h-5 w-5" />
               <span>{idx === 0 ? 'Billing Information' : 'Usage & Limits'}</span>
@@ -103,7 +105,7 @@ export function BillingSettings() {
               {idx === 0 ? 'Manage your subscription and payment methods' : 'Monitor your current usage and plan limits'}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
             {[...Array(4)].map((__, j) => (
               <div key={j} className="space-y-2">
                 <Skeleton className="h-4 w-56" />
@@ -120,7 +122,7 @@ export function BillingSettings() {
 export function NotificationSettings() {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="p-3 sm:p-4">
         <CardTitle className="flex items-center space-x-2">
           <Bell className="h-5 w-5" />
           <span>Notification Preferences</span>
@@ -129,7 +131,7 @@ export function NotificationSettings() {
           Configure how you receive notifications
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
         {[...Array(4)].map((_, j) => (
           <div key={j} className="space-y-2">
             <Skeleton className="h-4 w-48" />
@@ -144,7 +146,7 @@ export function NotificationSettings() {
 export function IntegrationSettings() {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="p-3 sm:p-4">
         <CardTitle className="flex items-center space-x-2">
           <Globe className="h-5 w-5" />
           <span>Third-party Integrations</span>
@@ -153,7 +155,7 @@ export function IntegrationSettings() {
           Connect with external services and tools
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
         {[...Array(3)].map((_, j) => (
           <div key={j} className="p-4 border rounded-lg space-y-2">
             <Skeleton className="h-4 w-48" />
@@ -170,7 +172,7 @@ export function DataPrivacySettings() {
     <>
       {[...Array(2)].map((_, idx) => (
         <Card key={idx}>
-          <CardHeader>
+          <CardHeader className="p-3 sm:p-4">
             <CardTitle className="flex items-center space-x-2">
               <Database className="h-5 w-5" />
               <span>{idx === 0 ? 'Data Management' : 'Data Export & Deletion'}</span>
@@ -179,7 +181,7 @@ export function DataPrivacySettings() {
               {idx === 0 ? 'Control your data retention and export settings' : 'Export your data or request account deletion'}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-0">
             {[...Array(4)].map((__, j) => (
               <div key={j} className="space-y-2">
                 <Skeleton className="h-4 w-48" />
@@ -324,20 +326,20 @@ function MembersAdminPanel() {
     <div className="space-y-4">
       {error && <p className="text-sm text-red-500">{error}</p>}
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
         <Input
           placeholder="user@example.com"
           value={inviteEmail}
           onChange={(e) => setInviteEmail(e.target.value)}
         />
-        <Button onClick={invite} disabled={!inviteEmail || updating === 'invite'}>
+        <Button onClick={invite} disabled={!inviteEmail || updating === 'invite'} className="sm:w-auto w-full">
           <UserPlus className="h-4 w-4 mr-2" /> Invite
         </Button>
       </div>
 
       <div className="space-y-2">
         {members.map((m) => (
-          <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg">
+          <div key={m.id} className="p-3 border rounded-lg">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-muted overflow-hidden" />
               <div>
@@ -345,15 +347,31 @@ function MembersAdminPanel() {
                 <p className="text-xs text-muted-foreground">{m.email}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => changeRole(m.id, 'basic_member')} disabled={updating === m.id}>Member</Button>
-              <Button variant="outline" size="sm" onClick={() => changeRole(m.id, 'admin')} disabled={updating === m.id}>Admin</Button>
-              <Button variant="ghost" size="sm" onClick={() => transferOwnership(m.userId)} disabled={transferring} title="Transfer ownership">
+            <div className="mt-3 hidden sm:flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => changeRole(m.id, 'basic_member')} disabled={updating === m.id} className="w-full sm:w-auto">Member</Button>
+              <Button variant="outline" size="sm" onClick={() => changeRole(m.id, 'admin')} disabled={updating === m.id} className="w-full sm:w-auto">Admin</Button>
+              <Button variant="ghost" size="sm" onClick={() => transferOwnership(m.userId)} disabled={transferring} title="Transfer ownership" className="w-full sm:w-auto">
                 <ArrowRightLeft className="h-4 w-4" />
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => removeMember(m.id)} disabled={updating === m.id} title="Remove member">
+              <Button variant="destructive" size="sm" onClick={() => removeMember(m.id)} disabled={updating === m.id} title="Remove member" className="w-full sm:w-auto">
                 Remove
               </Button>
+            </div>
+            {/* Compact actions for mobile via menu */}
+            <div className="mt-3 sm:hidden flex justify-end">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                    <DotsHorizontalIcon className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent sideOffset={6} className="w-40">
+                  <DropdownMenuItem onClick={() => changeRole(m.id, 'basic_member')}>Make Member</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeRole(m.id, 'admin')}>Make Admin</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => transferOwnership(m.userId)}>Transfer Ownership</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => removeMember(m.id)} className="text-red-600 focus:text-red-600">Remove</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         ))}

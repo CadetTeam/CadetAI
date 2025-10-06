@@ -134,7 +134,7 @@ export function MobileRightMenu({}: MobileRightMenuProps = {}) {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-32 right-4 h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20 z-50"
+        className={("fixed bottom-32 right-4 h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-black/20 z-50 pointer-events-auto " + (""))}
       >
         <DotsHorizontalIcon className="w-5 h-5 text-gray-600 dark:text-white" />
       </Button>

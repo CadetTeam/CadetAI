@@ -194,7 +194,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
                 {chatThreads.map((thread) => (
                   <div
                     key={thread.id}
-                    className="group p-3 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+                    className="group p-3 rounded-lg border border-border hover:bg-muted/70 dark:hover:bg-muted/40 cursor-pointer transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">

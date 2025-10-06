@@ -245,7 +245,7 @@ export default function SettingsPage() {
         value={activeTab}
         onValueChange={setActiveTab}
         visibleCountMobile={2}
-        visibleCountTablet={4}
+        visibleCountTablet={3}
         visibleCountDesktop={6}
       />
       {/* Content is provided by each tab via ResponsiveTabs */}

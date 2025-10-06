@@ -20,13 +20,22 @@ export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname()
   const [currentApp, setCurrentApp] = useState("apdgpt")
   const [isMobile, setIsMobile] = useState(false)
+  const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
   const [isLayoutReady, setIsLayoutReady] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [showRightSidebar, setShowRightSidebar] = useState(false)
 
-  // Check if mobile on mount and resize
+  // Check if mobile/tablet on mount and resize
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
+      setIsTabletOrBelow(window.innerWidth < 1024)
+      // Auto-manage right sidebar visibility by breakpoint
+      if (window.innerWidth >= 1024) {
+        setShowRightSidebar(true)
+      } else {
+        setShowRightSidebar(false)
+      }
     }
     
     checkMobile()
@@ -85,7 +94,10 @@ export function AppLayout({ children }: AppLayoutProps) {
       <div className="flex-1 flex flex-col overflow-hidden z-20">
         {/* Header - Always render first */}
         <div className="z-30">
-          <AppHeader onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+          <AppHeader 
+            onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onRightSidebarToggle={() => setShowRightSidebar((prev) => !prev)}
+          />
         </div>
         
         {/* Main Content - Render after layout is ready */}
@@ -94,8 +106,8 @@ export function AppLayout({ children }: AppLayoutProps) {
             {isLayoutReady ? children : <LoadingSkeleton />}
           </main>
           
-          {/* Desktop Right Sidebar - Only show for APDGPT app pages on desktop */}
-          {!isMobile && isAPDGPTApp && (
+          {/* Right Sidebar - toggleable; auto-hidden on tablet and below unless opened */}
+          {isAPDGPTApp && showRightSidebar && (
             <div className="z-30">
               <RightSidebar />
             </div>

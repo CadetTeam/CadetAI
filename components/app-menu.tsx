@@ -208,11 +208,11 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
 
                 {/* Remove Popover */}
                 {showRemoveMenu === app.id && app.id !== 'apdgpt' && (
-                  <div className="fixed left-20 z-[9999] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-2 w-40">
+                  <div className="fixed left-20 z-[9999] bg-popover text-popover-foreground border border-border rounded-2xl shadow-2xl p-2 w-40">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 dark:hover:bg-red-500/10 rounded-lg"
+                      className="w-full justify-start text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg"
                       onClick={() => handleRemoveApp(app)}
                     >
                       Remove from menu
@@ -240,10 +240,10 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
 
         {showAddMenu && (
           <div 
-            className="fixed bottom-20 left-4 z-[9999] bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl w-56 p-3"
+            className="fixed bottom-20 left-4 z-[9999] bg-popover text-popover-foreground border border-border rounded-2xl shadow-2xl w-56 p-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-xs px-2 py-1 text-white/70 mb-2">Add to menu</p>
+            <p className="text-xs px-2 py-1 text-muted-foreground mb-2">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {
                 const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
@@ -252,7 +252,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                     key={app.id}
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start h-9 px-2 text-white hover:bg-white/10 dark:hover:bg-black/10 rounded-lg"
+                    className="w-full justify-start h-9 px-2 hover:bg-accent rounded-lg"
                     onClick={() => handleAddApp(app)}
                   >
                     <div className="flex items-center space-x-3">
@@ -273,7 +273,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                 )
               })}
               {availableApps.length === 0 && (
-                <div className="px-2 py-1 text-xs text-white/70">No more apps</div>
+                <div className="px-2 py-1 text-xs text-muted-foreground">No more apps</div>
               )}
             </div>
           </div>
