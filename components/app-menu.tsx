@@ -240,10 +240,10 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
 
         {showAddMenu && (
           <div 
-            className="fixed bottom-20 left-4 z-[9999] bg-popover text-popover-foreground border border-border rounded-2xl shadow-2xl w-56 p-3"
+            className="fixed bottom-20 left-4 z-[9999] bg-popover border border-border rounded-2xl shadow-2xl w-56 p-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-xs px-2 py-1 text-muted-foreground mb-2">Add to menu</p>
+            <p className="text-xs px-2 py-1 text-black dark:text-popover-foreground mb-2">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {
                 // Invert icon choice for popover (light bg -> dark icon, dark bg -> light icon)
@@ -268,7 +268,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
                           }}
                         />
                       </div>
-                      <span className="text-sm">{app.name}</span>
+                      <span className="text-sm text-black dark:text-popover-foreground">{app.name}</span>
                     </div>
                   </Button>
                 )

@@ -231,9 +231,9 @@ This document covers the complete architecture planning lifecycle for government
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'image':
-        return <FileTextIcon className="w-4 h-4" />
+        return <FileTextIcon className="w-4 h-4 text-black dark:text-current" />
       default:
-        return <FileTextIcon className="w-4 h-4" />
+        return <FileTextIcon className="w-4 h-4 text-black dark:text-current" />
     }
   }
 
@@ -394,29 +394,29 @@ This document covers the complete architecture planning lifecycle for government
             {showAttachmentPopover && (
               <Card 
                 ref={popoverRef}
-                className="absolute bottom-full left-0 mb-2 w-56 bg-popover text-popover-foreground border border-border shadow-2xl pointer-events-auto z-50"
+                className="absolute bottom-full left-0 mb-2 w-56 bg-popover border border-border shadow-2xl pointer-events-auto z-50"
               >
                 <CardContent className="p-2">
                   <div className="space-y-1">
                     {/* Upload File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-black dark:text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <UploadIcon className="h-4 w-4 text-current" />
-                        <span className="text-sm font-medium">Upload any file</span>
+                        <UploadIcon className="h-4 w-4 text-black dark:text-current" />
+                        <span className="text-sm font-medium text-black dark:text-popover-foreground">Upload any file</span>
                       </div>
                     </Button>
 
                     {/* Import File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-black dark:text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <FileTextIcon className="h-4 w-4 text-current" />
-                        <span className="text-sm font-medium">Import any file</span>
+                        <FileTextIcon className="h-4 w-4 text-black dark:text-current" />
+                        <span className="text-sm font-medium text-black dark:text-popover-foreground">Import any file</span>
                       </div>
                     </Button>
 
@@ -427,13 +427,13 @@ This document covers the complete architecture planning lifecycle for government
                     >
                       <Button
                         variant="ghost"
-                        className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
+                        className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-black dark:text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3">
-                          <FileTextIcon className="h-4 w-4 text-current" />
-                          <span className="text-sm font-medium">View Recent</span>
+                          <FileTextIcon className="h-4 w-4 text-black dark:text-current" />
+                          <span className="text-sm font-medium text-black dark:text-popover-foreground">View Recent</span>
                         </div>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-black dark:text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </Button>
@@ -441,24 +441,24 @@ This document covers the complete architecture planning lifecycle for government
                       {/* Recent Files Hover Submenu */}
                       {showRecentPopover && recentPosition && (
                         <Card ref={recentPopoverRef} className={cn(
-                          "fixed w-72 bg-popover text-popover-foreground border border-border shadow-2xl z-50"
+                          "fixed w-72 bg-popover border border-border shadow-2xl z-50"
                         )} style={{ left: recentPosition.left, top: recentPosition.top }}>
                           <CardContent className="p-3">
                             <div className="space-y-2">
-                              <h3 className="text-sm font-semibold mb-3">Recent Files</h3>
+                              <h3 className="text-sm font-semibold mb-3 text-black dark:text-popover-foreground">Recent Files</h3>
                               <ScrollArea className="h-64">
                                 <div className="space-y-2">
                                   {recentFiles.map((file) => (
                                     <Button
                                       key={file.id}
                                       variant="ghost"
-                                      className="w-full justify-start h-auto p-2 hover:bg-accent rounded-lg text-foreground"
+                                      className="w-full justify-start h-auto p-2 hover:bg-accent rounded-lg text-black dark:text-popover-foreground"
                                     >
                                       <div className="flex items-center space-x-3 w-full">
                                         {getFileThumbnail(file)}
                                         <div className="flex-1 min-w-0 text-left">
-                                          <p className="text-sm font-medium truncate">{file.name}</p>
-                                          <p className="text-xs text-muted-foreground">{file.size}</p>
+                                          <p className="text-sm font-medium truncate text-black dark:text-popover-foreground">{file.name}</p>
+                                          <p className="text-xs text-gray-600 dark:text-muted-foreground">{file.size}</p>
                                         </div>
                                       </div>
                                     </Button>
