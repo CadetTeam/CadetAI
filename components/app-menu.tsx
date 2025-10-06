@@ -246,7 +246,8 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
             <p className="text-xs px-2 py-1 text-muted-foreground mb-2">Add to menu</p>
             <div className="space-y-1 max-h-60 overflow-auto">
               {availableApps.map((app) => {
-                const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
+                // Invert icon choice for popover (light bg -> dark icon, dark bg -> light icon)
+                const iconSrc = resolvedTheme === 'dark' ? app.lightIcon : app.darkIcon
                 return (
                   <Button
                     key={app.id}

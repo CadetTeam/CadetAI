@@ -106,7 +106,8 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
               <h3 className="text-sm font-semibold text-foreground mb-3 px-2">Apps</h3>
               {visibleApps.map((app) => {
                 const isActive = currentApp === app.id
-                const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
+                // For glassmorphic list items, choose icon with contrast against surface
+                const iconSrc = resolvedTheme === 'dark' ? app.lightIcon : app.darkIcon
 
                 return (
                   <Button
@@ -158,7 +159,8 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                   >
                     <div className="space-y-1 max-h-60 overflow-auto">
                       {availableApps.map((app) => {
-                        const iconSrc = resolvedTheme === 'dark' ? app.darkIcon : app.lightIcon
+                        // Invert for popover to ensure contrast
+                        const iconSrc = resolvedTheme === 'dark' ? app.lightIcon : app.darkIcon
                         return (
                           <Button
                             key={app.id}

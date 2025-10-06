@@ -401,10 +401,10 @@ This document covers the complete architecture planning lifecycle for government
                     {/* Upload File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <UploadIcon className="h-4 w-4" />
+                        <UploadIcon className="h-4 w-4 text-current" />
                         <span className="text-sm font-medium">Upload any file</span>
                       </div>
                     </Button>
@@ -412,10 +412,10 @@ This document covers the complete architecture planning lifecycle for government
                     {/* Import File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <FileTextIcon className="h-4 w-4" />
+                        <FileTextIcon className="h-4 w-4 text-current" />
                         <span className="text-sm font-medium">Import any file</span>
                       </div>
                     </Button>
@@ -427,10 +427,10 @@ This document covers the complete architecture planning lifecycle for government
                     >
                       <Button
                         variant="ghost"
-                        className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-foreground"
+                        className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3">
-                          <FileTextIcon className="h-4 w-4" />
+                          <FileTextIcon className="h-4 w-4 text-current" />
                           <span className="text-sm font-medium">View Recent</span>
                         </div>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

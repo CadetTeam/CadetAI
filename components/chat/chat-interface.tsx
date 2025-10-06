@@ -384,10 +384,10 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       {/* Upload File */}
                       <Button
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
+                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3 w-full">
-                          <UploadIcon className="h-4 w-4" />
+                          <UploadIcon className="h-4 w-4 text-current" />
                           <span className="text-sm font-medium">Upload any file</span>
                         </div>
                       </Button>
@@ -395,10 +395,10 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       {/* Import File */}
                       <Button
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
+                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3 w-full">
-                          <FileTextIcon className="h-4 w-4" />
+                          <FileTextIcon className="h-4 w-4 text-current" />
                           <span className="text-sm font-medium">Import any file</span>
                         </div>
                       </Button>
@@ -406,10 +406,10 @@ export function ChatInterface({ currentView, sidebarCollapsed }: ChatInterfacePr
                       {/* View Recent */}
                       <Button
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-foreground"
+                        className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3 w-full">
-                          <FileTextIcon className="h-4 w-4" />
+                          <FileTextIcon className="h-4 w-4 text-current" />
                           <span className="text-sm font-medium">View Recent</span>
                         </div>
                       </Button>
