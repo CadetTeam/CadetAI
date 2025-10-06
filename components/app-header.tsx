@@ -76,8 +76,6 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
             size="sm" 
             className="h-8 w-8 p-0"
             onClick={(e) => {
-              const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect()
-              setAnchorRect(rect)
               setShowNotifications((prev) => !prev)
             }}
             title="Notifications"
