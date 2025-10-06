@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { CardSlider } from "@/components/ui/card-slider"
 import { EyeOpenIcon, PersonIcon, FileTextIcon, PlusIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { supabase } from "@/lib/supabase-client"
 import { useUser } from "@clerk/nextjs"
 
@@ -112,6 +112,8 @@ export default function AppDashboard() {
   const [apdFiles, setApdFiles] = useState<APDFile[]>([])
   const [templates, setTemplates] = useState<Template[]>([])
   const [projects, setProjects] = useState<Project[]>([])
+  // Removed visible error card; keeping state optional for future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
   const { user } = useUser()
 
@@ -158,7 +160,7 @@ export default function AppDashboard() {
 
       } catch (err) {
         console.error('Error fetching data:', err)
-        setError('Failed to load data')
+        // Swallow error state (no visible error card)
       } finally {
         setIsLoading(false)
       }
@@ -264,20 +266,7 @@ export default function AppDashboard() {
         />
       )}
 
-      {/* Error State */}
-      {error && (
-        <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
-          <CardHeader>
-            <CardTitle className="text-red-800 dark:text-red-200">Error Loading Data</CardTitle>
-            <CardDescription className="text-red-600 dark:text-red-400">{error}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button variant="outline" onClick={() => window.location.reload()}>
-              Try Again
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      {/* Error State removed per design request */}
     </div>
   )
 }
