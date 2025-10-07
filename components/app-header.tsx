@@ -65,11 +65,6 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
         >
           <Component1Icon className="w-4 h-4" />
         </Button>
-        <Link href="/app/knowledge-base">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Knowledge Base">
-            <Component1Icon className="w-4 h-4" />
-          </Button>
-        </Link>
         <div className="relative">
           <Button 
             variant="ghost" 
@@ -83,7 +78,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
             <BellIcon className="w-4 h-4" />
           </Button>
           {showNotifications && (
-            <div className="absolute right-0 mt-2 z-50">
+            <div className="absolute right-0 mt-2 z-[9999]">
               <Card className="w-80 bg-popover text-popover-foreground border border-border shadow-xl">
                 <CardHeader className="p-3 border-b border-border">
                   <CardTitle className="text-sm">Notifications</CardTitle>
