@@ -10,20 +10,18 @@ import { FloatingChat } from "@/components/floating-chat"
 import { AppMenu } from "@/components/app-menu"
 import { MobileAppMenu } from "@/components/mobile-app-menu"
 import { LoadingSkeleton } from "@/components/loading-skeleton"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { 
   BellIcon, 
   CheckIcon, 
-  XMarkIcon, 
   TrashIcon,
   ClockIcon,
-  UserIcon,
-  DocumentTextIcon,
+  PersonIcon,
+  FileTextIcon,
   ExclamationTriangleIcon
 } from "@radix-ui/react-icons"
 
@@ -39,7 +37,6 @@ interface Notification {
 
 export default function NotificationsPage() {
   const { isSignedIn, isLoaded } = useAuth()
-  const pathname = usePathname()
   const [currentApp, setCurrentApp] = useState("apdgpt")
   const [isMobile, setIsMobile] = useState(false)
   const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
@@ -137,11 +134,11 @@ export default function NotificationsPage() {
   const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
       case 'team':
-        return <UserIcon className="w-4 h-4" />
+        return <PersonIcon className="w-4 h-4" />
       case 'system':
         return <BellIcon className="w-4 h-4" />
       case 'document':
-        return <DocumentTextIcon className="w-4 h-4" />
+        return <FileTextIcon className="w-4 h-4" />
       case 'warning':
         return <ExclamationTriangleIcon className="w-4 h-4" />
     }
