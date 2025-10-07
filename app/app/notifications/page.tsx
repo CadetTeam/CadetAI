@@ -14,14 +14,14 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { 
-  BellIcon, 
-  CheckIcon, 
-  TrashIcon,
-  ClockIcon,
-  PersonIcon,
-  FileTextIcon,
-  ExclamationTriangleIcon
-} from "@radix-ui/react-icons"
+  Bell, 
+  Check, 
+  Trash2,
+  Clock,
+  User,
+  FileText,
+  AlertTriangle
+} from "lucide-react"
 
 interface Notification {
   id: string
@@ -132,13 +132,13 @@ export default function NotificationsPage() {
   const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
       case 'team':
-        return <PersonIcon className="w-4 h-4" />
+        return <User className="w-4 h-4" />
       case 'system':
-        return <BellIcon className="w-4 h-4" />
+        return <Bell className="w-4 h-4" />
       case 'document':
-        return <FileTextIcon className="w-4 h-4" />
+        return <FileText className="w-4 h-4" />
       case 'warning':
-        return <ExclamationTriangleIcon className="w-4 h-4" />
+        return <AlertTriangle className="w-4 h-4" />
     }
   }
 
@@ -219,7 +219,7 @@ export default function NotificationsPage() {
                   </div>
                   {unreadCount > 0 && (
                     <Button onClick={markAllAsRead} variant="outline" size="sm">
-                      <CheckIcon className="w-4 h-4 mr-2" />
+                      <Check className="w-4 h-4 mr-2" />
                       Mark all as read
                     </Button>
                   )}
@@ -284,7 +284,7 @@ export default function NotificationsPage() {
                                       {notification.message}
                                     </p>
                                     <div className="flex items-center space-x-1 mt-2">
-                                      <ClockIcon className="w-3 h-3 text-muted-foreground" />
+                                      <Clock className="w-3 h-3 text-muted-foreground" />
                                       <span className="text-xs text-muted-foreground">
                                         {notification.timestamp.toLocaleString()}
                                       </span>
@@ -299,7 +299,7 @@ export default function NotificationsPage() {
                                         onClick={() => markAsRead(notification.id)}
                                         className="h-8 w-8 p-0"
                                       >
-                                        <CheckIcon className="w-4 h-4" />
+                                        <Check className="w-4 h-4" />
                                       </Button>
                                     )}
                                     <Button
@@ -308,7 +308,7 @@ export default function NotificationsPage() {
                                       onClick={() => deleteNotification(notification.id)}
                                       className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
                                     >
-                                      <TrashIcon className="w-4 h-4" />
+                                      <Trash2 className="w-4 h-4" />
                                     </Button>
                                   </div>
                                 </div>
@@ -317,7 +317,7 @@ export default function NotificationsPage() {
                           ))
                         ) : (
                           <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <BellIcon className="w-12 h-12 text-muted-foreground mb-4" />
+                            <Bell className="w-12 h-12 text-muted-foreground mb-4" />
                             <h3 className="text-lg font-semibold text-foreground mb-2">
                               No {filter} notifications
                             </h3>

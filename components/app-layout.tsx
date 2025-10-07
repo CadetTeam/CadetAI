@@ -61,7 +61,8 @@ export function AppLayout({ children }: AppLayoutProps) {
     !pathname.startsWith('/app/security') && 
     !pathname.startsWith('/app/files') && 
     !pathname.startsWith('/app/keys') &&
-    !pathname.startsWith('/app/chat')
+    !pathname.startsWith('/app/chat') &&
+    !pathname.startsWith('/app/notifications')
 
   // Determine if we're on the home page
   const isHomePage = pathname === '/app'
@@ -112,7 +113,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           
           {/* Right Sidebar - toggleable; auto-hidden on tablet and below unless opened */}
           {isAPDGPTApp && showRightSidebar && (
-            <div className="z-30">
+            <div className="z-[1]">
               <RightSidebar />
             </div>
           )}

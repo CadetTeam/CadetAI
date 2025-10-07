@@ -1,6 +1,6 @@
 "use client"
 
-import { BellIcon, QuestionMarkCircledIcon, Component1Icon, DropdownMenuIcon } from "@radix-ui/react-icons"
+import { Bell, HelpCircle, Brain, Menu, Grid3X3 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useUser } from "@clerk/nextjs"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 
 interface AppHeaderProps {
@@ -20,6 +20,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
   const { user } = useUser()
   const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const notificationsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -30,6 +31,23 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationsRef.current && 
+        !notificationsRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifications(false)
+      }
+    }
+
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showNotifications])
 
   return (
     <header className={cn(
@@ -45,7 +63,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
           title="Menu"
           onClick={onMobileMenuToggle}
         >
-          <DropdownMenuIcon className="w-5 h-5" />
+          <Menu className="w-5 h-5" />
         </Button>
       )}
       
@@ -55,6 +73,12 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
       {/* Right Side Actions */}
       <div className="flex items-center space-x-2 relative">
         <ThemeToggle />
+        {/* Knowledge Base */}
+        <Link href="/app/knowledge-base">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Knowledge Base">
+            <Brain className="w-4 h-4" />
+          </Button>
+        </Link>
         {/* Tablet+ right sidebar toggle */}
         <Button
           variant="ghost"
@@ -63,7 +87,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
           title="Toggle right panel"
           onClick={onRightSidebarToggle}
         >
-          <Component1Icon className="w-4 h-4" />
+          <Grid3X3 className="w-4 h-4" />
         </Button>
         <div className="relative">
           <Button 
@@ -75,10 +99,10 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
             }}
             title="Notifications"
           >
-            <BellIcon className="w-4 h-4" />
+            <Bell className="w-4 h-4" />
           </Button>
           {showNotifications && (
-            <div className="absolute right-0 mt-2 z-[9999]">
+            <div ref={notificationsRef} className="absolute right-0 mt-2 z-[9999]">
               <Card className="w-80 bg-popover text-popover-foreground border border-border shadow-xl">
                 <CardHeader className="p-3 border-b border-border">
                   <CardTitle className="text-sm">Notifications</CardTitle>
@@ -139,7 +163,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
           )}
         </div>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <QuestionMarkCircledIcon className="w-4 h-4" />
+          <HelpCircle className="w-4 h-4" />
         </Button>
         <Avatar className="h-8 w-8">
           <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />

@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
-  UploadIcon,
-  FileTextIcon,
-  PaperPlaneIcon,
-  GlobeIcon,
-  CopyIcon,
-  ReloadIcon
-} from "@radix-ui/react-icons"
+  Upload,
+  FileText,
+  Send,
+  Globe,
+  Copy,
+  RotateCcw
+} from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -231,9 +231,9 @@ This document covers the complete architecture planning lifecycle for government
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'image':
-        return <FileTextIcon className="w-4 h-4 text-popover-foreground" />
+        return <FileText className="w-4 h-4 text-popover-foreground" />
       default:
-        return <FileTextIcon className="w-4 h-4 text-popover-foreground" />
+        return <FileText className="w-4 h-4 text-popover-foreground" />
     }
   }
 
@@ -306,7 +306,7 @@ This document covers the complete architecture planning lifecycle for government
                               </div>
                               {message.browsingLinks.map((link, index) => (
                                 <div key={index} className="flex items-center space-x-3 p-2 bg-white/5 dark:bg-black/5 rounded-lg">
-                                  <GlobeIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                                  <Globe className="w-4 h-4 text-blue-500 flex-shrink-0" />
                                   <span className="text-xs text-muted-foreground truncate">
                                     Browsing <code className="bg-white/10 dark:bg-black/10 px-1 rounded">{link}</code>
                                   </span>
@@ -353,10 +353,10 @@ This document covers the complete architecture planning lifecycle for government
                             className="h-6 w-6 p-0 pointer-events-auto"
                             onClick={() => navigator.clipboard.writeText(message.content)}
                           >
-                            <CopyIcon className="h-3 w-3" />
+                            <Copy className="h-3 w-3" />
                           </Button>
                           <Button variant="ghost" size="sm" className="h-6 w-6 p-0 pointer-events-auto">
-                            <ReloadIcon className="h-3 w-3" />
+                            <RotateCcw className="h-3 w-3" />
                           </Button>
                         </div>
                       )}
@@ -387,7 +387,7 @@ This document covers the complete architecture planning lifecycle for government
               className="h-8 w-8 p-0 flex-shrink-0 mr-3 pointer-events-auto text-foreground hover:bg-accent"
               onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
             >
-              <UploadIcon className="h-4 w-4 text-foreground" />
+              <Upload className="h-4 w-4 text-foreground" />
             </Button>
 
             {/* Attachment Menu Popover */}
@@ -404,7 +404,7 @@ This document covers the complete architecture planning lifecycle for government
                       className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <UploadIcon className="h-4 w-4 text-popover-foreground" />
+                        <Upload className="h-4 w-4 text-popover-foreground" />
                         <span className="text-sm font-medium text-popover-foreground">Upload any file</span>
                       </div>
                     </Button>
@@ -415,7 +415,7 @@ This document covers the complete architecture planning lifecycle for government
                       className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
-                        <FileTextIcon className="h-4 w-4 text-popover-foreground" />
+                        <FileText className="h-4 w-4 text-popover-foreground" />
                         <span className="text-sm font-medium text-popover-foreground">Import any file</span>
                       </div>
                     </Button>
@@ -430,7 +430,7 @@ This document covers the complete architecture planning lifecycle for government
                         className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3">
-                          <FileTextIcon className="h-4 w-4 text-popover-foreground" />
+                          <FileText className="h-4 w-4 text-popover-foreground" />
                           <span className="text-sm font-medium text-popover-foreground">View Recent</span>
                         </div>
                         <svg className="w-4 h-4 text-popover-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -510,7 +510,7 @@ This document covers the complete architecture planning lifecycle for government
             disabled={!inputValue.trim()}
             className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3 pointer-events-auto"
           >
-            <PaperPlaneIcon className="h-4 w-4 text-white" />
+            <Send className="h-4 w-4 text-white" />
           </Button>
           </div>
         </div>
