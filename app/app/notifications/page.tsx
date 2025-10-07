@@ -185,10 +185,6 @@ export default function NotificationsPage() {
         <MobileAppMenu currentApp={currentApp} onAppChange={handleAppChange} />
       )}
 
-      {/* Desktop App Menu - Only show on desktop (>=1200px) and home page */}
-      {!isTabletOrBelow && (
-        <AppMenu currentApp={currentApp} onAppChange={handleAppChange} />
-      )}
       
       {/* Left Sidebar - Always show for notifications page */}
       <AppSidebar 
