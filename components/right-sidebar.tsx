@@ -8,7 +8,7 @@ export function RightSidebar() {
   return (
     <div className="w-80 relative">
       {/* Content - always full width, transparent background */}
-      <div className="relative z-10 p-6 space-y-4">
+      <div className="relative z-[1] p-6 space-y-4">
         {/* Call Prep Section */}
         <div className="bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl shadow-lg p-[5px] transition-all duration-300">
           <div className="rounded-xl p-[10px] space-y-3">
