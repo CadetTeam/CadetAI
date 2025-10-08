@@ -1,14 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { 
-  FileTextIcon, 
-  ChatBubbleIcon, 
-  UpdateIcon,
-  PersonIcon,
-  ClockIcon
-} from "@radix-ui/react-icons"
 
 interface ActivityItem {
   id: string
@@ -28,100 +20,6 @@ interface RecentActivityComponentProps {
   className?: string
 }
 
-// Mock data based on current page context
-const getMockActivities = (pathname: string): ActivityItem[] => {
-  if (pathname.includes('/apdgpt/engine')) {
-    return [
-      {
-        id: "1",
-        type: 'apd_update',
-        title: "APD Document Updated",
-        description: "Section 3.2 - Risk Assessment was modified",
-        user: { name: "Sarah Chen", initials: "SC" },
-        timestamp: "2 min ago",
-        status: 'completed'
-      },
-      {
-        id: "2",
-        type: 'user_action',
-        title: "New Comment Added",
-        description: "Added comment on compliance requirements",
-        user: { name: "Mike Rodriguez", initials: "MR" },
-        timestamp: "15 min ago",
-        status: 'completed'
-      },
-      {
-        id: "3",
-        type: 'apd_update',
-        title: "Data Validation Complete",
-        description: "All data points validated successfully",
-        user: { name: "System", initials: "S" },
-        timestamp: "1 hour ago",
-        status: 'completed'
-      }
-    ]
-  } else if (pathname.includes('/apdgpt/history')) {
-    return [
-      {
-        id: "1",
-        type: 'chat_message',
-        title: "New Chat Session",
-        description: "Started discussion about Q4 compliance",
-        user: { name: "Alex Thompson", initials: "AT" },
-        timestamp: "5 min ago",
-        status: 'completed'
-      },
-      {
-        id: "2",
-        type: 'chat_message',
-        title: "Chat Summary Generated",
-        description: "AI generated summary of compliance discussion",
-        user: { name: "System", initials: "S" },
-        timestamp: "30 min ago",
-        status: 'completed'
-      },
-      {
-        id: "3",
-        type: 'user_action',
-        title: "Chat Exported",
-        description: "Chat history exported to PDF",
-        user: { name: "Lisa Wang", initials: "LW" },
-        timestamp: "2 hours ago",
-        status: 'completed'
-      }
-    ]
-  } else {
-    return [
-      {
-        id: "1",
-        type: 'user_action',
-        title: "Team Member Added",
-        description: "New team member joined the organization",
-        user: { name: "John Smith", initials: "JS" },
-        timestamp: "1 hour ago",
-        status: 'completed'
-      },
-      {
-        id: "2",
-        type: 'system_update',
-        title: "System Update",
-        description: "Platform updated to version 2.1.0",
-        user: { name: "System", initials: "S" },
-        timestamp: "3 hours ago",
-        status: 'completed'
-      },
-      {
-        id: "3",
-        type: 'user_action',
-        title: "Document Shared",
-        description: "APD document shared with external team",
-        user: { name: "Emma Davis", initials: "ED" },
-        timestamp: "5 hours ago",
-        status: 'completed'
-      }
-    ]
-  }
-}
 
 export function RecentActivityComponent({ className }: RecentActivityComponentProps) {
 
