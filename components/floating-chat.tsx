@@ -27,7 +27,6 @@ interface RecentFile {
 }
 
 export function FloatingChat() {
-  const [isMobile, setIsMobile] = useState(false)
   const [showAttachmentPopover, setShowAttachmentPopover] = useState(false)
   const [showRecentPopover, setShowRecentPopover] = useState(false)
   const [recentPosition, setRecentPosition] = useState<{ left: number; top: number } | null>(null)
@@ -77,16 +76,6 @@ export function FloatingChat() {
   const recentTriggerRef = useRef<HTMLDivElement>(null)
   const recentPopoverRef = useRef<HTMLDivElement>(null)
 
-  // Check if mobile on mount and resize
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   // Close popover when clicking outside
   useEffect(() => {
