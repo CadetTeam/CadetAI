@@ -2,19 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 
-interface ActivityItem {
-  id: string
-  type: 'apd_update' | 'chat_message' | 'user_action' | 'system_update'
-  title: string
-  description: string
-  user: {
-    name: string
-    avatar?: string
-    initials: string
-  }
-  timestamp: string
-  status?: 'completed' | 'pending' | 'failed'
-}
 
 interface RecentActivityComponentProps {
   className?: string
