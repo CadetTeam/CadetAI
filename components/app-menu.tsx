@@ -240,7 +240,7 @@ export function AppMenu({ currentApp, onAppChange }: AppMenuProps) {
 
         {showAddMenu && (
           <div 
-            className="fixed bottom-20 left-4 z-[9999] bg-popover border border-border rounded-2xl shadow-2xl w-56 p-3"
+            className="fixed bottom-20 left-4 z-[9999] bg-popover border border-border rounded-2xl shadow-2xl w-56 p-3 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-xs px-2 py-1 text-popover-foreground mb-2">Add to menu</p>

@@ -178,7 +178,7 @@ export default function NotificationsPage() {
                   <div
                     key={notification.id}
                     className={cn(
-                      "flex items-start space-x-4 p-4 hover:bg-accent transition-colors",
+                      "flex items-start space-x-4 p-4 hover:bg-accent transition-colors duration-200 ease-in-out",
                       !notification.read && "bg-blue-50/50 dark:bg-blue-950/20",
                       index !== filteredNotifications.length - 1 && "border-b border-border"
                     )}

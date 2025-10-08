@@ -384,7 +384,7 @@ This document covers the complete architecture planning lifecycle for government
               ref={attachmentRef}
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 flex-shrink-0 mr-3 pointer-events-auto text-foreground hover:bg-accent"
+              className="h-8 w-8 p-0 flex-shrink-0 mr-3 pointer-events-auto text-foreground hover:bg-accent transition-colors duration-200 ease-in-out"
               onClick={() => setShowAttachmentPopover(!showAttachmentPopover)}
             >
               <Upload className="h-4 w-4 text-foreground" />
@@ -394,14 +394,14 @@ This document covers the complete architecture planning lifecycle for government
             {showAttachmentPopover && (
               <Card 
                 ref={popoverRef}
-                className="absolute bottom-full left-0 mb-2 w-56 bg-popover border border-border shadow-2xl pointer-events-auto z-50"
+                className="absolute bottom-full left-0 mb-2 w-56 bg-popover border border-border shadow-2xl pointer-events-auto z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-200"
               >
                 <CardContent className="p-2">
                   <div className="space-y-1">
                     {/* Upload File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent transition-colors duration-200 ease-in-out rounded-lg text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
                         <Upload className="h-4 w-4 text-popover-foreground" />
@@ -412,7 +412,7 @@ This document covers the complete architecture planning lifecycle for government
                     {/* Import File */}
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent transition-colors duration-200 ease-in-out rounded-lg text-popover-foreground"
                     >
                       <div className="flex items-center space-x-3 w-full">
                         <FileText className="h-4 w-4 text-popover-foreground" />
@@ -427,7 +427,7 @@ This document covers the complete architecture planning lifecycle for government
                     >
                       <Button
                         variant="ghost"
-                        className="w-full justify-between h-auto p-3 hover:bg-accent rounded-lg text-popover-foreground"
+                        className="w-full justify-between h-auto p-3 hover:bg-accent transition-colors duration-200 ease-in-out rounded-lg text-popover-foreground"
                       >
                         <div className="flex items-center space-x-3">
                           <FileText className="h-4 w-4 text-popover-foreground" />
@@ -441,7 +441,7 @@ This document covers the complete architecture planning lifecycle for government
                       {/* Recent Files Hover Submenu */}
                       {showRecentPopover && recentPosition && (
                         <Card ref={recentPopoverRef} className={cn(
-                          "fixed w-72 bg-popover border border-border shadow-2xl z-50"
+                          "fixed w-72 bg-popover border border-border shadow-2xl z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-left-2 duration-200"
                         )} style={{ left: recentPosition.left, top: recentPosition.top }}>
                           <CardContent className="p-3">
                             <div className="space-y-2">
@@ -508,7 +508,7 @@ This document covers the complete architecture planning lifecycle for government
           <Button
             onClick={handleSendMessage}
             disabled={!inputValue.trim()}
-            className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 flex-shrink-0 ml-3 pointer-events-auto"
+            className="h-8 w-8 p-0 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 transition-all duration-200 ease-in-out flex-shrink-0 ml-3 pointer-events-auto"
           >
             <Send className="h-4 w-4 text-white" />
           </Button>

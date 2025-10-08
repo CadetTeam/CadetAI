@@ -136,7 +136,7 @@ export function AppSidebar({ isMobileMenuOpen = false, onMobileMenuClose }: AppS
       {/* Mobile/Tablet Backdrop - covers everything including chat */}
       {isTabletOrBelow && isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-[100]"
+          className="fixed inset-0 bg-black/50 z-[100] animate-in fade-in-0 duration-200"
           onClick={onMobileMenuClose}
         />
       )}

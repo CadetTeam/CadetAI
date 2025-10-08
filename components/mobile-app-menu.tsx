@@ -89,7 +89,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
           variant="ghost"
           size="sm"
           onClick={() => setIsOpen(!isOpen)}
-          className="h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-full border border-white/20 dark:border-white/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20"
+          className="h-10 w-10 p-0 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-full border border-white/20 dark:border-white/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-200 ease-in-out hover:scale-105"
         >
           <HamburgerMenuIcon className="w-5 h-5" />
         </Button>
@@ -97,9 +97,9 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
 
       {/* Glassmorphic Dropdown Menu */}
       {isOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}>
+        <div className="fixed inset-0 z-40 animate-in fade-in-0 duration-200" onClick={() => setIsOpen(false)}>
           <div 
-            className="absolute top-16 left-4 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 p-4 min-w-[280px]"
+            className="absolute top-16 left-4 bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 p-4 min-w-[280px] animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="space-y-2">
@@ -115,7 +115,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                     variant="ghost"
                     onClick={() => handleAppClick(app)}
                     className={cn(
-                      "w-full justify-start h-12 px-3 bg-white/5 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg",
+                      "w-full justify-start h-12 px-3 bg-white/5 hover:bg-white/10 dark:hover:bg-black/10 transition-colors duration-200 ease-in-out rounded-lg",
                       isActive && "bg-white/15 dark:bg-black/15"
                     )}
                   >
@@ -142,7 +142,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
               <div className="border-t border-white/20 dark:border-white/10 pt-2 mt-2">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-12 px-3 bg-white/5 hover:bg-white/10 dark:hover:bg-black/10 rounded-lg relative"
+                  className="w-full justify-start h-12 px-3 bg-white/5 hover:bg-white/10 dark:hover:bg-black/10 transition-colors duration-200 ease-in-out rounded-lg relative"
                   onClick={() => setShowAddMenu((prev) => !prev)}
                 >
                   <div className="flex items-center space-x-3">
@@ -154,7 +154,7 @@ export function MobileAppMenu({ currentApp, onAppChange }: MobileAppMenuProps) {
                 </Button>
                 {showAddMenu && (
                   <div 
-                    className="absolute left-4 mt-2 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-64 p-2"
+                    className="absolute left-4 mt-2 z-[9999] bg-popover text-popover-foreground border border-border rounded-md shadow-xl w-64 p-2 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="space-y-1 max-h-60 overflow-auto">

@@ -104,7 +104,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
             <Bell className="w-4 h-4" />
           </Button>
           {showNotifications && (
-            <div ref={notificationsRef} className="absolute right-0 mt-2 z-[9999]">
+            <div ref={notificationsRef} className="absolute right-0 mt-2 z-[9999] animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
               <Card className="w-80 bg-popover text-popover-foreground border border-border shadow-xl">
                 <CardHeader className="p-3 border-b border-border">
                   <CardTitle className="text-sm">Notifications</CardTitle>
@@ -115,7 +115,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
                       <div>
                         <div className="px-2 py-1 text-xs text-muted-foreground">Today</div>
                         <div className="space-y-1">
-                          <div className="p-3 rounded-lg hover:bg-accent flex items-start justify-between gap-3">
+                          <div className="p-3 rounded-lg hover:bg-accent transition-colors duration-200 ease-in-out flex items-start justify-between gap-3">
                             <div>
                               <div className="text-sm font-medium">Team invite accepted</div>
                               <div className="text-xs text-muted-foreground">Alex joined your organization</div>
@@ -130,7 +130,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
                       <div>
                         <div className="px-2 py-1 text-xs text-muted-foreground">Earlier</div>
                         <div className="space-y-1">
-                          <div className="p-3 rounded-lg hover:bg-accent flex items-start justify-between gap-3">
+                          <div className="p-3 rounded-lg hover:bg-accent transition-colors duration-200 ease-in-out flex items-start justify-between gap-3">
                             <div>
                               <div className="text-sm font-medium">Billing updated</div>
                               <div className="text-xs text-muted-foreground">Your card ending in 4242 was charged</div>
@@ -140,7 +140,7 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
                               <Button variant="ghost" size="sm" className="h-6 px-2 text-xs">Dismiss</Button>
                             </div>
                           </div>
-                          <div className="p-3 rounded-lg hover:bg-accent flex items-start justify-between gap-3">
+                          <div className="p-3 rounded-lg hover:bg-accent transition-colors duration-200 ease-in-out flex items-start justify-between gap-3">
                             <div>
                               <div className="text-sm font-medium">New integration connected</div>
                               <div className="text-xs text-muted-foreground">Slack is now linked to your workspace</div>
