@@ -104,7 +104,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {/* Main Content - Render after layout is ready */}
         <div className="flex-1 flex overflow-hidden">
           <main className={cn(
-            "flex-1 overflow-auto",
+            "flex-1 overflow-auto transition-all duration-500 ease-in-out",
             isTabletOrBelow ? "px-4 py-2" : "px-6 py-4"
           )}>
             {isLayoutReady ? children : <LoadingSkeleton />}
@@ -114,7 +114,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           {isAPDGPTApp && (
             <div className={cn(
               "z-[1] transition-all duration-500 ease-in-out",
-              showRightSidebar ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+              showRightSidebar ? "translate-x-0 opacity-100 w-80 flex-shrink-0" : "translate-x-full opacity-0 absolute right-0 top-0 bottom-0 w-80 pointer-events-none"
             )}>
               <RightSidebar />
             </div>
