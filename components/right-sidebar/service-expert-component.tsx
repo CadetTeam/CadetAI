@@ -4,11 +4,15 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { 
   Search,
   Users,
   Building2,
-  Wrench
+  Wrench,
+  Star,
+  Clock,
+  DollarSign
 } from "lucide-react"
 
 interface ServiceExpert {
@@ -110,7 +114,7 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
 
   return (
     <>
-      <div className={`space-y-4 ${className}`}>
+      <div className={`space-y-3 ${className}`}>
         {/* Header */}
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-foreground">Service Experts</h3>
@@ -124,52 +128,67 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
           </Button>
         </div>
 
-        {/* Call to Action Card */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 space-y-3">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <Search className="h-4 w-4 text-white" />
+        {/* Compact Expert List */}
+        <div className="space-y-2">
+          {mockExperts.slice(0, 3).map((expert) => (
+            <div
+              key={expert.id}
+              className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <div className="relative flex-shrink-0">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xs font-semibold">
+                    {expert.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div 
+                  className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${getAvailabilityColor(expert.availability)}`}
+                />
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="text-xs font-medium text-foreground truncate">{expert.name}</h4>
+                  <Badge className={`${getSpecialtyColor(expert.specialty)} text-xs px-1 py-0`}>
+                    {getSpecialtyLabel(expert.specialty)}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3 w-3" />
+                    <span>{expert.rating}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <DollarSign className="h-3 w-3" />
+                    <span>{expert.hourlyRate}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{expert.responseTime}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="text-sm font-semibold text-foreground">Find a Service Expert</h4>
-              <p className="text-xs text-muted-foreground">Get professional help</p>
-            </div>
-          </div>
+          ))}
           
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="space-y-1">
-              <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto">
-                <Wrench className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-              </div>
-              <p className="text-xs text-muted-foreground">Engineer</p>
-            </div>
-            <div className="space-y-1">
-              <div className="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto">
-                <Building2 className="h-3 w-3 text-purple-600 dark:text-purple-400" />
-              </div>
-              <p className="text-xs text-muted-foreground">Architect</p>
-            </div>
-            <div className="space-y-1">
-              <div className="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
-                <Users className="h-3 w-3 text-green-600 dark:text-green-400" />
-              </div>
-              <p className="text-xs text-muted-foreground">MITA Consultant</p>
-            </div>
-          </div>
-
-          <Button 
-            onClick={() => setIsModalOpen(true)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm"
-          >
-            <Search className="h-4 w-4 mr-2" />
-            Find Expert
-          </Button>
+          {/* Show more button */}
+          {mockExperts.length > 3 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsModalOpen(true)}
+              className="w-full text-xs text-muted-foreground hover:text-foreground"
+            >
+              View all {mockExperts.length} experts
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Service Experts Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Search className="h-5 w-5" />
@@ -180,21 +199,21 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="space-y-3 py-4">
             {mockExperts.map((expert) => (
               <div
                 key={expert.id}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
               >
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3">
                   <div className="relative">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
                         {expert.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
+                      </AvatarFallback>
+                    </Avatar>
                     <div 
-                      className={`absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background ${getAvailabilityColor(expert.availability)}`}
+                      className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${getAvailabilityColor(expert.availability)}`}
                     />
                   </div>
                   <div className="space-y-1">
@@ -210,24 +229,32 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
                     <p className="text-sm text-muted-foreground">{expert.title}</p>
                     <p className="text-sm text-muted-foreground">{expert.company}</p>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <span>⭐ {expert.rating}</span>
-                      <span>💰 {expert.hourlyRate}</span>
-                      <span>⏱️ {expert.responseTime}</span>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3 w-3" />
+                        <span>{expert.rating}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="h-3 w-3" />
+                        <span>{expert.hourlyRate}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        <span>{expert.responseTime}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleContactExpert(expert)}
-                    disabled={expert.availability === 'offline'}
-                  >
-                    {expert.availability === 'available' ? 'Contact' : 
-                     expert.availability === 'busy' ? 'Schedule' : 'Unavailable'}
-                  </Button>
-                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleContactExpert(expert)}
+                  disabled={expert.availability === 'offline'}
+                  className="flex-shrink-0"
+                >
+                  {expert.availability === 'available' ? 'Contact' : 
+                   expert.availability === 'busy' ? 'Schedule' : 'Unavailable'}
+                </Button>
               </div>
             ))}
           </div>
