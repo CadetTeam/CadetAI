@@ -426,10 +426,13 @@ export default function APDEnginePage() {
 
         {/* Desktop Compact Floating Toolbar - Hidden on mobile */}
         {!isMobile && (
-          <Panel position={hasAPD ? "bottom-left" : "top-center"} className={cn(
-            "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 z-10 transition-all duration-700 ease-in-out cursor-move",
-            hasAPD ? "ml-16 mb-16 sm:mb-[80px]" : "mt-2 sm:mt-4"
+          <div className={cn(
+            "fixed z-10 transition-all duration-700 ease-in-out cursor-move",
+            hasAPD 
+              ? "bottom-4 left-4" // Bottom-left when APD exists
+              : "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" // Center-center when no APD
           )}>
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2">
           <div className="flex items-center space-x-1">
             {/* Legend Toggle */}
             <Button 
@@ -454,16 +457,19 @@ export default function APDEnginePage() {
                 <Share1Icon className="w-3 h-3" />
               </Button>
             </div>
+            </div>
           </div>
-        </Panel>
         )}
 
         {/* Desktop Expanded Legend Panel - Hidden on mobile */}
         {!isMobile && !isCollapsed && (
-          <Panel position={hasAPD ? "bottom-left" : "top-center"} className={cn(
-            "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 z-10 max-w-xs max-h-96 overflow-y-auto transition-all duration-700 ease-in-out",
-            hasAPD ? "ml-16 mb-16 sm:mb-[80px] mt-0" : "mt-16 sm:mt-20 ml-0"
+          <div className={cn(
+            "fixed z-10 transition-all duration-700 ease-in-out",
+            hasAPD 
+              ? "bottom-20 left-4" // Bottom-left when APD exists, positioned below toolbar
+              : "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" // Center-center when no APD
           )}>
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-xs max-h-96 overflow-y-auto">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Canvas Tools</h3>
@@ -517,7 +523,8 @@ export default function APDEnginePage() {
                 </Button>
               </div>
             </div>
-          </Panel>
+            </div>
+          </div>
         )}
 
         {/* Node Details Panel - Stays above chat bar and avoids right sidebar */}
