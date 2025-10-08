@@ -61,8 +61,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     !pathname.startsWith('/app/security') && 
     !pathname.startsWith('/app/files') && 
     !pathname.startsWith('/app/keys') &&
-    !pathname.startsWith('/app/chat') &&
-    !pathname.startsWith('/app/notifications')
+    !pathname.startsWith('/app/chat')
 
   // Determine if we're on the home page
   const isHomePage = pathname === '/app'
