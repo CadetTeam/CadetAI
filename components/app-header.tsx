@@ -81,16 +81,6 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
             <Brain className="w-4 h-4" />
           </Button>
         </Link>
-        {/* Tablet+ right sidebar toggle */}
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0 hidden xl:inline-flex"
-          title="Toggle right panel"
-          onClick={onRightSidebarToggle}
-        >
-          <Grid3X3 className="w-4 h-4" />
-        </Button>
         <div className="relative">
           <Button 
             variant="ghost" 
@@ -166,6 +156,16 @@ export function AppHeader({ onMobileMenuToggle, onRightSidebarToggle }: AppHeade
         </div>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
           <HelpCircle className="w-4 h-4" />
+        </Button>
+        {/* Right sidebar toggle - always visible */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0"
+          title="Toggle right panel"
+          onClick={onRightSidebarToggle}
+        >
+          <Grid3X3 className="w-4 h-4" />
         </Button>
         <Avatar className="h-8 w-8">
           <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />

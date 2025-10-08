@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
-import { MobileRightMenu } from "@/components/mobile-right-menu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -250,16 +249,6 @@ This document covers the complete architecture planning lifecycle for government
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none">
-      {/* Mobile Right Menu Button - Only show on mobile */}
-      {isMobile && (
-        <MobileRightMenu 
-          anchorClassName="fixed z-50 pointer-events-auto" 
-          chatContainerClassName={cn(
-            "bg-white/10 dark:bg-black/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 dark:border-white/10",
-            isMobile ? "w-[90vw] max-w-[400px]" : "w-[600px] max-w-[90vw]"
-          )}
-        />
-      )}
 
 
       {/* Enhanced Floating Chat Container */}

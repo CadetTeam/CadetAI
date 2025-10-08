@@ -10,6 +10,7 @@ import {
   ClockIcon,
   TrashIcon
 } from "@radix-ui/react-icons"
+import { GripVertical } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ChatThread {
@@ -67,6 +68,8 @@ const mockChatThreads: ChatThread[] = [
 export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
   const [chatThreads, setChatThreads] = useState<ChatThread[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   // Simulate loading state
   useEffect(() => {
@@ -75,6 +78,17 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
       setIsLoading(false)
     }, 1000)
     return () => clearTimeout(timer)
+  }, [])
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024) // lg breakpoint
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   const formatTimeAgo = (date: Date) => {
@@ -117,7 +131,36 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
   ]
 
   return (
-    <div className="flex flex-col h-full fixed left-16 top-16 bottom-0 w-64 bg-background border-r border-border z-30">
+    <>
+      {/* Mobile drag tab */}
+      {isMobile && (
+        <div className="fixed left-0 top-1/2 -translate-y-1/2 z-50">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(!isOpen)}
+            className="h-20 w-6 bg-background border border-border rounded-r-lg shadow-lg hover:bg-accent transition-all duration-200 ease-in-out"
+          >
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
+          </Button>
+        </div>
+      )}
+
+      {/* Mobile backdrop */}
+      {isMobile && isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 animate-in fade-in-0 duration-200"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={cn(
+        "flex flex-col h-full bg-background border-r border-border z-30 transition-all duration-300 ease-in-out",
+        isMobile ? (
+          isOpen ? "fixed left-0 top-16 bottom-0 w-64" : "fixed -left-64 top-16 bottom-0 w-64"
+        ) : "fixed left-16 top-16 bottom-0 w-64"
+      )}>
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center space-x-2">
@@ -258,6 +301,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
           </ScrollArea>
         </div>
       )}
-    </div>
+      </div>
+    </>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChatSidebar } from "@/components/chat/chat-sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
@@ -12,6 +12,7 @@ import {
   MagnifyingGlassIcon
 } from "@radix-ui/react-icons"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 // Mock conversation data
 const mockConversations = [
@@ -44,6 +45,18 @@ const mockConversations = [
 export default function HistoryPage() {
   const [currentView, setCurrentView] = useState<'ask' | 'uploads' | 'history'>('history')
   const [searchQuery, setSearchQuery] = useState("")
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if mobile/tablet to adjust layout
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024) // lg breakpoint
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   return (
     <div className="flex h-screen bg-background">
@@ -53,8 +66,11 @@ export default function HistoryPage() {
         onViewChange={setCurrentView}
       />
 
-      {/* Main History Area - Full height, with left margin to account for fixed sidebar */}
-      <div className="flex-1 flex flex-col ml-64">
+      {/* Main History Area - Full height, with responsive left margin */}
+      <div className={cn(
+        "flex-1 flex flex-col transition-all duration-300 ease-in-out",
+        isMobile ? "ml-0" : "ml-64"
+      )}>
         {/* Header */}
         <div className="border-b border-border p-6">
           <div className="flex items-center justify-between mb-4">
