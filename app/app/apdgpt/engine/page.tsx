@@ -433,7 +433,7 @@ export default function APDEnginePage() {
               : "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" // Center-center when no APD
           )}>
             <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2">
-          <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1">
             {/* Legend Toggle */}
             <Button 
               size="sm" 
@@ -456,6 +456,7 @@ export default function APDEnginePage() {
               <Button size="sm" variant="outline" className="text-xs h-7 px-2" title="Share">
                 <Share1Icon className="w-3 h-3" />
               </Button>
+              </div>
             </div>
             </div>
           </div>
