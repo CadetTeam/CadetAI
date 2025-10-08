@@ -325,16 +325,16 @@ export default function APDEnginePage() {
         />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
-        {/* Mobile Legend Button - 6 dots under header */}
+        {/* Mobile Legend Button - Vertical tab aligned to top */}
         {isMobile && (
-          <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="fixed top-16 left-0 z-50">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="h-8 w-12 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-border"
+              className="h-20 w-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-r-lg shadow-lg border border-border hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all duration-200"
             >
-              <div className="flex space-x-1">
+              <div className="flex flex-col space-y-1">
                 <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
                 <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
                 <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
@@ -354,7 +354,7 @@ export default function APDEnginePage() {
               className="fixed inset-0 bg-black/50 z-40 animate-in fade-in-0 duration-200"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <div className="fixed top-28 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-border p-3 w-64 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
+            <div className="fixed top-16 left-6 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-border p-3 w-64 animate-in fade-in-0 zoom-in-95 slide-in-from-left-2 duration-200">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Canvas Tools</h3>
