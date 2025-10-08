@@ -47,15 +47,15 @@ export default function HistoryPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
 
-  // Check if tablet or below to adjust layout (matching app-layout breakpoint)
+  // Check if mobile to adjust layout
   useEffect(() => {
-    const checkTabletOrBelow = () => {
-      setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
+    const checkMobile = () => {
+      setIsTabletOrBelow(window.innerWidth < 768) // Mobile breakpoint only
     }
     
-    checkTabletOrBelow()
-    window.addEventListener('resize', checkTabletOrBelow)
-    return () => window.removeEventListener('resize', checkTabletOrBelow)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   return (
@@ -69,7 +69,7 @@ export default function HistoryPage() {
       {/* Main History Area - Full height, with responsive left margin */}
       <div className={cn(
         "flex-1 flex flex-col transition-all duration-300 ease-in-out",
-        isTabletOrBelow ? "ml-0" : "ml-64"
+        isTabletOrBelow ? "ml-0" : "ml-80"
       )}>
         {/* Header */}
         <div className={cn(

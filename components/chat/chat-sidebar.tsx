@@ -83,7 +83,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
   // Check if tablet or below (matching app-layout breakpoint)
   useEffect(() => {
     const checkTabletOrBelow = () => {
-      setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
+      setIsTabletOrBelow(window.innerWidth < 768) // Mobile breakpoint only
     }
     
     checkTabletOrBelow()
@@ -139,7 +139,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
             variant="ghost"
             size="sm"
             onClick={() => setIsOpen(!isOpen)}
-            className="h-20 w-6 bg-background border border-border rounded-r-lg shadow-lg hover:bg-accent transition-all duration-200 ease-in-out"
+            className="h-20 w-6 bg-background border border-border rounded-r-lg shadow-lg hover:bg-accent transition-all duration-200 ease-in-out animate-pulse hover:animate-none hover:shadow-blue-500/50 hover:shadow-lg"
           >
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </Button>
@@ -149,7 +149,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
       {/* Mobile backdrop */}
       {isTabletOrBelow && isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 animate-in fade-in-0 duration-200"
+          className="fixed inset-0 bg-black/50 z-20 animate-in fade-in-0 duration-200"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -159,7 +159,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
         "flex flex-col h-full bg-background border-r border-border z-30 transition-all duration-300 ease-in-out",
         isTabletOrBelow ? (
           isOpen ? "fixed left-0 top-16 bottom-0 w-64" : "fixed -left-64 top-16 bottom-0 w-64"
-        ) : "fixed left-0 top-16 bottom-0 w-64"
+        ) : "fixed left-16 top-16 bottom-0 w-64"
       )}>
       {/* Header */}
       <div className="p-4 border-b border-border">
