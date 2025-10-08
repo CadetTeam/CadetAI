@@ -83,10 +83,11 @@ The APD Engine is a fully functional, interactive canvas built with React Flow t
 ### 🎮 Controls & Interactions
 
 #### Desktop Controls
-- **Compact Toolbar**: Floating toolbar with quick actions
-- **Legend Panel**: Expandable panel with all node creation options
-- **Auto-positioning**: Toolbar moves to bottom-left after APD creation
+- **Draggable Toolbar**: Floating toolbar with quick actions - **drag anywhere on canvas!**
+- **Legend Panel**: Expandable panel that follows toolbar position
+- **Auto-positioning**: Toolbar moves to bottom-left after APD creation (but you can drag it anywhere)
 - **Node Details Panel**: Shows detailed information for selected nodes
+- **Cursor States**: Shows grab/grabbing cursor when dragging toolbar
 
 #### Mobile Controls
 - **Vertical Tab**: Slim button on left edge to open mobile menu

@@ -113,7 +113,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           {/* Right Sidebar - toggleable; auto-hidden on tablet and below unless opened */}
           {isAPDGPTApp && (
             <div className={cn(
-              "z-[1] transition-all duration-500 ease-in-out",
+              "z-50 transition-all duration-500 ease-in-out",
               showRightSidebar ? "translate-x-0 opacity-100 w-80 flex-shrink-0" : "translate-x-full opacity-0 absolute right-0 top-0 bottom-0 w-80 pointer-events-none"
             )}>
               <RightSidebar />

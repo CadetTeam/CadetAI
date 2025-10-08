@@ -2,6 +2,24 @@
 
 ## ✅ Completed Enhancements
 
+### Latest Updates (Z-Index & Draggable Toolbar)
+
+#### 1. **Fixed Right Sidebar Z-Index**
+- Increased z-index from `z-[1]` to `z-50`
+- Right sidebar now properly displays above canvas elements
+- Ensures menu is always accessible even with full-screen canvas
+
+#### 2. **Draggable Canvas Toolbar**
+- Toolbar can now be dragged anywhere on the canvas
+- Smooth drag interaction with grab/grabbing cursor states
+- Legend panel follows toolbar position automatically
+- Position persists while toolbar is being used
+- Visual feedback during drag with enhanced shadow
+
+---
+
+## Previous Enhancements
+
 ### 1. **Enhanced User Avatar (Collaborator) Component**
 
 #### Before:

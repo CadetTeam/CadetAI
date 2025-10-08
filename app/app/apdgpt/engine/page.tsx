@@ -332,6 +332,11 @@ export default function APDEnginePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [nodeCounter, setNodeCounter] = useState({ collaborator: 0, document: 0, model: 0 })
+  
+  // Draggable toolbar state
+  const [toolbarPosition, setToolbarPosition] = useState({ x: 16, y: 16 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
 
   // Helper function to calculate circular position around APD
   const getCircularPosition = useCallback((index: number, total: number, radius: number = 300) => {
@@ -352,6 +357,48 @@ export default function APDEnginePage() {
     window.addEventListener('resize', checkLayout)
     return () => window.removeEventListener('resize', checkLayout)
   }, [])
+
+  // Update toolbar position when APD is created
+  useEffect(() => {
+    if (hasAPD && toolbarPosition.x === 16 && toolbarPosition.y === 16) {
+      // Move to bottom-left when APD is created
+      setToolbarPosition({ x: 16, y: window.innerHeight - 100 })
+    }
+  }, [hasAPD, toolbarPosition])
+
+  // Drag handlers for toolbar
+  const handleToolbarMouseDown = useCallback((e: React.MouseEvent) => {
+    setIsDragging(true)
+    setDragOffset({
+      x: e.clientX - toolbarPosition.x,
+      y: e.clientY - toolbarPosition.y
+    })
+  }, [toolbarPosition])
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        setToolbarPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y
+        })
+      }
+    }
+
+    const handleMouseUp = () => {
+      setIsDragging(false)
+    }
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isDragging, dragOffset])
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge({
@@ -666,13 +713,21 @@ export default function APDEnginePage() {
 
         {/* Desktop Compact Floating Toolbar - Hidden on mobile */}
         {!isMobile && (
-          <div className={cn(
-            "fixed z-10 transition-all duration-700 ease-in-out cursor-move",
-            hasAPD 
-              ? "bottom-4 left-4" // Bottom-left when APD exists
-              : "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" // Center-center when no APD
-          )}>
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2">
+          <div 
+            className="fixed z-10 transition-all duration-200 ease-in-out select-none"
+            style={{ 
+              left: `${toolbarPosition.x}px`, 
+              top: hasAPD ? `${toolbarPosition.y}px` : '50%',
+              transform: hasAPD ? 'none' : 'translate(-50%, -50%)'
+            }}
+          >
+            <div 
+              className={cn(
+                "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2",
+                isDragging ? "cursor-grabbing shadow-2xl" : "cursor-grab"
+              )}
+              onMouseDown={handleToolbarMouseDown}
+            >
               <div className="flex items-center space-x-1">
             {/* Legend Toggle */}
             <Button 
@@ -704,12 +759,14 @@ export default function APDEnginePage() {
 
         {/* Desktop Expanded Legend Panel - Hidden on mobile */}
         {!isMobile && !isCollapsed && (
-          <div className={cn(
-            "fixed z-10 transition-all duration-700 ease-in-out",
-            hasAPD 
-              ? "bottom-20 left-4" // Bottom-left when APD exists, positioned below toolbar
-              : "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" // Center-center when no APD
-          )}>
+          <div 
+            className="fixed z-10 transition-all duration-200 ease-in-out"
+            style={{ 
+              left: hasAPD ? `${toolbarPosition.x}px` : '50%',
+              top: hasAPD ? `${toolbarPosition.y + 60}px` : '50%',
+              transform: hasAPD ? 'none' : 'translate(-50%, -50%)'
+            }}
+          >
             <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-xs max-h-96 overflow-y-auto">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
