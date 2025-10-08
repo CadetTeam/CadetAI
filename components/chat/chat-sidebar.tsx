@@ -68,7 +68,7 @@ const mockChatThreads: ChatThread[] = [
 export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
   const [chatThreads, setChatThreads] = useState<ChatThread[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
   // Simulate loading state
@@ -80,15 +80,15 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
     return () => clearTimeout(timer)
   }, [])
 
-  // Check if mobile
+  // Check if tablet or below (matching app-layout breakpoint)
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024) // lg breakpoint
+    const checkTabletOrBelow = () => {
+      setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    checkTabletOrBelow()
+    window.addEventListener('resize', checkTabletOrBelow)
+    return () => window.removeEventListener('resize', checkTabletOrBelow)
   }, [])
 
   const formatTimeAgo = (date: Date) => {
@@ -133,7 +133,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
   return (
     <>
       {/* Mobile drag tab */}
-      {isMobile && (
+      {isTabletOrBelow && (
         <div className="fixed left-0 top-1/2 -translate-y-1/2 z-50">
           <Button
             variant="ghost"
@@ -147,7 +147,7 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
       )}
 
       {/* Mobile backdrop */}
-      {isMobile && isOpen && (
+      {isTabletOrBelow && isOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 animate-in fade-in-0 duration-200"
           onClick={() => setIsOpen(false)}
@@ -157,9 +157,9 @@ export function ChatSidebar({ currentView, onViewChange }: ChatSidebarProps) {
       {/* Sidebar */}
       <div className={cn(
         "flex flex-col h-full bg-background border-r border-border z-30 transition-all duration-300 ease-in-out",
-        isMobile ? (
+        isTabletOrBelow ? (
           isOpen ? "fixed left-0 top-16 bottom-0 w-64" : "fixed -left-64 top-16 bottom-0 w-64"
-        ) : "fixed left-16 top-16 bottom-0 w-64"
+        ) : "fixed left-0 top-16 bottom-0 w-64"
       )}>
       {/* Header */}
       <div className="p-4 border-b border-border">

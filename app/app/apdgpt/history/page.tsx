@@ -45,17 +45,17 @@ const mockConversations = [
 export default function HistoryPage() {
   const [currentView, setCurrentView] = useState<'ask' | 'uploads' | 'history'>('history')
   const [searchQuery, setSearchQuery] = useState("")
-  const [isMobile, setIsMobile] = useState(false)
+  const [isTabletOrBelow, setIsTabletOrBelow] = useState(false)
 
-  // Check if mobile/tablet to adjust layout
+  // Check if tablet or below to adjust layout (matching app-layout breakpoint)
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024) // lg breakpoint
+    const checkTabletOrBelow = () => {
+      setIsTabletOrBelow(window.innerWidth < 1200) // Match app-layout breakpoint
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    checkTabletOrBelow()
+    window.addEventListener('resize', checkTabletOrBelow)
+    return () => window.removeEventListener('resize', checkTabletOrBelow)
   }, [])
 
   return (
@@ -69,57 +69,84 @@ export default function HistoryPage() {
       {/* Main History Area - Full height, with responsive left margin */}
       <div className={cn(
         "flex-1 flex flex-col transition-all duration-300 ease-in-out",
-        isMobile ? "ml-0" : "ml-64"
+        isTabletOrBelow ? "ml-0" : "ml-64"
       )}>
         {/* Header */}
-        <div className="border-b border-border p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold">Chat History</h1>
+        <div className={cn(
+          "border-b border-border",
+          isTabletOrBelow ? "p-4" : "p-6"
+        )}>
+          <div className={cn(
+            "flex items-center justify-between mb-4",
+            isTabletOrBelow ? "flex-col space-y-3" : "flex-row"
+          )}>
+            <div className={cn(isTabletOrBelow ? "text-center" : "text-left")}>
+              <h1 className={cn(
+                "font-bold",
+                isTabletOrBelow ? "text-xl" : "text-2xl"
+              )}>Chat History</h1>
               <p className="text-muted-foreground">Review your previous conversations</p>
             </div>
-            <Badge variant="outline" className="flex items-center space-x-1">
+            <Badge variant="outline" className="flex items-center space-x-1 flex-shrink-0">
               <ClockIcon className="w-3 h-3" />
               <span>Last 30 days</span>
             </Badge>
           </div>
           
           {/* Search */}
-          <div className="relative max-w-md">
+          <div className="relative w-full">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-full"
             />
           </div>
         </div>
 
         {/* Conversations List */}
-        <ScrollArea className="flex-1 p-6">
+        <ScrollArea className={cn(
+          "flex-1",
+          isTabletOrBelow ? "p-4" : "p-6"
+        )}>
           <div className="space-y-4">
             {mockConversations.map((conversation) => (
               <Card key={conversation.id} className="hover:bg-muted/50 transition-colors cursor-pointer">
-                <CardContent className="p-4">
-                  <div className="flex items-start space-x-4">
-                    <Avatar className="h-10 w-10">
+                <CardContent className={cn(
+                  isTabletOrBelow ? "p-3" : "p-4"
+                )}>
+                  <div className="flex items-start space-x-3">
+                    <Avatar className="h-10 w-10 flex-shrink-0">
                       <AvatarFallback className="bg-gradient-to-r from-gray-700 to-gray-800 text-white">
                         <FileTextIcon className="h-5 w-5" />
                       </AvatarFallback>
                     </Avatar>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold truncate">{conversation.title}</h3>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                          <Badge variant="secondary" className="text-xs">
+                      <div className={cn(
+                        "flex items-center justify-between mb-1",
+                        isTabletOrBelow ? "flex-col space-y-1" : "flex-row"
+                      )}>
+                        <h3 className={cn(
+                          "font-semibold",
+                          isTabletOrBelow ? "text-sm" : "text-base",
+                          "truncate"
+                        )}>{conversation.title}</h3>
+                        <div className={cn(
+                          "flex items-center space-x-2 text-xs text-muted-foreground",
+                          isTabletOrBelow ? "flex-wrap gap-1" : "flex-nowrap"
+                        )}>
+                          <Badge variant="secondary" className="text-xs flex-shrink-0">
                             {conversation.messageCount} messages
                           </Badge>
-                          <span>{conversation.timestamp.toLocaleDateString()}</span>
+                          <span className="flex-shrink-0">{conversation.timestamp.toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className={cn(
+                        "text-muted-foreground line-clamp-2",
+                        isTabletOrBelow ? "text-xs" : "text-sm"
+                      )}>
                         {conversation.lastMessage}
                       </p>
                     </div>
