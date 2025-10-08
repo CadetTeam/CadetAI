@@ -24,7 +24,7 @@ import {
   PlusIcon,
   GearIcon
 } from "@radix-ui/react-icons"
-import { Users, FileIcon, FileTextIcon, Component1Icon } from 'lucide-react'
+import { Users, FileIcon, FileTextIcon, Grid3X3 } from 'lucide-react'
 
 // Custom Node Types
 const APDNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
@@ -434,7 +434,7 @@ export default function APDEnginePage() {
               className="h-8 w-8 p-0"
               title={isCollapsed ? "Show Legend" : "Hide Legend"}
             >
-              <Component1Icon className="w-4 h-4" />
+              <Grid3X3 className="w-4 h-4" />
             </Button>
             
             {/* Add Objects */}
@@ -518,7 +518,7 @@ export default function APDEnginePage() {
                     variant="outline"
                     className="w-full justify-start"
                   >
-                    <Component1Icon className="w-4 h-4 mr-2" />
+                    <Grid3X3 className="w-4 h-4 mr-2" />
                     Models
                   </Button>
                   <p className="text-xs text-muted-foreground">Business models and frameworks</p>
