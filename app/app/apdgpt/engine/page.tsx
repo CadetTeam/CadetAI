@@ -152,9 +152,13 @@ export default function APDEnginePage() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [hasAPD, setHasAPD] = useState(false)
   const [apdNodeId, setApdNodeId] = useState<string | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const checkLayout = () => {
+      const isMobileScreen = window.innerWidth < 768
+      setIsMobile(isMobileScreen)
       setIsCollapsed(window.innerWidth < 1280) // Collapse panels on smaller screens
     }
     checkLayout()
@@ -321,131 +325,196 @@ export default function APDEnginePage() {
         />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
-        {/* Compact Floating Toolbar - Consolidates all controls */}
-        <Panel position={hasAPD ? "bottom-left" : "top-center"} className={cn(
-          "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 z-10 transition-all duration-700 ease-in-out",
-          hasAPD ? "ml-16 mb-16 sm:mb-[80px]" : "mt-2 sm:mt-4"
-        )}>
-          <div className="flex items-center space-x-2">
-            {/* Legend Toggle */}
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="h-8 w-8 p-0"
-              title={isCollapsed ? "Show Legend" : "Hide Legend"}
+        {/* Mobile Legend Button - 6 dots under header */}
+        {isMobile && (
+          <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="h-8 w-12 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-border"
             >
-              <Grid3X3 className="w-4 h-4" />
+              <div className="flex space-x-1">
+                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+              </div>
             </Button>
-            
-            {/* Add Objects */}
-            <div className="flex items-center space-x-1">
-              <Button size="sm" onClick={addNewNode} className="text-xs h-8">
-                <PlusIcon className="w-3 h-3 mr-1" />
-                <span className={isCollapsed ? "hidden" : ""}>Add</span>
-              </Button>
-              <Button size="sm" variant="outline" className="text-xs h-8">
-                <DownloadIcon className="w-3 h-3 mr-1" />
-                <span className={isCollapsed ? "hidden" : ""}>Export</span>
-              </Button>
-              <Button size="sm" variant="outline" className="text-xs h-8">
-                <Share1Icon className="w-3 h-3 mr-1" />
-                <span className={isCollapsed ? "hidden" : ""}>Share</span>
-              </Button>
-            </div>
           </div>
-        </Panel>
+        )}
 
-        {/* Expanded Legend Panel - Only shows when not collapsed */}
-        {!isCollapsed && (
-          <Panel position={hasAPD ? "bottom-left" : "top-center"} className={cn(
-            "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 z-10 max-w-xs max-h-96 overflow-y-auto transition-all duration-700 ease-in-out",
-            hasAPD ? "ml-16 mb-16 sm:mb-[80px] mt-0" : "mt-16 sm:mt-20 ml-0"
-          )}>
-            <div className="space-y-4">
+        {/* Mobile Legend Flyout */}
+        {isMobile && isMobileMenuOpen && (
+          <>
+            {/* Mobile backdrop */}
+            <div 
+              className="fixed inset-0 bg-black/50 z-40 animate-in fade-in-0 duration-200"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <div className="fixed top-28 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-border p-3 w-64 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Add to Canvas</h3>
+                <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Canvas Tools</h3>
                 <Button 
                   size="sm" 
                   variant="ghost" 
-                  onClick={() => setIsCollapsed(true)}
-                  className="h-6 w-6 p-0"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="h-5 w-5 p-0 text-xs"
                 >
                   ×
                 </Button>
               </div>
               
               {/* Generate APD - Primary Action */}
-              <div className="space-y-2">
-                <Button 
-                  onClick={() => addAPDToCanvas()} 
-                  className="w-full justify-start bg-primary hover:bg-primary/90 text-white"
-                >
-                  <FileTextIcon className="w-4 h-4 mr-2" />
-                  Generate an APD
-                </Button>
-                <p className="text-xs text-muted-foreground">Start with a central document to add other objects</p>
-              </div>
+              <Button 
+                onClick={() => {
+                  addAPDToCanvas()
+                  setIsMobileMenuOpen(false)
+                }} 
+                className="w-full justify-start bg-primary hover:bg-primary/90 text-white h-8 text-xs"
+              >
+                <FileTextIcon className="w-3 h-3 mr-2" />
+                Generate APD
+              </Button>
 
               {/* Other Objects - Disabled until APD exists */}
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Button 
-                    onClick={() => addCollaboratorToCanvas()} 
-                    disabled={!hasAPD}
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    Collaborators
-                  </Button>
-                  <p className="text-xs text-muted-foreground">Add team members and contractors</p>
-                </div>
-
-                <div className="space-y-2">
-                  <Button 
-                    onClick={() => addDocumentToCanvas()} 
-                    disabled={!hasAPD}
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <FileIcon className="w-4 h-4 mr-2" />
-                    Documents
-                  </Button>
-                  <p className="text-xs text-muted-foreground">Supporting documents and references</p>
-                </div>
-
-                <div className="space-y-2">
-                  <Button 
-                    onClick={() => addModelToCanvas()} 
-                    disabled={!hasAPD}
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <Grid3X3 className="w-4 h-4 mr-2" />
-                    Models
-                  </Button>
-                  <p className="text-xs text-muted-foreground">Business models and frameworks</p>
-                </div>
+              <div className="grid grid-cols-3 gap-1">
+                <Button 
+                  onClick={() => {
+                    addCollaboratorToCanvas()
+                    setIsMobileMenuOpen(false)
+                  }} 
+                  disabled={!hasAPD}
+                  variant="outline"
+                  className="h-7 text-xs px-2"
+                  title="Add Collaborators"
+                >
+                  <Users className="w-3 h-3" />
+                </Button>
+                <Button 
+                  onClick={() => {
+                    addDocumentToCanvas()
+                    setIsMobileMenuOpen(false)
+                  }} 
+                  disabled={!hasAPD}
+                  variant="outline"
+                  className="h-7 text-xs px-2"
+                  title="Add Documents"
+                >
+                  <FileIcon className="w-3 h-3" />
+                </Button>
+                <Button 
+                  onClick={() => {
+                    addModelToCanvas()
+                    setIsMobileMenuOpen(false)
+                  }} 
+                  disabled={!hasAPD}
+                  variant="outline"
+                  className="h-7 text-xs px-2"
+                  title="Add Models"
+                >
+                  <Grid3X3 className="w-3 h-3" />
+                </Button>
               </div>
+            </div>
+            </div>
+          </>
+        )}
 
-              {/* Status Legend */}
-              <div className="border-t pt-3">
-                <h4 className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Status</h4>
-                <div className="space-y-1.5">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Complete</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Pending</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Failed</span>
-                  </div>
-                </div>
+        {/* Desktop Compact Floating Toolbar - Hidden on mobile */}
+        {!isMobile && (
+          <Panel position={hasAPD ? "bottom-left" : "top-center"} className={cn(
+            "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 z-10 transition-all duration-700 ease-in-out cursor-move",
+            hasAPD ? "ml-16 mb-16 sm:mb-[80px]" : "mt-2 sm:mt-4"
+          )}>
+          <div className="flex items-center space-x-1">
+            {/* Legend Toggle */}
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="h-7 w-7 p-0"
+              title={isCollapsed ? "Show Legend" : "Hide Legend"}
+            >
+              <Grid3X3 className="w-3 h-3" />
+            </Button>
+            
+            {/* Quick Actions */}
+            <div className="flex items-center space-x-1">
+              <Button size="sm" onClick={addNewNode} className="text-xs h-7 px-2">
+                <PlusIcon className="w-3 h-3" />
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs h-7 px-2" title="Export">
+                <DownloadIcon className="w-3 h-3" />
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs h-7 px-2" title="Share">
+                <Share1Icon className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        </Panel>
+        )}
+
+        {/* Desktop Expanded Legend Panel - Hidden on mobile */}
+        {!isMobile && !isCollapsed && (
+          <Panel position={hasAPD ? "bottom-left" : "top-center"} className={cn(
+            "bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 z-10 max-w-xs max-h-96 overflow-y-auto transition-all duration-700 ease-in-out",
+            hasAPD ? "ml-16 mb-16 sm:mb-[80px] mt-0" : "mt-16 sm:mt-20 ml-0"
+          )}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Canvas Tools</h3>
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  onClick={() => setIsCollapsed(true)}
+                  className="h-5 w-5 p-0 text-xs"
+                >
+                  ×
+                </Button>
+              </div>
+              
+              {/* Generate APD - Primary Action */}
+              <Button 
+                onClick={() => addAPDToCanvas()} 
+                className="w-full justify-start bg-primary hover:bg-primary/90 text-white h-8 text-xs"
+              >
+                <FileTextIcon className="w-3 h-3 mr-2" />
+                Generate APD
+              </Button>
+
+              {/* Other Objects - Disabled until APD exists */}
+              <div className="grid grid-cols-3 gap-1">
+                <Button 
+                  onClick={() => addCollaboratorToCanvas()} 
+                  disabled={!hasAPD}
+                  variant="outline"
+                  className="h-7 text-xs px-2"
+                  title="Add Collaborators"
+                >
+                  <Users className="w-3 h-3" />
+                </Button>
+                <Button 
+                  onClick={() => addDocumentToCanvas()} 
+                  disabled={!hasAPD}
+                  variant="outline"
+                  className="h-7 text-xs px-2"
+                  title="Add Documents"
+                >
+                  <FileIcon className="w-3 h-3" />
+                </Button>
+                <Button 
+                  onClick={() => addModelToCanvas()} 
+                  disabled={!hasAPD}
+                  variant="outline"
+                  className="h-7 text-xs px-2"
+                  title="Add Models"
+                >
+                  <Grid3X3 className="w-3 h-3" />
+                </Button>
               </div>
             </div>
           </Panel>
