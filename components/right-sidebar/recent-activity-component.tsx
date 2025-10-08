@@ -1,9 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { 
   FileTextIcon, 
   ChatBubbleIcon, 
@@ -126,37 +124,6 @@ const getMockActivities = (pathname: string): ActivityItem[] => {
 }
 
 export function RecentActivityComponent({ className }: RecentActivityComponentProps) {
-  const pathname = usePathname()
-  const activities = getMockActivities(pathname)
-
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'apd_update': return <FileTextIcon className="h-4 w-4" />
-      case 'chat_message': return <ChatBubbleIcon className="h-4 w-4" />
-      case 'user_action': return <PersonIcon className="h-4 w-4" />
-      case 'system_update': return <UpdateIcon className="h-4 w-4" />
-      default: return <ClockIcon className="h-4 w-4" />
-    }
-  }
-
-  const getActivityColor = (type: string) => {
-    switch (type) {
-      case 'apd_update': return 'text-blue-600 dark:text-blue-400'
-      case 'chat_message': return 'text-green-600 dark:text-green-400'
-      case 'user_action': return 'text-purple-600 dark:text-purple-400'
-      case 'system_update': return 'text-orange-600 dark:text-orange-400'
-      default: return 'text-gray-600 dark:text-gray-400'
-    }
-  }
-
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
-      case 'failed': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
-    }
-  }
 
   return (
     <div className={`space-y-3 ${className}`}>

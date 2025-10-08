@@ -151,7 +151,7 @@ export function CollaboratorsComponent({ className }: CollaboratorsComponentProp
               Team Collaborators
             </DialogTitle>
             <DialogDescription>
-              Invite external members as guests. They'll go through onboarding and can then be added to teams or granted view/edit access to the APD engine.
+              Invite external members as guests. They&apos;ll go through onboarding and can then be added to teams or granted view/edit access to the APD engine.
             </DialogDescription>
           </DialogHeader>
 
@@ -164,7 +164,7 @@ export function CollaboratorsComponent({ className }: CollaboratorsComponentProp
               <div>
                 <h4 className="font-medium text-foreground">Invite External Member</h4>
                 <p className="text-sm text-muted-foreground">
-                  Invite someone as a guest. They'll receive onboarding instructions.
+                  Invite someone as a guest. They&apos;ll receive onboarding instructions.
                 </p>
               </div>
               <Button className="bg-primary hover:bg-primary/90 text-white">

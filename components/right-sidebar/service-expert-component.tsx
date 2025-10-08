@@ -8,8 +8,7 @@ import {
   Search,
   Users,
   Building2,
-  Wrench,
-  Plus
+  Wrench
 } from "lucide-react"
 
 interface ServiceExpert {
