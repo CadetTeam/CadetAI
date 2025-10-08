@@ -73,8 +73,8 @@ export function AppLayout({ children }: AppLayoutProps) {
   // Show app layout for authenticated users
   return (
     <div className="flex h-screen bg-background">
-      {/* Mobile App Menu - Only show on mobile */}
-      {isMobile && (
+      {/* Mobile App Menu - Only show on mobile and home page */}
+      {isMobile && isHomePage && (
         <MobileAppMenu currentApp={currentApp} onAppChange={handleAppChange} />
       )}
 
