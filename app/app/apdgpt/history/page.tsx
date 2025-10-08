@@ -74,21 +74,27 @@ export default function HistoryPage() {
         {/* Header */}
         <div className={cn(
           "border-b border-border",
-          isTabletOrBelow ? "p-4" : "p-6"
+          isTabletOrBelow ? "p-3" : "p-6"
         )}>
           <div className={cn(
-            "flex items-center justify-between mb-4",
-            isTabletOrBelow ? "flex-col space-y-3" : "flex-row"
+            "flex items-center justify-between mb-3",
+            isTabletOrBelow ? "flex-col space-y-2" : "flex-row"
           )}>
             <div className={cn(isTabletOrBelow ? "text-center" : "text-left")}>
               <h1 className={cn(
                 "font-bold",
-                isTabletOrBelow ? "text-xl" : "text-2xl"
+                isTabletOrBelow ? "text-lg" : "text-2xl"
               )}>Chat History</h1>
-              <p className="text-muted-foreground">Review your previous conversations</p>
+              <p className={cn(
+                "text-muted-foreground",
+                isTabletOrBelow ? "text-xs" : "text-sm"
+              )}>Review your previous conversations</p>
             </div>
-            <Badge variant="outline" className="flex items-center space-x-1 flex-shrink-0">
-              <ClockIcon className="w-3 h-3" />
+            <Badge variant="outline" className={cn(
+              "flex items-center space-x-1 flex-shrink-0",
+              isTabletOrBelow ? "text-xs px-2 py-1" : "text-sm px-3 py-1"
+            )}>
+              <ClockIcon className={cn(isTabletOrBelow ? "w-3 h-3" : "w-3 h-3")} />
               <span>Last 30 days</span>
             </Badge>
           </div>
@@ -108,36 +114,50 @@ export default function HistoryPage() {
         {/* Conversations List */}
         <ScrollArea className={cn(
           "flex-1",
-          isTabletOrBelow ? "p-4" : "p-6"
+          isTabletOrBelow ? "p-3" : "p-6"
         )}>
-          <div className="space-y-4">
+          <div className={cn(
+            "space-y-3",
+            isTabletOrBelow ? "space-y-2" : "space-y-4"
+          )}>
             {mockConversations.map((conversation) => (
               <Card key={conversation.id} className="hover:bg-muted/50 transition-colors cursor-pointer">
                 <CardContent className={cn(
-                  isTabletOrBelow ? "p-3" : "p-4"
+                  isTabletOrBelow ? "p-2" : "p-4"
                 )}>
-                  <div className="flex items-start space-x-3">
-                    <Avatar className="h-10 w-10 flex-shrink-0">
-                      <AvatarFallback className="bg-gradient-to-r from-gray-700 to-gray-800 text-white">
-                        <FileTextIcon className="h-5 w-5" />
+                  <div className={cn(
+                    "flex items-start",
+                    isTabletOrBelow ? "space-x-2" : "space-x-3"
+                  )}>
+                    <Avatar className={cn(
+                      "flex-shrink-0",
+                      isTabletOrBelow ? "h-8 w-8" : "h-10 w-10"
+                    )}>
+                      <AvatarFallback className={cn(
+                        "bg-gradient-to-r from-gray-700 to-gray-800 text-white",
+                        isTabletOrBelow ? "text-xs" : "text-sm"
+                      )}>
+                        <FileTextIcon className={cn(isTabletOrBelow ? "h-3 w-3" : "h-5 w-5")} />
                       </AvatarFallback>
                     </Avatar>
                     
                     <div className="flex-1 min-w-0">
                       <div className={cn(
                         "flex items-center justify-between mb-1",
-                        isTabletOrBelow ? "flex-col space-y-1" : "flex-row"
+                        isTabletOrBelow ? "flex-col space-y-1 items-start" : "flex-row"
                       )}>
                         <h3 className={cn(
-                          "font-semibold",
-                          isTabletOrBelow ? "text-sm" : "text-base",
-                          "truncate"
+                          "font-semibold truncate",
+                          isTabletOrBelow ? "text-xs" : "text-base"
                         )}>{conversation.title}</h3>
                         <div className={cn(
-                          "flex items-center space-x-2 text-xs text-muted-foreground",
-                          isTabletOrBelow ? "flex-wrap gap-1" : "flex-nowrap"
+                          "flex items-center text-xs text-muted-foreground",
+                          isTabletOrBelow ? "flex-wrap gap-1" : "flex-nowrap space-x-2"
                         )}>
-                          <Badge variant="secondary" className="text-xs flex-shrink-0">
+                          <Badge variant="secondary" className={cn(
+                            "flex-shrink-0",
+                            isTabletOrBelow ? "text-xs px-1 py-0 h-4" : "text-xs"
+                          )}>
                             {conversation.messageCount} messages
                           </Badge>
                           <span className="flex-shrink-0">{conversation.timestamp.toLocaleDateString()}</span>
@@ -145,7 +165,7 @@ export default function HistoryPage() {
                       </div>
                       <p className={cn(
                         "text-muted-foreground line-clamp-2",
-                        isTabletOrBelow ? "text-xs" : "text-sm"
+                        isTabletOrBelow ? "text-xs leading-tight" : "text-sm"
                       )}>
                         {conversation.lastMessage}
                       </p>

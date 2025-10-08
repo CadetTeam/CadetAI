@@ -255,23 +255,74 @@ export default function APDEnginePage() {
         />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
-        {/* Legend Panel - Responsive */}
-        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-20 mt-4 z-10">
+        {/* Enhanced Legend Panel - Responsive */}
+        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 ml-4 sm:ml-20 mt-2 sm:mt-4 z-10 max-w-xs max-h-80 sm:max-h-96 overflow-y-auto">
           {!isCollapsed ? (
-            <div className="space-y-2">
-              <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Legend</h3>
-              <div className="space-y-1.5">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
-                  <span className="text-[10px] text-gray-700 dark:text-gray-300">APD Step</span>
+            <div className="space-y-3">
+              <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Canvas Objects</h3>
+              
+              {/* Node Types */}
+              <div className="space-y-2">
+                <h4 className="text-[10px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Node Types</h4>
+                <div className="space-y-1.5">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">APD Document</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Supporting Document</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Decision Point</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-600 rounded-full"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">User Avatar</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-300 dark:border-purple-600 rounded"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">AI Model Card</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
-                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Process</span>
+              </div>
+
+              {/* Connections */}
+              <div className="space-y-2">
+                <h4 className="text-[10px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Connections</h4>
+                <div className="space-y-1.5">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-0.5 bg-blue-500"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Document Reference</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-0.5 bg-green-500 border-dashed border-t-2 border-green-500"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Collaboration</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-0.5 bg-purple-500"></div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">AI Processing</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
-                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Decision</span>
+              </div>
+
+              {/* Interactions */}
+              <div className="space-y-2">
+                <h4 className="text-[10px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Interactions</h4>
+                <div className="space-y-1.5">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 rounded flex items-center justify-center">
+                      <span className="text-[8px]">👆</span>
+                    </div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Click for details</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 border border-gray-400 rounded flex items-center justify-center">
+                      <span className="text-[8px]">👋</span>
+                    </div>
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Hover for preview</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -280,12 +331,14 @@ export default function APDEnginePage() {
               <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
               <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
               <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
+              <div className="w-3 h-3 bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-600 rounded-full"></div>
+              <div className="w-3 h-3 bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-300 dark:border-purple-600 rounded"></div>
             </div>
           )}
         </Panel>
 
         {/* Status Legend - Responsive, avoids right sidebar */}
-        <Panel position="top-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 mr-[336px] mt-4 z-10">
+        <Panel position="top-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 mr-4 sm:mr-[336px] mt-2 sm:mt-4 z-10">
           {!isCollapsed ? (
             <div className="space-y-2">
               <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Status</h3>
@@ -314,7 +367,7 @@ export default function APDEnginePage() {
         </Panel>
 
         {/* Controls Panel - Stays above chat bar */}
-        <Panel position="bottom-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-20 mb-[80px] z-10">
+        <Panel position="bottom-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 ml-4 sm:ml-20 mb-16 sm:mb-[80px] z-10">
           <div className="flex space-x-2">
             <Button size="sm" onClick={addNewNode} className="text-xs h-8">
               <PlusIcon className="w-3 h-3 mr-1.5" />
@@ -333,7 +386,7 @@ export default function APDEnginePage() {
 
         {/* Node Details Panel - Stays above chat bar and avoids right sidebar */}
         {selectedNode && (
-          <Panel position="bottom-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 mr-[336px] mb-[80px] max-w-xs z-10">
+          <Panel position="bottom-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 mr-4 sm:mr-[336px] mb-16 sm:mb-[80px] max-w-xs z-10">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Details</h3>

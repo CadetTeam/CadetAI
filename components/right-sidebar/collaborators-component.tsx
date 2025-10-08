@@ -144,7 +144,7 @@ export function CollaboratorsComponent({ className }: CollaboratorsComponentProp
 
       {/* Collaborators Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CollaboratorsIcon className="h-5 w-5" />
@@ -177,7 +177,7 @@ export function CollaboratorsComponent({ className }: CollaboratorsComponentProp
             {mockCollaborators.map((collaborator) => (
               <div
                 key={collaborator.id}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   <div className="relative">

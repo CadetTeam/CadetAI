@@ -82,10 +82,10 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
 
   const getSpecialtyColor = (specialty: string) => {
     switch (specialty) {
-      case 'engineer': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
-      case 'architect': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400'
-      case 'mita_consultant': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
+      case 'engineer': return 'bg-black text-white dark:bg-white dark:text-black'
+      case 'architect': return 'bg-black text-white dark:bg-white dark:text-black'
+      case 'mita_consultant': return 'bg-black text-white dark:bg-white dark:text-black'
+      default: return 'bg-black text-white dark:bg-white dark:text-black'
     }
   }
 
@@ -150,7 +150,7 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="text-xs font-medium text-foreground truncate">{expert.name}</h4>
-                  <Badge className={`${getSpecialtyColor(expert.specialty)} text-xs px-1 py-0`}>
+                  <Badge className={`${getSpecialtyColor(expert.specialty)} text-xs px-1 py-0 h-4 text-xs leading-none`}>
                     {getSpecialtyLabel(expert.specialty)}
                   </Badge>
                 </div>
@@ -188,7 +188,7 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
 
       {/* Service Experts Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Search className="h-5 w-5" />
