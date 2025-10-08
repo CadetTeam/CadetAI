@@ -24,6 +24,7 @@ import {
   PlusIcon,
   GearIcon
 } from "@radix-ui/react-icons"
+import { Users, FileIcon, FileTextIcon, Component1Icon } from 'lucide-react'
 
 // Custom Node Types
 const APDNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
@@ -73,10 +74,70 @@ const DecisionNode = ({ data, selected }: { data: Record<string, unknown>; selec
   )
 }
 
+const CollaboratorNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
+  return (
+    <div className={`px-3 py-3 shadow-md rounded-full border-2 bg-green-50 dark:bg-green-900/20 ${
+      selected ? 'border-green-500' : 'border-green-300 dark:border-green-600'
+    }`}>
+      <div className="flex items-center space-x-2">
+        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-lg">
+          {data.userAvatar as string || '👤'}
+        </div>
+        <div className="text-xs font-medium text-green-900 dark:text-green-100">
+          {data.label as string}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const DocumentNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
+  return (
+    <div className={`px-3 py-2 shadow-md rounded-md border-2 bg-blue-50 dark:bg-blue-900/20 ${
+      selected ? 'border-blue-500' : 'border-blue-300 dark:border-blue-600'
+    }`}>
+      <div className="flex items-center space-x-2">
+        <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs">
+          📄
+        </div>
+        <div className="text-xs font-medium text-blue-900 dark:text-blue-100">
+          {data.label as string}
+        </div>
+      </div>
+      <div className="text-[10px] text-blue-700 dark:text-blue-300 mt-1">
+        {data.documentType as string}
+      </div>
+    </div>
+  )
+}
+
+const ModelNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
+  return (
+    <div className={`px-3 py-2 shadow-md rounded-md border-2 bg-purple-50 dark:bg-purple-900/20 ${
+      selected ? 'border-purple-500' : 'border-purple-300 dark:border-purple-600'
+    }`}>
+      <div className="flex items-center space-x-2">
+        <div className="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-white text-xs">
+          🔗
+        </div>
+        <div className="text-xs font-medium text-purple-900 dark:text-purple-100">
+          {data.label as string}
+        </div>
+      </div>
+      <div className="text-[10px] text-purple-700 dark:text-purple-300 mt-1">
+        {data.modelType as string}
+      </div>
+    </div>
+  )
+}
+
 const nodeTypes: NodeTypes = {
   apdNode: APDNode,
   processNode: ProcessNode,
   decisionNode: DecisionNode,
+  collaboratorNode: CollaboratorNode,
+  documentNode: DocumentNode,
+  modelNode: ModelNode,
 }
 
 // Initial nodes and edges
@@ -191,6 +252,8 @@ export default function APDEnginePage() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [hasAPD, setHasAPD] = useState(false)
+  const [apdNodeId, setApdNodeId] = useState<string | null>(null)
 
   useEffect(() => {
     const checkLayout = () => {
@@ -224,6 +287,111 @@ export default function APDEnginePage() {
     setNodes((nds) => [...nds, newNode])
   }, [setNodes])
 
+  // Add APD to canvas
+  const addAPDToCanvas = useCallback(() => {
+    const apdNode: Node = {
+      id: 'apd-main',
+      type: 'apdNode',
+      position: { x: 400, y: 300 },
+      data: { 
+        label: 'APD Document', 
+        description: 'Central APD Document',
+        status: 'pending',
+        isAPD: true
+      },
+    }
+    setNodes((nds) => [...nds, apdNode])
+    setHasAPD(true)
+    setApdNodeId('apd-main')
+  }, [setNodes])
+
+  // Add Collaborator to canvas
+  const addCollaboratorToCanvas = useCallback(() => {
+    if (!hasAPD || !apdNodeId) return
+    
+    const collaboratorNode: Node = {
+      id: `collaborator-${Date.now()}`,
+      type: 'collaboratorNode',
+      position: { x: Math.random() * 400 + 200, y: Math.random() * 400 + 200 },
+      data: { 
+        label: 'Team Member', 
+        description: 'Collaborator or Contractor',
+        status: 'pending',
+        userAvatar: '👤'
+      },
+    }
+    
+    setNodes((nds) => [...nds, collaboratorNode])
+    
+    // Add animated dashed edge to APD
+    const newEdge: Edge = {
+      id: `${apdNodeId}-${collaboratorNode.id}`,
+      source: apdNodeId,
+      target: collaboratorNode.id,
+      animated: true,
+      style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '5,5' }
+    }
+    setEdges((eds) => [...eds, newEdge])
+  }, [setNodes, setEdges, hasAPD, apdNodeId])
+
+  // Add Document to canvas
+  const addDocumentToCanvas = useCallback(() => {
+    if (!hasAPD || !apdNodeId) return
+    
+    const documentNode: Node = {
+      id: `document-${Date.now()}`,
+      type: 'documentNode',
+      position: { x: Math.random() * 400 + 200, y: Math.random() * 400 + 200 },
+      data: { 
+        label: 'Supporting Document', 
+        description: 'Reference document',
+        status: 'pending',
+        documentType: 'PDF'
+      },
+    }
+    
+    setNodes((nds) => [...nds, documentNode])
+    
+    // Add animated dashed edge to APD
+    const newEdge: Edge = {
+      id: `${apdNodeId}-${documentNode.id}`,
+      source: apdNodeId,
+      target: documentNode.id,
+      animated: true,
+      style: { stroke: '#3b82f6', strokeWidth: 2, strokeDasharray: '5,5' }
+    }
+    setEdges((eds) => [...eds, newEdge])
+  }, [setNodes, setEdges, hasAPD, apdNodeId])
+
+  // Add Model to canvas
+  const addModelToCanvas = useCallback(() => {
+    if (!hasAPD || !apdNodeId) return
+    
+    const modelNode: Node = {
+      id: `model-${Date.now()}`,
+      type: 'modelNode',
+      position: { x: Math.random() * 400 + 200, y: Math.random() * 400 + 200 },
+      data: { 
+        label: 'Business Model', 
+        description: 'Framework or Model',
+        status: 'pending',
+        modelType: 'Canvas'
+      },
+    }
+    
+    setNodes((nds) => [...nds, modelNode])
+    
+    // Add animated dashed edge to APD
+    const newEdge: Edge = {
+      id: `${apdNodeId}-${modelNode.id}`,
+      source: apdNodeId,
+      target: modelNode.id,
+      animated: true,
+      style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5,5' }
+    }
+    setEdges((eds) => [...eds, newEdge])
+  }, [setNodes, setEdges, hasAPD, apdNodeId])
+
   return (
     <>
       {/* Full-screen ReactFlow Canvas */}
@@ -255,134 +423,129 @@ export default function APDEnginePage() {
         />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
-        {/* Enhanced Legend Panel - Responsive */}
-        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 ml-4 sm:ml-20 mt-2 sm:mt-4 z-10 max-w-xs max-h-80 sm:max-h-96 overflow-y-auto">
-          {!isCollapsed ? (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Canvas Objects</h3>
-              
-              {/* Node Types */}
-              <div className="space-y-2">
-                <h4 className="text-[10px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Node Types</h4>
-                <div className="space-y-1.5">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">APD Document</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Supporting Document</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Decision Point</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-600 rounded-full"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">User Avatar</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-300 dark:border-purple-600 rounded"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">AI Model Card</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Connections */}
-              <div className="space-y-2">
-                <h4 className="text-[10px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Connections</h4>
-                <div className="space-y-1.5">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-0.5 bg-blue-500"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Document Reference</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-0.5 bg-green-500 border-dashed border-t-2 border-green-500"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Collaboration</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-0.5 bg-purple-500"></div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">AI Processing</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Interactions */}
-              <div className="space-y-2">
-                <h4 className="text-[10px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Interactions</h4>
-                <div className="space-y-1.5">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 rounded flex items-center justify-center">
-                      <span className="text-[8px]">👆</span>
-                    </div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Click for details</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 border border-gray-400 rounded flex items-center justify-center">
-                      <span className="text-[8px]">👋</span>
-                    </div>
-                    <span className="text-[10px] text-gray-700 dark:text-gray-300">Hover for preview</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col space-y-1">
-              <div className="w-3 h-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded"></div>
-              <div className="w-3 h-3 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-600 rounded"></div>
-              <div className="w-3 h-3 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded transform rotate-45"></div>
-              <div className="w-3 h-3 bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-600 rounded-full"></div>
-              <div className="w-3 h-3 bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-300 dark:border-purple-600 rounded"></div>
-            </div>
-          )}
-        </Panel>
-
-        {/* Status Legend - Responsive, avoids right sidebar */}
-        <Panel position="top-right" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 mr-4 sm:mr-[336px] mt-2 sm:mt-4 z-10">
-          {!isCollapsed ? (
-            <div className="space-y-2">
-              <h3 className="font-semibold text-xs text-gray-900 dark:text-gray-100">Status</h3>
-              <div className="space-y-1.5">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Complete</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
-                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Pending</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-                  <span className="text-[10px] text-gray-700 dark:text-gray-300">Failed</span>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col space-y-1">
-              <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-              <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
-              <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-            </div>
-          )}
-        </Panel>
-
-        {/* Controls Panel - Stays above chat bar */}
-        <Panel position="bottom-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 sm:p-3 ml-4 sm:ml-20 mb-16 sm:mb-[80px] z-10">
-          <div className="flex space-x-2">
-            <Button size="sm" onClick={addNewNode} className="text-xs h-8">
-              <PlusIcon className="w-3 h-3 mr-1.5" />
-              <span className={isCollapsed ? "hidden" : ""}>Add Step</span>
+        {/* Compact Floating Toolbar - Consolidates all controls */}
+        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 ml-4 sm:ml-20 mt-2 sm:mt-4 z-10">
+          <div className="flex items-center space-x-2">
+            {/* Legend Toggle */}
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="h-8 w-8 p-0"
+              title={isCollapsed ? "Show Legend" : "Hide Legend"}
+            >
+              <Component1Icon className="w-4 h-4" />
             </Button>
-            <Button size="sm" variant="outline" className="text-xs h-8">
-              <DownloadIcon className="w-3 h-3 mr-1.5" />
-              <span className={isCollapsed ? "hidden" : ""}>Export</span>
-            </Button>
-            <Button size="sm" variant="outline" className="text-xs h-8">
-              <Share1Icon className="w-3 h-3 mr-1.5" />
-              <span className={isCollapsed ? "hidden" : ""}>Share</span>
-            </Button>
+            
+            {/* Add Objects */}
+            <div className="flex items-center space-x-1">
+              <Button size="sm" onClick={addNewNode} className="text-xs h-8">
+                <PlusIcon className="w-3 h-3 mr-1" />
+                <span className={isCollapsed ? "hidden" : ""}>Add</span>
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs h-8">
+                <DownloadIcon className="w-3 h-3 mr-1" />
+                <span className={isCollapsed ? "hidden" : ""}>Export</span>
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs h-8">
+                <Share1Icon className="w-3 h-3 mr-1" />
+                <span className={isCollapsed ? "hidden" : ""}>Share</span>
+              </Button>
+            </div>
           </div>
         </Panel>
+
+        {/* Expanded Legend Panel - Only shows when not collapsed */}
+        {!isCollapsed && (
+          <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-4 sm:ml-20 mt-16 sm:mt-20 z-10 max-w-xs max-h-96 overflow-y-auto">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Add to Canvas</h3>
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  onClick={() => setIsCollapsed(true)}
+                  className="h-6 w-6 p-0"
+                >
+                  ×
+                </Button>
+              </div>
+              
+              {/* Generate APD - Primary Action */}
+              <div className="space-y-2">
+                <Button 
+                  onClick={() => addAPDToCanvas()} 
+                  className="w-full justify-start bg-primary hover:bg-primary/90 text-white"
+                >
+                  <FileTextIcon className="w-4 h-4 mr-2" />
+                  Generate an APD
+                </Button>
+                <p className="text-xs text-muted-foreground">Start with a central document to add other objects</p>
+              </div>
+
+              {/* Other Objects - Disabled until APD exists */}
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Button 
+                    onClick={() => addCollaboratorToCanvas()} 
+                    disabled={!hasAPD}
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    Collaborators
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Add team members and contractors</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Button 
+                    onClick={() => addDocumentToCanvas()} 
+                    disabled={!hasAPD}
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
+                    <FileIcon className="w-4 h-4 mr-2" />
+                    Documents
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Supporting documents and references</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Button 
+                    onClick={() => addModelToCanvas()} 
+                    disabled={!hasAPD}
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
+                    <Component1Icon className="w-4 h-4 mr-2" />
+                    Models
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Business models and frameworks</p>
+                </div>
+              </div>
+
+              {/* Status Legend */}
+              <div className="border-t pt-3">
+                <h4 className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Status</h4>
+                <div className="space-y-1.5">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Complete</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Pending</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Failed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Panel>
+        )}
 
         {/* Node Details Panel - Stays above chat bar and avoids right sidebar */}
         {selectedNode && (
