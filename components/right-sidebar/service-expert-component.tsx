@@ -150,7 +150,7 @@ export function ServiceExpertComponent({ className }: ServiceExpertComponentProp
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="text-xs font-medium text-foreground truncate">{expert.name}</h4>
-                  <Badge className={`${getSpecialtyColor(expert.specialty)} text-xs px-1 py-0 h-4 text-xs leading-none`}>
+                  <Badge className={`${getSpecialtyColor(expert.specialty)} text-[0.6rem] px-1 py-0 h-4 leading-none`}>
                     {getSpecialtyLabel(expert.specialty)}
                   </Badge>
                 </div>

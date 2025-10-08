@@ -424,7 +424,7 @@ export default function APDEnginePage() {
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
         
         {/* Compact Floating Toolbar - Consolidates all controls */}
-        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 ml-4 sm:ml-20 mt-2 sm:mt-4 z-10">
+        <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-2 ml-16 mt-2 sm:mt-4 z-10">
           <div className="flex items-center space-x-2">
             {/* Legend Toggle */}
             <Button 
@@ -457,7 +457,7 @@ export default function APDEnginePage() {
 
         {/* Expanded Legend Panel - Only shows when not collapsed */}
         {!isCollapsed && (
-          <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-4 sm:ml-20 mt-16 sm:mt-20 z-10 max-w-xs max-h-96 overflow-y-auto">
+          <Panel position="top-left" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-3 ml-16 mt-16 sm:mt-20 z-10 max-w-xs max-h-96 overflow-y-auto">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Add to Canvas</h3>
