@@ -11,6 +11,7 @@ import {
   ClockIcon,
   HomeIcon as BuildingIcon
 } from "@radix-ui/react-icons"
+import { Plus } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { supabase } from "@/lib/supabase-client"
 
@@ -168,9 +169,19 @@ export function ContractorComponent({ className }: ContractorComponentProps) {
               )}
             </>
           ) : (
-            // Empty state
-            <div className="text-xs text-muted-foreground">
-              No contractors yet
+            // Empty skeleton state with add button
+            <div className="flex items-center space-x-2">
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsModalOpen(true)}
+                className="h-8 w-8 p-0 bg-primary/10 hover:bg-primary/20 text-primary rounded-full"
+                title="Add New Contractor"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
           )}
         </div>

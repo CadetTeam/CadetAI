@@ -172,36 +172,14 @@ export function RecentActivityComponent({ className }: RecentActivityComponentPr
       </div>
 
       <div className="space-y-3">
-        {activities.slice(0, 4).map((activity) => (
-          <div key={activity.id} className="flex items-start space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-            <div className={`flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center ${getActivityColor(activity.type)}`}>
-              {getActivityIcon(activity.type)}
-            </div>
+        {/* Skeleton loading states */}
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-start space-x-3 p-2 rounded-lg">
+            <div className="flex-shrink-0 w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
             <div className="flex-1 min-w-0 space-y-1">
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {activity.title}
-                </p>
-                {activity.status && (
-                    <Badge className={getStatusColor(activity.status)}>
-                      {activity.status}
-                    </Badge>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground truncate">
-                {activity.description}
-              </p>
-              <div className="flex items-center gap-2">
-                <Avatar className="h-4 w-4">
-                  <AvatarImage src={activity.user.avatar} alt={activity.user.name} />
-                  <AvatarFallback className="text-xs">
-                    {activity.user.initials}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-xs text-muted-foreground">
-                  {activity.user.name} • {activity.timestamp}
-                </span>
-              </div>
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2"></div>
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3"></div>
             </div>
           </div>
         ))}

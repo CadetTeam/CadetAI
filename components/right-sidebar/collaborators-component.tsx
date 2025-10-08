@@ -11,6 +11,7 @@ import {
   ClockIcon,
   PersonIcon as CollaboratorsIcon
 } from "@radix-ui/react-icons"
+import { Plus } from "lucide-react"
 
 interface Collaborator {
   id: string
@@ -125,24 +126,19 @@ export function CollaboratorsComponent({ className }: CollaboratorsComponentProp
         </div>
 
         <div className="flex items-center space-x-2">
-          {mockCollaborators.slice(0, 4).map((collaborator) => (
-            <div key={collaborator.id} className="relative">
-              <Avatar className="h-8 w-8 border-2 border-background">
-                <AvatarImage src={collaborator.avatar} alt={collaborator.name} />
-                <AvatarFallback className="text-xs font-medium">
-                  {collaborator.initials}
-                </AvatarFallback>
-              </Avatar>
-              <div 
-                className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${getStatusColor(collaborator.status)}`}
-              />
-            </div>
-          ))}
-          {mockCollaborators.length > 4 && (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium">
-              +{mockCollaborators.length - 4}
-            </div>
-          )}
+          {/* Show skeleton state with add button */}
+          <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+          <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+          <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsModalOpen(true)}
+            className="h-8 w-8 p-0 bg-primary/10 hover:bg-primary/20 text-primary rounded-full"
+            title="Invite Team Member"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -155,11 +151,29 @@ export function CollaboratorsComponent({ className }: CollaboratorsComponentProp
               Team Collaborators
             </DialogTitle>
             <DialogDescription>
-              View and manage team members and external collaborators with access to your organization.
+              Invite external members as guests. They'll go through onboarding and can then be added to teams or granted view/edit access to the APD engine.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
+            {/* Invite Guest Section */}
+            <div className="border border-dashed border-muted-foreground/25 rounded-lg p-4 text-center space-y-3">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <Plus className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-medium text-foreground">Invite External Member</h4>
+                <p className="text-sm text-muted-foreground">
+                  Invite someone as a guest. They'll receive onboarding instructions.
+                </p>
+              </div>
+              <Button className="bg-primary hover:bg-primary/90 text-white">
+                <Plus className="h-4 w-4 mr-2" />
+                Send Invitation
+              </Button>
+            </div>
+
+            {/* Existing Collaborators */}
             {mockCollaborators.map((collaborator) => (
               <div
                 key={collaborator.id}
