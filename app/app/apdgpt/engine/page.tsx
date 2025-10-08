@@ -13,11 +13,16 @@ import { ReactFlow,
   Node,
   BackgroundVariant,
   Panel,
-  NodeTypes
+  NodeTypes,
+  EdgeTypes,
+  getBezierPath,
+  EdgeProps
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
+import './styles.css'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { 
   DownloadIcon, 
@@ -25,35 +30,108 @@ import {
   PlusIcon,
   GearIcon
 } from "@radix-ui/react-icons"
-import { Users, FileIcon, FileTextIcon, Grid3X3 } from 'lucide-react'
+import { Users, FileIcon, FileTextIcon, Grid3X3, FileType, Database, Brain, Zap, Activity, Image as ImageIcon } from 'lucide-react'
+
+// Custom Animated Edge Component
+const AnimatedEdge = ({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  style = {},
+  markerEnd,
+  data
+}: EdgeProps) => {
+  const [edgePath] = getBezierPath({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+  })
+
+  const edgeColor = (data?.color as string) || '#3b82f6'
+  
+  return (
+    <>
+      {/* Background glow */}
+      <path
+        id={id}
+        style={{ ...style, strokeWidth: 8, opacity: 0.2 }}
+        className="react-flow__edge-path"
+        d={edgePath}
+        markerEnd={markerEnd}
+        stroke={edgeColor}
+        fill="none"
+      />
+      {/* Main animated path */}
+      <path
+        id={id}
+        style={{ ...style }}
+        className="react-flow__edge-path animate-pulse"
+        d={edgePath}
+        markerEnd={markerEnd}
+        stroke={edgeColor}
+        strokeWidth={2}
+        fill="none"
+      />
+      {/* Animated dot traveling along path */}
+      <circle r="3" fill={edgeColor} className="animate-ping">
+        <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} />
+      </circle>
+    </>
+  )
+}
 
 // Custom Node Types
 const APDNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
   return (
-    <div className={`px-4 py-2 shadow-md rounded-md border-2 bg-white dark:bg-gray-800 ${
-      selected ? 'border-blue-500' : 'border-gray-300 dark:border-gray-600'
-    }`}>
-      <div className="flex items-center space-x-2">
-        <div className={`w-3 h-3 rounded-full ${
-          data.status === 'complete' ? 'bg-green-500' : 
-          data.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
-        }`} />
-        <div className="font-bold text-sm">{data.label as string}</div>
+    <div className={cn(
+      "px-6 py-4 shadow-2xl rounded-lg border-2 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 transition-all duration-300 min-w-[200px]",
+      selected ? 'border-blue-500 shadow-blue-500/50 scale-105' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
+    )}>
+      <div className="flex items-center space-x-3">
+        <div className="relative">
+          <div className={cn(
+            "w-4 h-4 rounded-full",
+            data.status === 'complete' ? 'bg-green-500 animate-pulse' : 
+            data.status === 'pending' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+          )} />
+          <div className={cn(
+            "absolute inset-0 w-4 h-4 rounded-full animate-ping",
+            data.status === 'complete' ? 'bg-green-500' : 
+            data.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
+          )} style={{ animationDuration: '2s' }} />
+        </div>
+        <div>
+          <div className="font-bold text-base">{data.label as string}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {data.description as string}
+          </div>
+        </div>
       </div>
-      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-        {data.description as string}
-      </div>
+      {(data.isAPD as boolean) && (
+        <div className="mt-2 flex items-center space-x-1">
+          <Activity className="w-3 h-3 text-blue-500" />
+          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">Central Hub</span>
+        </div>
+      )}
     </div>
   )
 }
 
 const ProcessNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
   return (
-    <div className={`px-4 py-2 shadow-md rounded-md border-2 bg-blue-50 dark:bg-blue-900/20 ${
-      selected ? 'border-blue-500' : 'border-blue-300 dark:border-blue-600'
-    }`}>
+    <div className={cn(
+      "px-4 py-3 shadow-lg rounded-lg border-2 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/10 transition-all duration-300",
+      selected ? 'border-blue-500 shadow-blue-500/50 scale-105' : 'border-blue-300 dark:border-blue-600 hover:border-blue-400'
+    )}>
       <div className="flex items-center space-x-2">
-        <GearIcon className="w-4 h-4 text-blue-600" />
+        <GearIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
         <div className="font-bold text-sm text-blue-900 dark:text-blue-100">{data.label as string}</div>
       </div>
       <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
@@ -65,10 +143,11 @@ const ProcessNode = ({ data, selected }: { data: Record<string, unknown>; select
 
 const DecisionNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
   return (
-    <div className={`px-4 py-2 shadow-md rounded-md border-2 bg-yellow-50 dark:bg-yellow-900/20 transform rotate-45 ${
-      selected ? 'border-yellow-500' : 'border-yellow-300 dark:border-yellow-600'
-    }`}>
-      <div className="transform -rotate-45 font-bold text-sm text-yellow-900 dark:text-yellow-100">
+    <div className={cn(
+      "px-4 py-2 shadow-lg rounded-md border-2 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/30 dark:to-yellow-900/10 transform rotate-45 transition-all duration-300",
+      selected ? 'border-yellow-500 shadow-yellow-500/50 scale-110' : 'border-yellow-300 dark:border-yellow-600 hover:border-yellow-400'
+    )}>
+      <div className="transform -rotate-45 font-bold text-sm text-yellow-900 dark:text-yellow-100 text-center">
         {data.label as string}
       </div>
     </div>
@@ -76,16 +155,36 @@ const DecisionNode = ({ data, selected }: { data: Record<string, unknown>; selec
 }
 
 const CollaboratorNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
+  const initials = ((data.label as string) || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  const avatarUrl = data.avatarUrl as string | undefined
+  const role = data.role as string | 'Member'
+  const isOnline = data.isOnline as boolean | false
+
   return (
-    <div className={`px-3 py-3 shadow-md rounded-full border-2 bg-green-50 dark:bg-green-900/20 ${
-      selected ? 'border-green-500' : 'border-green-300 dark:border-green-600'
-    }`}>
-      <div className="flex items-center space-x-2">
-        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-lg">
-          {data.userAvatar as string || '👤'}
+    <div className={cn(
+      "px-4 py-3 shadow-lg rounded-xl border-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/10 transition-all duration-300 min-w-[160px]",
+      selected ? 'border-green-500 shadow-green-500/50 scale-105' : 'border-green-300 dark:border-green-600 hover:border-green-400'
+    )}>
+      <div className="flex items-center space-x-3">
+        <div className="relative">
+          <Avatar className="w-10 h-10 border-2 border-green-500 shadow-md">
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={data.label as string} />}
+            <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold text-sm">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          {isOnline && (
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800 animate-pulse" />
+          )}
         </div>
-        <div className="text-xs font-medium text-green-900 dark:text-green-100">
-          {data.label as string}
+        <div className="flex-1">
+          <div className="text-sm font-bold text-green-900 dark:text-green-100">
+            {data.label as string}
+          </div>
+          <div className="flex items-center space-x-1 mt-0.5">
+            <Users className="w-3 h-3 text-green-600 dark:text-green-400" />
+            <span className="text-[10px] text-green-700 dark:text-green-300 font-medium">{role}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -93,40 +192,114 @@ const CollaboratorNode = ({ data, selected }: { data: Record<string, unknown>; s
 }
 
 const DocumentNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
+  const documentType = (data.documentType as string) || 'PDF'
+  const fileSize = data.fileSize as string | undefined
+  
+  const getDocumentIcon = (type: string) => {
+    switch (type.toUpperCase()) {
+      case 'PDF':
+        return <FileTextIcon className="w-5 h-5" />
+      case 'IMAGE':
+      case 'PNG':
+      case 'JPG':
+        return <ImageIcon className="w-5 h-5" />
+      case 'DATABASE':
+      case 'SQL':
+        return <Database className="w-5 h-5" />
+      default:
+        return <FileType className="w-5 h-5" />
+    }
+  }
+
+  const getDocumentColor = (type: string) => {
+    switch (type.toUpperCase()) {
+      case 'PDF':
+        return 'from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-900/10 border-red-300 dark:border-red-600'
+      case 'IMAGE':
+      case 'PNG':
+      case 'JPG':
+        return 'from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-900/10 border-purple-300 dark:border-purple-600'
+      case 'DATABASE':
+      case 'SQL':
+        return 'from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-900/10 border-indigo-300 dark:border-indigo-600'
+      default:
+        return 'from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/10 border-blue-300 dark:border-blue-600'
+    }
+  }
+
   return (
-    <div className={`px-3 py-2 shadow-md rounded-md border-2 bg-blue-50 dark:bg-blue-900/20 ${
-      selected ? 'border-blue-500' : 'border-blue-300 dark:border-blue-600'
-    }`}>
-      <div className="flex items-center space-x-2">
-        <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs">
-          📄
+    <div className={cn(
+      "px-4 py-3 shadow-lg rounded-lg border-2 bg-gradient-to-br transition-all duration-300 min-w-[180px]",
+      getDocumentColor(documentType),
+      selected ? 'shadow-blue-500/50 scale-105 border-blue-500' : 'hover:scale-102'
+    )}>
+      <div className="flex items-center space-x-3">
+        <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center shadow-md text-blue-600 dark:text-blue-400">
+          {getDocumentIcon(documentType)}
         </div>
-        <div className="text-xs font-medium text-blue-900 dark:text-blue-100">
-          {data.label as string}
+        <div className="flex-1">
+          <div className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
+            {data.label as string}
+          </div>
+          <div className="flex items-center justify-between mt-0.5">
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              {documentType}
+            </Badge>
+            {fileSize && (
+              <span className="text-[10px] text-gray-600 dark:text-gray-400">{fileSize}</span>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="text-[10px] text-blue-700 dark:text-blue-300 mt-1">
-        {data.documentType as string}
       </div>
     </div>
   )
 }
 
 const ModelNode = ({ data, selected }: { data: Record<string, unknown>; selected: boolean }) => {
+  const modelType = (data.modelType as string) || 'Canvas'
+  const isActive = data.isActive as boolean | false
+  
+  const getModelIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'ai':
+      case 'neural':
+        return <Brain className="w-5 h-5" />
+      case 'canvas':
+      case 'framework':
+        return <Grid3X3 className="w-5 h-5" />
+      default:
+        return <Zap className="w-5 h-5" />
+    }
+  }
+
   return (
-    <div className={`px-3 py-2 shadow-md rounded-md border-2 bg-purple-50 dark:bg-purple-900/20 ${
-      selected ? 'border-purple-500' : 'border-purple-300 dark:border-purple-600'
-    }`}>
-      <div className="flex items-center space-x-2">
-        <div className="w-6 h-6 bg-purple-500 rounded flex items-center justify-center text-white text-xs">
-          🔗
+    <div className={cn(
+      "px-4 py-3 shadow-lg rounded-lg border-2 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/10 transition-all duration-300 min-w-[180px]",
+      selected ? 'border-purple-500 shadow-purple-500/50 scale-105' : 'border-purple-300 dark:border-purple-600 hover:border-purple-400'
+    )}>
+      <div className="flex items-center space-x-3">
+        <div className={cn(
+          "w-10 h-10 rounded-lg flex items-center justify-center shadow-md transition-all",
+          isActive ? 'bg-gradient-to-br from-purple-500 to-violet-600 text-white animate-pulse' : 'bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400'
+        )}>
+          {getModelIcon(modelType)}
         </div>
-        <div className="text-xs font-medium text-purple-900 dark:text-purple-100">
-          {data.label as string}
+        <div className="flex-1">
+          <div className="text-sm font-bold text-purple-900 dark:text-purple-100 truncate">
+            {data.label as string}
+          </div>
+          <div className="flex items-center space-x-2 mt-0.5">
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              {modelType}
+            </Badge>
+            {isActive && (
+              <div className="flex items-center space-x-1">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                <span className="text-[10px] text-green-600 dark:text-green-400">Active</span>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="text-[10px] text-purple-700 dark:text-purple-300 mt-1">
-        {data.modelType as string}
       </div>
     </div>
   )
@@ -139,6 +312,10 @@ const nodeTypes: NodeTypes = {
   collaboratorNode: CollaboratorNode,
   documentNode: DocumentNode,
   modelNode: ModelNode,
+}
+
+const edgeTypes: EdgeTypes = {
+  animated: AnimatedEdge,
 }
 
 // Initial nodes and edges - Clean empty canvas
@@ -154,6 +331,16 @@ export default function APDEnginePage() {
   const [apdNodeId, setApdNodeId] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [nodeCounter, setNodeCounter] = useState({ collaborator: 0, document: 0, model: 0 })
+
+  // Helper function to calculate circular position around APD
+  const getCircularPosition = useCallback((index: number, total: number, radius: number = 300) => {
+    const angle = (index * 2 * Math.PI) / Math.max(total, 1)
+    return {
+      x: 400 + radius * Math.cos(angle),
+      y: 300 + radius * Math.sin(angle)
+    }
+  }, [])
 
   useEffect(() => {
     const checkLayout = () => {
@@ -167,7 +354,12 @@ export default function APDEnginePage() {
   }, [])
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Connection) => setEdges((eds) => addEdge({
+      ...params,
+      type: 'animated',
+      animated: true,
+      data: { color: '#3b82f6' }
+    }, eds)),
     [setEdges],
   )
 
@@ -211,88 +403,126 @@ export default function APDEnginePage() {
   const addCollaboratorToCanvas = useCallback(() => {
     if (!hasAPD || !apdNodeId) return
     
+    const collaboratorNames = ['Sarah Johnson', 'Mike Chen', 'Emily Davis', 'Alex Rodriguez', 'Jordan Smith']
+    const roles = ['Product Manager', 'Developer', 'Designer', 'Analyst', 'Contractor']
+    const randomName = collaboratorNames[Math.floor(Math.random() * collaboratorNames.length)]
+    const randomRole = roles[Math.floor(Math.random() * roles.length)]
+    
+    const position = getCircularPosition(nodeCounter.collaborator, 8, 250)
+    setNodeCounter(prev => ({ ...prev, collaborator: prev.collaborator + 1 }))
+    
     const collaboratorNode: Node = {
       id: `collaborator-${Date.now()}`,
       type: 'collaboratorNode',
-      position: { x: Math.random() * 400 + 200, y: Math.random() * 400 + 200 },
+      position,
       data: { 
-        label: 'Team Member', 
-        description: 'Collaborator or Contractor',
-        status: 'pending',
-        userAvatar: '👤'
+        label: randomName, 
+        description: 'Team collaborator',
+        status: 'active',
+        role: randomRole,
+        isOnline: Math.random() > 0.5,
+        avatarUrl: undefined // You can add real avatar URLs here
       },
     }
     
     setNodes((nds) => [...nds, collaboratorNode])
     
-    // Add animated dashed edge to APD
+    // Add animated edge to APD
     const newEdge: Edge = {
       id: `${apdNodeId}-${collaboratorNode.id}`,
       source: apdNodeId,
       target: collaboratorNode.id,
+      type: 'animated',
       animated: true,
-      style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '5,5' }
+      data: { color: '#10b981' }
     }
     setEdges((eds) => [...eds, newEdge])
-  }, [setNodes, setEdges, hasAPD, apdNodeId])
+  }, [setNodes, setEdges, hasAPD, apdNodeId, nodeCounter, getCircularPosition])
 
   // Add Document to canvas
   const addDocumentToCanvas = useCallback(() => {
     if (!hasAPD || !apdNodeId) return
     
+    const documentTypes = [
+      { type: 'PDF', name: 'Requirements.pdf', size: '2.4 MB' },
+      { type: 'IMAGE', name: 'Wireframe.png', size: '1.2 MB' },
+      { type: 'DATABASE', name: 'Schema.sql', size: '156 KB' },
+      { type: 'PDF', name: 'Business_Plan.pdf', size: '3.8 MB' }
+    ]
+    const randomDoc = documentTypes[Math.floor(Math.random() * documentTypes.length)]
+    
+    const position = getCircularPosition(nodeCounter.document + 2, 8, 300)
+    setNodeCounter(prev => ({ ...prev, document: prev.document + 1 }))
+    
     const documentNode: Node = {
       id: `document-${Date.now()}`,
       type: 'documentNode',
-      position: { x: Math.random() * 400 + 200, y: Math.random() * 400 + 200 },
+      position,
       data: { 
-        label: 'Supporting Document', 
-        description: 'Reference document',
-        status: 'pending',
-        documentType: 'PDF'
+        label: randomDoc.name, 
+        description: 'Supporting document',
+        status: 'active',
+        documentType: randomDoc.type,
+        fileSize: randomDoc.size
       },
     }
     
     setNodes((nds) => [...nds, documentNode])
     
-    // Add animated dashed edge to APD
+    // Add animated edge to APD with color based on document type
+    const edgeColor = randomDoc.type === 'PDF' ? '#ef4444' : randomDoc.type === 'IMAGE' ? '#a855f7' : '#6366f1'
     const newEdge: Edge = {
       id: `${apdNodeId}-${documentNode.id}`,
       source: apdNodeId,
       target: documentNode.id,
+      type: 'animated',
       animated: true,
-      style: { stroke: '#3b82f6', strokeWidth: 2, strokeDasharray: '5,5' }
+      data: { color: edgeColor }
     }
     setEdges((eds) => [...eds, newEdge])
-  }, [setNodes, setEdges, hasAPD, apdNodeId])
+  }, [setNodes, setEdges, hasAPD, apdNodeId, nodeCounter, getCircularPosition])
 
   // Add Model to canvas
   const addModelToCanvas = useCallback(() => {
     if (!hasAPD || !apdNodeId) return
     
+    const modelTypes = [
+      { type: 'AI', name: 'GPT-4 Analysis', isActive: true },
+      { type: 'Canvas', name: 'Business Model Canvas', isActive: false },
+      { type: 'Framework', name: 'SWOT Analysis', isActive: true },
+      { type: 'Neural', name: 'Neural Network', isActive: true }
+    ]
+    const randomModel = modelTypes[Math.floor(Math.random() * modelTypes.length)]
+    
+    const position = getCircularPosition(nodeCounter.model + 4, 8, 350)
+    setNodeCounter(prev => ({ ...prev, model: prev.model + 1 }))
+    
     const modelNode: Node = {
       id: `model-${Date.now()}`,
       type: 'modelNode',
-      position: { x: Math.random() * 400 + 200, y: Math.random() * 400 + 200 },
+      position,
       data: { 
-        label: 'Business Model', 
-        description: 'Framework or Model',
-        status: 'pending',
-        modelType: 'Canvas'
+        label: randomModel.name, 
+        description: 'Analysis model',
+        status: randomModel.isActive ? 'active' : 'pending',
+        modelType: randomModel.type,
+        isActive: randomModel.isActive
       },
     }
     
     setNodes((nds) => [...nds, modelNode])
     
-    // Add animated dashed edge to APD
+    // Add animated edge to APD
     const newEdge: Edge = {
       id: `${apdNodeId}-${modelNode.id}`,
       source: apdNodeId,
       target: modelNode.id,
+      type: 'animated',
       animated: true,
-      style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5,5' }
+      data: { color: '#8b5cf6' }
     }
     setEdges((eds) => [...eds, newEdge])
-  }, [setNodes, setEdges, hasAPD, apdNodeId])
+  }, [setNodes, setEdges, hasAPD, apdNodeId, nodeCounter, getCircularPosition])
 
   return (
     <>
@@ -306,8 +536,18 @@ export default function APDEnginePage() {
           onConnect={onConnect}
           onNodeClick={onNodeClick}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           fitView
           className="bg-gray-50 dark:bg-gray-900"
+          connectionLineStyle={{ 
+            stroke: '#3b82f6', 
+            strokeWidth: 2,
+            strokeDasharray: '5,5'
+          }}
+          defaultEdgeOptions={{
+            type: 'animated',
+            animated: true
+          }}
         >
         <Controls />
         <MiniMap 
